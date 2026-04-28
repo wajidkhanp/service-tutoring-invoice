@@ -1,25 +1,8 @@
-const nodemailer = require('nodemailer');
+const { Resend } = require('resend');
 const { buildInvoicePdf } = require('./pdfService');
 
 function isEmailConfigured() {
-  return (
-    process.env.GMAIL_USER &&
-    process.env.GMAIL_APP_PASSWORD &&
-    process.env.GMAIL_APP_PASSWORD !== 'your-app-password'
-  );
-}
-
-function createTransport() {
-  return nodemailer.createTransport({
-    host: 'smtp.gmail.com',
-    port: 587,
-    secure: false,
-    family: 4,
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_APP_PASSWORD,
-    },
-  });
+  return !!process.env.RESEND_API_KEY;
 }
 
 function formatDate(iso) {
@@ -29,7 +12,7 @@ function formatDate(iso) {
 
 async function sendInvoiceEmail(invoice, config, student) {
   if (!isEmailConfigured()) {
-    throw new Error('Gmail not configured. Add GMAIL_USER and GMAIL_APP_PASSWORD to .env');
+    throw new Error('Email not configured. Add RESEND_API_KEY to environment variables.');
   }
 
   const recipientEmail = student.email || invoice.studentEmail;
@@ -38,9 +21,12 @@ async function sendInvoiceEmail(invoice, config, student) {
   const pdfBuffer = await buildInvoicePdf(invoice, config, student);
   const fileName = `Invoice_${invoice.invoiceNumber}_${(invoice.studentName || '').replace(/\s+/g, '_')}_${invoice.month}_${invoice.year}.pdf`;
   const orgName = config.organizationName || 'Noor Tutoring';
+  const fromEmail = process.env.RESEND_FROM_EMAIL || `invoices@wajid.dev`;
 
-  await createTransport().sendMail({
-    from: `"${orgName}" <${process.env.GMAIL_USER}>`,
+  const resend = new Resend(process.env.RESEND_API_KEY);
+
+  await resend.emails.send({
+    from: `${orgName} <${fromEmail}>`,
     to: recipientEmail,
     subject: `Invoice #${invoice.invoiceNumber} — ${invoice.studentName} — ${invoice.month} ${invoice.year}`,
     html: `
@@ -56,7 +42,7 @@ async function sendInvoiceEmail(invoice, config, student) {
         <p style="font-size:14px">Thank you,<br/><strong>${config.representative || 'Tariq Khalil'}</strong><br/>${orgName}</p>
       </div>
     `,
-    attachments: [{ filename: fileName, content: pdfBuffer, contentType: 'application/pdf' }],
+    attachments: [{ filename: fileName, content: pdfBuffer }],
   });
 }
 
