@@ -56,7 +56,7 @@ app.get('/health', (req, res) => {
 if (isProd) {
   const distPath = path.join(__dirname, '..', '..', 'frontend', 'dist');
   app.use(express.static(distPath));
-  app.get('*', (_req, res) => res.sendFile(path.join(distPath, 'index.html')));
+  app.use((_req, res) => res.sendFile(path.join(distPath, 'index.html')));
 }
 
 app.listen(PORT, () => {
