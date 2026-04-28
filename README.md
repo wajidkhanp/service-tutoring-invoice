@@ -166,4 +166,22 @@ PDFs are generated fresh on every download request — nothing is written to the
 
 ## License
 
-Private — Noor Tutoring / Momin Services of Arizona.
+Private — WajidKhanp
+
+<img width="1361" height="1229" alt="Screenshot 2026-04-27 at 10 29 56 PM" src="https://github.com/user-attachments/assets/a274ca30-e78d-401b-9934-61d669a0bbd1" />
+<img width="1365" height="1228" alt="Screenshot 2026-04-27 at 10 29 48 PM" src="https://github.com/user-attachments/assets/6440884b-bb93-406e-9fbb-35129a1a5be5" />
+<img width="1612" height="1208" alt="Screenshot 2026-04-27 at 10 29 38 PM" src="https://github.com/user-attachments/assets/370c4f12-7d5b-4ab7-a97d-369226b8b76f" />
+<img width="1358" height="1226" alt="Screenshot 2026-04-27 at 10 29 18 PM" src="https://github.com/user-attachments/assets/8924c25f-9eed-4a97-a0f2-4e9ae972ffd0" />
+<img width="1361" height="1232" alt="Screenshot 2026-04-27 at 10 29 02 PM" src="https://github.com/user-attachments/assets/d28bf435-5a73-498f-97e3-2c717093cd59" />
+<img width="1355" height="1228" alt="Screenshot 2026-04-27 at 10 28 53 PM" src="https://github.com/user-attachments/assets/15d4a7dd-4881-47c7-ab2b-b8bc0f5c2aa3" />
+<img width="1358" height="1224" alt="Screenshot 2026-04-27 at 10 28 41 PM" src="https://github.com/user-attachments/assets/6687b576-6f15-4ad7-880a-1bd2885114d1" />
+<img width="1351" height="1236" alt="Screenshot 2026-04-27 at 10 28 29 PM" src="https://github.com/user-attachments/assets/2604a8a5-293a-4810-8c75-280f52c72bf3" />
+<img width="1355" height="1229" alt="Screenshot 2026-04-27 at 10 28 14 PM" src="https://github.com/user-attachments/assets/08977b4c-af7f-4222-ba9f-6153cef44663" />
+<img width="1355" height="1232" alt="Screenshot 2026-04-27 at 10 28 04 PM" src="https://github.com/user-attachments/assets/bc466993-692c-4f9c-a093-2e7c03f343ea" />
+<img width="1354" height="1226" alt="Screenshot 2026-04-27 at 10 27 54 PM" src="https://github.com/user-attachments/assets/8b8251e3-597b-41b1-8ea1-2dafddc55111" />
+<img width="1312" height="886" alt="Screenshot 2026-04-27 at 10 27 38 PM" src="https://github.com/user-attachments/assets/c9d33432-b853-4ecb-ab3d-6d80f5f168e4" />
+<img width="1319" height="891" alt="Screenshot 2026-04-27 at 10 27 28 PM" src="https://github.com/user-attachments/assets/1af6c964-4390-4c37-9ddb-348996dbf8c5" />
+<img width="1316" height="893" alt="Screenshot 2026-04-27 at 10 27 19 PM" src="https://github.com/user-attachments/assets/e06bc437-23f9-45eb-b941-6b4f007c55a8" />
+<img width="1313" height="885" alt="Screenshot 2026-04-27 at 10 27 06 PM" src="https://github.com/user-attachments/assets/358ea964-ae6c-4b72-b804-64491b5e05f6" />
+<img width="1728" height="942" alt="Screenshot 2026-04-27 at 6 35 28 AM" src="https://github.com/user-attachments/assets/a724db7d-5e00-46c0-a937-781cc1918de4" />
+
