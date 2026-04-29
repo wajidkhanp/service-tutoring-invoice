@@ -4,6 +4,7 @@ import { getMe, logout } from '../services/api';
 
 export default function Navbar() {
   const [user, setUser] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -16,6 +17,19 @@ export default function Navbar() {
     navigate('/login');
   };
 
+  const closeMenu = () => setMenuOpen(false);
+
+  const navLink = (to, label, end = false) => (
+    <NavLink
+      to={to}
+      end={end}
+      className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
+      onClick={closeMenu}
+    >
+      {label}
+    </NavLink>
+  );
+
   return (
     <nav className="navbar">
       <div className="navbar-brand">
@@ -23,13 +37,13 @@ export default function Navbar() {
         <span className="brand-sub">Invoice Manager</span>
       </div>
 
-      <div className="navbar-links">
-        <NavLink to="/" end className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Dashboard</NavLink>
-        <NavLink to="/students" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Students</NavLink>
-        <NavLink to="/generate" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Generate</NavLink>
-        <NavLink to="/history" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>History</NavLink>
-        <NavLink to="/settings" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Settings</NavLink>
-        <NavLink to="/help" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>Help</NavLink>
+      <div className={`navbar-links${menuOpen ? ' open' : ''}`}>
+        {navLink('/', 'Dashboard', true)}
+        {navLink('/students', 'Students')}
+        {navLink('/generate', 'Generate')}
+        {navLink('/history', 'History')}
+        {navLink('/settings', 'Settings')}
+        {navLink('/help', 'Help')}
       </div>
 
       {user && (
@@ -41,6 +55,21 @@ export default function Navbar() {
           <button className="btn-logout" onClick={handleLogout}>Logout</button>
         </div>
       )}
+
+      <button className="hamburger" onClick={() => setMenuOpen(o => !o)} aria-label="Toggle menu">
+        {menuOpen ? (
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        ) : (
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="21" y2="12"/>
+            <line x1="3" y1="18" x2="21" y2="18"/>
+          </svg>
+        )}
+      </button>
     </nav>
   );
 }
