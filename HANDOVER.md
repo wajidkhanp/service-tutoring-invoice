@@ -6,15 +6,16 @@ This guide covers everything needed to fully transfer ownership and operations o
 
 ## 1. What You're Handing Over
 
-The app consists of **five external accounts** that together keep it running. The new owner needs access to all of them.
+The app consists of **four external accounts** that together keep it running. The new owner needs access to all of them.
 
 | Account | What it controls |
 |---|---|
 | **GitHub** | Source code — all changes go here first |
 | **Railway** | Hosting, deployment, environment variables, volumes (persistent data) |
-| **Google Cloud Console** | OAuth login (the "Sign in with Google" button) |
 | **Resend** | Invoice email delivery |
 | **Domain registrar (Squarespace / other)** | DNS records pointing the domain to Railway |
+
+> **Note:** There is no Google Cloud or OAuth dependency. Login is handled entirely by a local `users.json` file committed to the repo.
 
 ---
 
@@ -27,11 +28,9 @@ The app consists of **five external accounts** that together keep it running. Th
 3. Enter the new owner's GitHub username
 4. Confirm the transfer
 
-The repo URL changes to `github.com/<new-owner>/service-tutoring-invoice`. You must update the Railway source after this (see Railway section).
+The repo URL changes to `github.com/<new-owner>/service-tutoring-invoice`. Update the Railway source after this (see Railway section).
 
 ### Option B: New owner forks/clones
-
-The new owner can clone the repo and push to their own account:
 
 ```bash
 git clone https://github.com/wajidkhanp/service-tutoring-invoice.git
@@ -40,7 +39,7 @@ git remote set-url origin https://github.com/<new-owner>/<new-repo>.git
 git push -u origin main
 ```
 
-Then re-connect Railway to the new repo (see Railway section).
+Then re-connect Railway to the new repo.
 
 ---
 
@@ -53,11 +52,11 @@ Then re-connect Railway to the new repo (see Railway section).
 3. Enter the new owner's email — grant **Owner** role
 4. Once they accept, you can remove yourself
 
-### Step 2 — If GitHub repo was transferred (Option A above)
+### Step 2 — If GitHub repo was transferred
 
-Railway needs to re-authorize the new GitHub source:
+Railway needs to re-authorize the new source:
 
-1. Railway → your service → **Settings** → **Source**
+1. Railway → your service → **Settings → Source**
 2. Click **Disconnect** then **Connect Repository**
 3. Authorize Railway to access the new owner's GitHub account
 4. Select the transferred repo
@@ -66,85 +65,94 @@ Railway needs to re-authorize the new GitHub source:
 
 The new owner needs all values in Railway → **Variables**. Share them securely (1Password, encrypted email, etc.):
 
-| Variable | Where to find the value |
+| Variable | Where to find / what to set |
 |---|---|
-| `NODE_ENV` | Just set to `production` |
-| `PORT` | Just set to `3001` |
+| `NODE_ENV` | `production` |
+| `PORT` | `3001` |
 | `SESSION_SECRET` | Generate new: `openssl rand -base64 32` |
-| `GOOGLE_CLIENT_ID` | Google Cloud Console (see section 4) |
-| `GOOGLE_CLIENT_SECRET` | Google Cloud Console (see section 4) |
-| `GOOGLE_CALLBACK_URL` | `https://www.<domain>/auth/google/callback` |
-| `FRONTEND_URL` | `https://www.<domain>` |
-| `RESEND_API_KEY` | Resend dashboard (see section 5) |
+| `RESEND_API_KEY` | Resend dashboard |
 | `RESEND_FROM_EMAIL` | `invoices@<domain>` |
 
-> **Security note:** Generate a new `SESSION_SECRET` for the new owner. Never share the old one in plaintext email.
+> **Security note:** Generate a fresh `SESSION_SECRET` for the new owner. Never share the old one in plaintext.
 
 ### Step 4 — Hand over volumes (data)
 
-Railway volumes hold all student/invoice data. Two options:
+Railway volumes hold all student/invoice data at `/app/backend/src/data`.
 
-**Option A — Keep existing volumes (data continuity)**
+**Option A — Keep existing volumes (recommended for continuity)**
 
-Leave the volumes attached. The new owner inherits the data automatically once they have project access.
+Leave the volumes attached. The new owner inherits the data once they have project access.
 
-**Option B — Export then reimport**
+**Option B — Export then re-import**
 
-1. Old owner: use the app's **Invoice History → Export CSV** to download invoice data
-2. Download the JSON files via Railway shell: Railway → service → **Shell**:
+1. Use the app's **Invoice History → Export CSV** to download invoice data
+2. Download raw JSON via Railway shell:
    ```bash
    cat /app/backend/src/data/students.json
    cat /app/backend/src/data/invoices.json
    cat /app/backend/src/data/config.json
+   cat /app/backend/src/data/audit.json
    ```
-3. Save the output. New owner can restore by writing these files back via the shell after taking ownership.
+3. New owner restores via Railway shell after taking ownership
 
-### Step 5 — Update custom domain (if domain is also being transferred)
+### Step 5 — Update custom domain if being transferred
 
-See the Domain section (section 6) for DNS changes.
+See Section 6.
 
 ---
 
-## 4. Google Cloud Console — Transfer OAuth
+## 4. User Management — Adding / Removing Login Access
 
-### Option A: Add new owner to existing project
+Login is controlled by `backend/src/config/users.json` in the repository. There is no external auth provider.
 
-1. Go to [console.cloud.google.com](https://console.cloud.google.com)
-2. Select the project used for the OAuth credentials
-3. **IAM & Admin → IAM → Grant Access**
-4. Enter the new owner's Google account email
-5. Role: **Owner**
+### Current users
 
-The new owner can then manage the OAuth credentials. They should create their own OAuth client ID and secret:
+| User ID | Name | Role |
+|---|---|---|
+| `admin` | Administrator | admin |
+| `wajid` | Wajid Khan | admin |
+| `tariq` | Tariq Khalil | admin |
 
-1. **APIs & Services → Credentials → + Create Credentials → OAuth 2.0 Client ID**
-2. Application type: **Web application**
-3. **Authorized JavaScript origins:** `https://www.<domain>`
-4. **Authorized redirect URIs:** `https://www.<domain>/auth/google/callback`
-5. Copy the new **Client ID** and **Client Secret** into Railway variables
+### Adding a new user
 
-### Option B: Transfer the Google Cloud project
+**Step 1** — Generate a bcrypt hash for their password (run from the `backend` directory):
 
-1. **IAM & Admin → Settings → Transfer Project**
-2. Enter the new owner's Google Workspace or Gmail account
-3. The new owner accepts the transfer in their Cloud Console
+```bash
+npm run hash-password -- TheirPassword123
+```
 
-> After transfer, the old credentials still work but the new owner controls them.
+Copy the hash output.
 
-### Authorized Users (if app is in Testing mode)
+**Step 2** — Add an entry to `backend/src/config/users.json`:
 
-If the OAuth consent screen is in **Testing** mode (not published), only explicitly listed test users can log in:
+```json
+{
+  "id": "newuser",
+  "name": "Full Name",
+  "role": "admin",
+  "passwordHash": "<paste hash here>"
+}
+```
 
-1. **APIs & Services → OAuth consent screen → Test users**
-2. Add the new owner's email and any other authorized users
-3. Remove old users who should no longer have access
+**Step 3** — Commit and push. Railway auto-deploys:
 
-### Consent Screen Settings
+```bash
+git add backend/src/config/users.json
+git commit -m "Add user: newuser"
+git push
+```
 
-Make sure the new domain is listed under **Authorized domains** if the domain changes:
+### Removing a user
 
-1. **APIs & Services → OAuth consent screen → Edit App**
-2. Add the new domain (e.g. `newdomain.com`) under **Authorized domains**
+Delete their entry from `users.json`, commit, and push. They will not be able to log in after the next deploy.
+
+### Changing a password
+
+Generate a new hash with `npm run hash-password`, replace the `passwordHash` value in `users.json`, commit, and push.
+
+### Session timeout
+
+Sessions expire after **10 minutes of inactivity**. Every page visit resets the timer. Logout is also available from the navbar at any time. All login, logout, and failed login attempts are recorded in `audit.json`.
 
 ---
 
@@ -156,20 +164,12 @@ Make sure the new domain is listed under **Authorized domains** if the domain ch
 2. **Invite Member** → enter new owner's email → **Owner** role
 3. New owner accepts the invite
 
-They will have access to existing API keys and domain verification.
-
 ### Option B: New owner sets up their own Resend account
 
 1. New owner creates account at [resend.com](https://resend.com)
-2. They verify their sending domain (see DNS records below)
+2. They verify their sending domain (see DNS section)
 3. They create a new API key
 4. Update Railway: `RESEND_API_KEY` and `RESEND_FROM_EMAIL`
-
-### What to hand over
-
-- The verified sending domain (e.g. `wajid.dev`) — or the new owner verifies their own
-- The `RESEND_API_KEY` (or the new owner generates a fresh one)
-- DNS records for the sending domain (see DNS section)
 
 ---
 
@@ -177,24 +177,16 @@ They will have access to existing API keys and domain verification.
 
 ### If domain stays with original registrar (Squarespace, etc.)
 
-The new owner needs access to the registrar account to manage DNS:
+Share registrar login credentials securely, or transfer ownership of the account.
 
-1. Transfer the registrar account, or
-2. Create a sub-account / share login credentials securely
+### If domain is moving to a new registrar
 
-### If domain is being transferred to a new registrar
-
-Standard domain transfer process:
-
-1. Unlock the domain at current registrar
+1. Unlock the domain at the current registrar
 2. Get the **EPP/Auth transfer code**
 3. New registrar initiates transfer using that code
-4. Confirm via email (60-second window, watch spam folder)
-5. Transfer takes 5–7 days
+4. Confirm via email — transfer takes 5–7 days
 
 ### DNS records that must exist after transfer
-
-Once the domain resolves at the new registrar, recreate all DNS records:
 
 | Type | Name | Value | Purpose |
 |---|---|---|---|
@@ -203,8 +195,8 @@ Once the domain resolves at the new registrar, recreate all DNS records:
 | `TXT` | `_dmarc` | (from Resend) | Email deliverability |
 | `TXT` | `resend._domainkey` | (from Resend) | DKIM email signing |
 
-Get the Railway values from: Railway → service → **Settings → Networking → Custom Domain**
-Get the Resend values from: Resend → **Domains → your domain**
+Get Railway values from: Railway → service → **Settings → Networking → Custom Domain**
+Get Resend values from: Resend → **Domains → your domain**
 
 ---
 
@@ -216,9 +208,9 @@ If the new owner is setting up a completely new domain (e.g. replacing `wajid.de
 
 1. Railway → service → **Settings → Networking → Add Custom Domain**
 2. Enter `www.newdomain.com`
-3. Railway shows two DNS records — copy them (CNAME value and TXT verification value)
+3. Copy the CNAME value and TXT verification value shown
 
-### Step 2 — Configure DNS at registrar
+### Step 2 — Configure DNS
 
 At your DNS provider, add:
 
@@ -227,46 +219,31 @@ CNAME   www                    →  <value from Railway>
 TXT     _railway-verify.www    →  <value from Railway>
 ```
 
-Wait 5–15 minutes for Railway to verify (shows ✅ on both records). SSL certificate is issued automatically once both are verified.
+Wait 5–15 minutes. Railway shows ✅ on both records and issues the SSL certificate.
 
-> If your registrar shows a warning about CNAME on root (`@`), use `www.newdomain.com` only. Set up a URL redirect from the root to `www` if needed.
+> If your registrar doesn't support CNAME on root (`@`), use `www.newdomain.com` only and add a URL redirect from the bare domain to `www`.
 
-### Step 3 — Verify the domain in Resend
+### Step 3 — Verify sending domain in Resend
 
 1. Resend → **Domains → Add Domain** → enter `newdomain.com`
-2. Resend gives you DNS records — add them at your registrar:
+2. Add the DNS records Resend provides:
    ```
    TXT     resend._domainkey    →  <DKIM key from Resend>
    TXT     _dmarc               →  v=DMARC1; p=none;
    ```
 3. Wait 2–10 minutes — Resend dashboard shows **Verified**
 
-### Step 4 — Update Google OAuth
-
-1. Google Cloud Console → **APIs & Services → Credentials**
-2. Edit the OAuth 2.0 Client ID
-3. **Authorized JavaScript origins** — add `https://www.newdomain.com`
-4. **Authorized redirect URIs** — add `https://www.newdomain.com/auth/google/callback`
-5. Save
-
-Also update the consent screen:
-- **APIs & Services → OAuth consent screen → Authorized domains** — add `newdomain.com`
-
-### Step 5 — Update Railway environment variables
-
-In Railway → **Variables**, update:
+### Step 4 — Update Railway variables
 
 ```
-GOOGLE_CALLBACK_URL  =  https://www.newdomain.com/auth/google/callback
-FRONTEND_URL         =  https://www.newdomain.com
-RESEND_FROM_EMAIL    =  invoices@newdomain.com
+RESEND_FROM_EMAIL  =  invoices@newdomain.com
 ```
 
-> **Critical:** No trailing spaces or newlines in any value — they cause silent failures (Google OAuth encodes them as `%0A`).
+> No Google OAuth variables are needed — auth is local.
 
-### Step 6 — Deploy
+### Step 5 — Deploy
 
-Railway auto-deploys on variable changes. Verify at `https://www.newdomain.com`.
+Railway auto-deploys on variable save. Verify at `https://www.newdomain.com`.
 
 ---
 
@@ -276,11 +253,10 @@ Before handover, prepare a secure document (use 1Password or similar) with:
 
 - [ ] GitHub repo URL + new owner's access confirmed
 - [ ] Railway project URL + new owner invited as Owner
-- [ ] Google Cloud Console project ID + OAuth Client ID + Client Secret
-- [ ] Resend API key (generate a fresh one for the new owner)
 - [ ] New `SESSION_SECRET` (generated fresh — `openssl rand -base64 32`)
+- [ ] Resend API key (generate a fresh one for the new owner)
 - [ ] Domain registrar login (or transfer initiated)
-- [ ] List of authorized login emails (Google OAuth test users)
+- [ ] Updated `backend/src/config/users.json` with the new owner's user account
 
 ---
 
@@ -289,28 +265,14 @@ Before handover, prepare a secure document (use 1Password or similar) with:
 Once the new owner has confirmed everything works:
 
 1. **Railway:** Remove yourself from the project members list
-2. **Google Cloud Console:** Remove your email from IAM and from OAuth test users
-3. **Resend:** Remove yourself from the team
-4. **Domain registrar:** Remove your account access (or complete the transfer)
-5. **GitHub:** Remove yourself as collaborator (or confirm transfer is complete)
+2. **Resend:** Remove yourself from the team
+3. **Domain registrar:** Remove your account access (or complete the transfer)
+4. **GitHub:** Remove yourself as collaborator (or confirm transfer is complete)
+5. **users.json:** Remove your own user ID if you should no longer have app access — commit and push
 
 ---
 
-## 10. Authorized Login Accounts
-
-The app uses Google OAuth with restricted access. Currently authorized accounts:
-
-- `wajidkhanp@gmail.com` (admin/developer)
-
-To add or remove authorized users:
-1. Google Cloud Console → **APIs & Services → OAuth consent screen → Test users**
-2. Add or remove email addresses
-
-If the app is published (not in Testing mode), any Google account can attempt login — restrict access in the backend middleware instead.
-
----
-
-## 11. Data Backup
+## 10. Data Backup
 
 Before any major handover or migration:
 
@@ -324,17 +286,18 @@ Before any major handover or migration:
    ```
 3. Save each output to local files
 
-No database to export — all data is in these four JSON files on the Railway volume.
+No database to export — all runtime data is in these four JSON files on the Railway volume.
+
+User accounts are in `backend/src/config/users.json` in the repository — already backed up via git.
 
 ---
 
-## 12. Contacts and Accounts Summary
+## 11. Contacts and Accounts Summary
 
 | Resource | URL | Current Owner |
 |---|---|---|
 | GitHub repo | github.com/wajidkhanp/service-tutoring-invoice | wajidkhanp@gmail.com |
 | Railway project | railway.app | wajidkhanp@gmail.com |
-| Google Cloud Console | console.cloud.google.com | wajidkhanp@gmail.com |
 | Resend | resend.com | wajidkhanp@gmail.com |
 | Domain registrar | account.squarespace.com | wajidkhanp@gmail.com |
 | Live app | https://www.wajid.dev | — |
