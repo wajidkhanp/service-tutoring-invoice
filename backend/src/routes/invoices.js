@@ -29,9 +29,11 @@ router.use(requireAuth);
 router.get('/', (req, res) => {
   let invoices = loadInvoices();
   const { month, year } = req.query;
+  const total = invoices.length;
   if (month) invoices = invoices.filter((inv) => inv.month === month);
   if (year)  invoices = invoices.filter((inv) => String(inv.year) === String(year));
   invoices = invoices.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+  console.log(`[invoices] GET filter month=${month||'*'} year=${year||'*'} → ${invoices.length}/${total}`);
   res.json({ invoices });
 });
 
@@ -199,6 +201,7 @@ router.post('/generate-all', async (req, res, next) => {
       created++;
     }
 
+    console.log(`[generate-all] month=${month} year=${year} students=${students.length} created=${created} skipped=${skipped}`);
     saveInvoices(invoices);
     if (created > 0) {
       saveConfig({ ...config, nextInvoiceNumber: invoiceNumber });

@@ -43,7 +43,9 @@ function ensureFile(filename) {
 function readJson(filename) {
   ensureFile(filename);
   const raw = fs.readFileSync(path.join(DATA_DIR, filename), 'utf8');
-  return JSON.parse(raw);
+  const data = JSON.parse(raw);
+  if (Array.isArray(data)) console.log(`[storage] read ${filename} (${data.length} items)`);
+  return data;
 }
 
 function writeJson(filename, data) {
