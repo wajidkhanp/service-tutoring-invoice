@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { createInvoice, downloadInvoiceZip, generateAllInvoices, getInvoices, getStudents } from '../services/api';
 
 function formatCurrency(value) {
@@ -30,6 +31,7 @@ const EMPTY_INVOICE_FORM = {
 };
 
 export default function Generate() {
+  const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -136,9 +138,7 @@ export default function Generate() {
       if (summary.emailed > 0) msg += ` ${summary.emailed} email${summary.emailed !== 1 ? 's' : ''} sent.`;
       if (summary.emailErrors?.length) msg += ` ${summary.emailErrors.length} email(s) failed.`;
       else msg += ' Use Download ZIP to get the PDFs.';
-      setPageSuccess(msg);
-      const inv = await getInvoices();
-      setInvoices(inv.data.invoices || []);
+      navigate('/history', { state: { month: bulkForm.month, year: bulkForm.year } });
     } catch (err) {
       setBulkError(err?.response?.data?.error || 'Unable to generate all invoices.');
     } finally {

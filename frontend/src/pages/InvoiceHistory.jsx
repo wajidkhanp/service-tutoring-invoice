@@ -13,8 +13,8 @@ function formatCurrency(value) {
 
 export default function InvoiceHistory() {
   const location = useLocation();
-  const [month, setMonth] = useState(MONTHS[new Date().getMonth()]);
-  const [year, setYear] = useState(new Date().getFullYear().toString());
+  const [month, setMonth] = useState(location.state?.month || MONTHS[new Date().getMonth()]);
+  const [year, setYear] = useState(location.state?.year?.toString() || new Date().getFullYear().toString());
   const [invoices, setInvoices] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
