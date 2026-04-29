@@ -10,6 +10,28 @@ const auth = axios.create({
   withCredentials: true,
 });
 
+function redirectToLogin() {
+  if (window.location.pathname !== '/login') {
+    window.location.href = '/login';
+  }
+}
+
+api.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (err.response?.status === 401) redirectToLogin();
+    return Promise.reject(err);
+  }
+);
+
+auth.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (err.response?.status === 401 && !err.config.url.includes('/login')) redirectToLogin();
+    return Promise.reject(err);
+  }
+);
+
 export const getMe = () => auth.get('/me');
 export const login = (userId, password) => auth.post('/login', { userId, password });
 export const logout = () => auth.post('/logout');
