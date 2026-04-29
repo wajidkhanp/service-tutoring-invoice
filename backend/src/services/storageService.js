@@ -3,6 +3,19 @@ const path = require('path');
 
 const DATA_DIR = path.join(__dirname, '../data');
 
+console.log(`[storage] DATA_DIR: ${DATA_DIR}`);
+try {
+  const stat = fs.statSync(DATA_DIR);
+  console.log(`[storage] DATA_DIR exists, isDirectory=${stat.isDirectory()}`);
+  const files = fs.readdirSync(DATA_DIR);
+  files.forEach((f) => {
+    const s = fs.statSync(path.join(DATA_DIR, f));
+    console.log(`[storage]   ${f} — ${s.size} bytes`);
+  });
+} catch {
+  console.log('[storage] DATA_DIR does not exist yet (will be created on first write)');
+}
+
 const DEFAULTS = {
   'invoices.json': [],
   'students.json': [],
@@ -35,7 +48,10 @@ function readJson(filename) {
 
 function writeJson(filename, data) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
-  fs.writeFileSync(path.join(DATA_DIR, filename), JSON.stringify(data, null, 2), 'utf8');
+  const filepath = path.join(DATA_DIR, filename);
+  fs.writeFileSync(filepath, JSON.stringify(data, null, 2), 'utf8');
+  const count = Array.isArray(data) ? `${data.length} items` : 'object';
+  console.log(`[storage] wrote ${filepath} (${count})`);
 }
 
 module.exports = { readJson, writeJson };

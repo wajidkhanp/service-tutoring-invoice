@@ -51,7 +51,18 @@ app.use('/api/audit', auditRoutes);
 app.use('/api/settings', settingsRoutes);
 
 app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  const dataDir = path.join(__dirname, 'data');
+  let files = [];
+  let dirError = null;
+  try {
+    files = require('fs').readdirSync(dataDir).map((f) => {
+      const s = require('fs').statSync(path.join(dataDir, f));
+      return { name: f, bytes: s.size };
+    });
+  } catch (e) {
+    dirError = e.message;
+  }
+  res.json({ status: 'ok', timestamp: new Date().toISOString(), dataDir, files, dirError });
 });
 
 // Serve Vite build in production — must come after all API routes
