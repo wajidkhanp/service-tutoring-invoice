@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Noor Tutoring Invoice Manager — Overview</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #f0f4f8;
+      color: #1a1a2e;
+    }
+
+    .slide {
+      width: 100%;
+      min-height: 100vh;
+      padding: 60px 80px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      page-break-after: always;
+      border-bottom: 3px solid #e2e8f0;
+    }
+
+    /* ── Slide themes ── */
+    .slide-title    { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 60%, #0f3460 100%); color: #fff; }
+    .slide-problem  { background: #fff; }
+    .slide-solution { background: #f8fafc; }
+    .slide-features { background: #fff; }
+    .slide-workflow { background: #f0f7ff; }
+    .slide-tech     { background: #fff; }
+    .slide-security { background: #f8fafc; }
+    .slide-cost     { background: #fff; }
+    .slide-cta      { background: linear-gradient(135deg, #0f3460 0%, #16213e 100%); color: #fff; }
+
+    /* ── Title slide ── */
+    .slide-title .logo-mark {
+      font-size: 14px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #93c5fd;
+      margin-bottom: 32px;
+    }
+    .slide-title h1 {
+      font-size: 52px;
+      font-weight: 800;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+    .slide-title h1 span { color: #60a5fa; }
+    .slide-title .subtitle {
+      font-size: 20px;
+      color: #94a3b8;
+      margin-bottom: 48px;
+      max-width: 600px;
+    }
+    .slide-title .tagline {
+      display: inline-block;
+      background: rgba(96,165,250,0.15);
+      border: 1px solid rgba(96,165,250,0.3);
+      color: #93c5fd;
+      padding: 10px 20px;
+      border-radius: 100px;
+      font-size: 14px;
+      letter-spacing: 1px;
+    }
+
+    /* ── Section label ── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: #3b82f6;
+      margin-bottom: 16px;
+    }
+    .slide-title .section-label,
+    .slide-cta .section-label { color: #60a5fa; }
+
+    /* ── Headings ── */
+    h2 {
+      font-size: 40px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .slide-cta h2 { color: #fff; }
+    h2 span { color: #3b82f6; }
+
+    .lead {
+      font-size: 18px;
+      color: #64748b;
+      max-width: 680px;
+      line-height: 1.6;
+      margin-bottom: 48px;
+    }
+    .slide-cta .lead { color: #94a3b8; }
+
+    /* ── Pain point list ── */
+    .pain-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      max-width: 900px;
+    }
+    .pain-card {
+      background: #fff5f5;
+      border: 1px solid #fecaca;
+      border-left: 4px solid #ef4444;
+      border-radius: 12px;
+      padding: 20px 24px;
+    }
+    .pain-card .icon { font-size: 24px; margin-bottom: 10px; }
+    .pain-card h3 { font-size: 16px; font-weight: 700; color: #991b1b; margin-bottom: 6px; }
+    .pain-card p  { font-size: 14px; color: #7f1d1d; line-height: 1.5; }
+
+    /* ── Solution cards ── */
+    .solution-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      max-width: 1000px;
+    }
+    .solution-card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .solution-card .icon {
+      width: 48px; height: 48px;
+      background: #eff6ff;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      margin-bottom: 14px;
+    }
+    .solution-card h3 { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 8px; }
+    .solution-card p  { font-size: 13px; color: #64748b; line-height: 1.55; }
+
+    /* ── Feature list ── */
+    .feature-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      max-width: 960px;
+    }
+    .feature-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 16px 20px;
+      background: #f8fafc;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+    }
+    .feature-row .check {
+      flex-shrink: 0;
+      width: 28px; height: 28px;
+      background: #dcfce7;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: #16a34a;
+      font-size: 14px;
+      font-weight: 700;
+    }
+    .feature-row h3 { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+    .feature-row p  { font-size: 13px; color: #64748b; line-height: 1.4; }
+
+    /* ── Workflow steps ── */
+    .workflow {
+      display: flex;
+      align-items: flex-start;
+      gap: 0;
+      max-width: 980px;
+    }
+    .workflow-step {
+      flex: 1;
+      text-align: center;
+      padding: 24px 16px;
+      position: relative;
+    }
+    .workflow-step:not(:last-child)::after {
+      content: '→';
+      position: absolute;
+      right: -12px;
+      top: 34px;
+      font-size: 20px;
+      color: #94a3b8;
+    }
+    .step-num {
+      width: 52px; height: 52px;
+      background: #3b82f6;
+      color: #fff;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      font-weight: 800;
+      margin: 0 auto 14px;
+    }
+    .workflow-step h3 { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 6px; }
+    .workflow-step p  { font-size: 12px; color: #64748b; line-height: 1.5; }
+
+    /* ── Tech table ── */
+    .tech-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      max-width: 900px;
+    }
+    .tech-card {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 20px;
+      text-align: center;
+    }
+    .tech-card .badge {
+      font-size: 28px;
+      margin-bottom: 10px;
+    }
+    .tech-card h3 { font-size: 13px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+    .tech-card p  { font-size: 11px; color: #94a3b8; }
+
+    /* ── Security list ── */
+    .security-list {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 760px;
+    }
+    .security-row {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      padding: 18px 24px;
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-left: 4px solid #3b82f6;
+      border-radius: 12px;
+    }
+    .security-row .icon { font-size: 24px; flex-shrink: 0; }
+    .security-row h3 { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+    .security-row p  { font-size: 13px; color: #64748b; }
+
+    /* ── Cost table ── */
+    .cost-table {
+      border-collapse: collapse;
+      max-width: 560px;
+      width: 100%;
+    }
+    .cost-table th {
+      background: #f1f5f9;
+      text-align: left;
+      padding: 12px 20px;
+      font-size: 12px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: #64748b;
+      border-bottom: 2px solid #e2e8f0;
+    }
+    .cost-table td {
+      padding: 14px 20px;
+      font-size: 15px;
+      border-bottom: 1px solid #f1f5f9;
+      color: #1e293b;
+    }
+    .cost-table tr:last-child td {
+      background: #eff6ff;
+      font-weight: 700;
+      color: #1d4ed8;
+      font-size: 16px;
+      border-bottom: none;
+    }
+    .cost-note {
+      margin-top: 24px;
+      font-size: 13px;
+      color: #64748b;
+      max-width: 560px;
+      line-height: 1.6;
+    }
+
+    /* ── CTA slide ── */
+    .cta-points {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      max-width: 700px;
+      margin-bottom: 48px;
+    }
+    .cta-point {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: #cbd5e1;
+      font-size: 15px;
+    }
+    .cta-point .dot {
+      width: 8px; height: 8px;
+      background: #3b82f6;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .cta-btn {
+      display: inline-block;
+      background: #3b82f6;
+      color: #fff;
+      padding: 14px 32px;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: 0.5px;
+    }
+
+    /* ── Slide number ── */
+    .slide-num {
+      position: absolute;
+      bottom: 24px;
+      right: 40px;
+      font-size: 11px;
+      color: #cbd5e1;
+      letter-spacing: 1px;
+    }
+    .slide { position: relative; }
+
+    @media print {
+      .slide { page-break-after: always; min-height: 100vh; }
+    }
+
+    @media (max-width: 768px) {
+      .slide { padding: 40px 24px; }
+      h2 { font-size: 28px; }
+      .pain-grid, .solution-grid, .feature-list, .tech-grid, .cta-points { grid-template-columns: 1fr; }
+      .workflow { flex-direction: column; }
+      .workflow-step::after { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- SLIDE 1: Title -->
+<div class="slide slide-title">
+  <div class="logo-mark">Noor Tutoring · Momin Services of Arizona</div>
+  <h1>Invoice Manager<br/><span>Built for Tutoring.</span></h1>
+  <p class="subtitle">A purpose-built web application that automates invoice generation, delivery, and tracking for tutoring programs.</p>
+  <div class="tagline">Live at invoice.wajid.dev</div>
+  <span class="slide-num">1 / 9</span>
+</div>
+
+<!-- SLIDE 2: The Problem -->
+<div class="slide slide-problem">
+  <div class="section-label">The Challenge</div>
+  <h2>Manual invoicing <span>wastes time</span></h2>
+  <p class="lead">Tutoring centers managing 20+ students face recurring friction every billing cycle. Here's what that looks like:</p>
+  <div class="pain-grid">
+    <div class="pain-card">
+      <div class="icon">📋</div>
+      <h3>Repetitive manual work</h3>
+      <p>Creating individual invoices by hand for every student, every month — prone to errors and inconsistency.</p>
+    </div>
+    <div class="pain-card">
+      <div class="icon">📧</div>
+      <h3>Email bottleneck</h3>
+      <p>Attaching PDFs, addressing emails to each parent, and sending one by one takes hours per cycle.</p>
+    </div>
+    <div class="pain-card">
+      <div class="icon">🗂️</div>
+      <h3>No central history</h3>
+      <p>Invoices scattered across folders and inboxes make it hard to answer "was this student billed in March?"</p>
+    </div>
+    <div class="pain-card">
+      <div class="icon">🔢</div>
+      <h3>Rate management overhead</h3>
+      <p>Different rates per student require manual lookup and calculation for every invoice, every time.</p>
+    </div>
+  </div>
+  <span class="slide-num">2 / 9</span>
+</div>
+
+<!-- SLIDE 3: The Solution -->
+<div class="slide slide-solution">
+  <div class="section-label">The Solution</div>
+  <h2>One app. <span>Full cycle.</span></h2>
+  <p class="lead">The Noor Tutoring Invoice Manager automates the entire invoicing workflow — from student setup to PDF delivery — in minutes instead of hours.</p>
+  <div class="solution-grid">
+    <div class="solution-card">
+      <div class="icon">⚡</div>
+      <h3>Bulk Generate</h3>
+      <p>Generate professional PDF invoices for all students in one click. Rates and hours are pre-configured per student.</p>
+    </div>
+    <div class="solution-card">
+      <div class="icon">📬</div>
+      <h3>Automated Email Delivery</h3>
+      <p>Send invoice PDFs directly to parents' email addresses. Individually or all at once — your choice.</p>
+    </div>
+    <div class="solution-card">
+      <div class="icon">📁</div>
+      <h3>Organized History</h3>
+      <p>Browse invoices by month and year. Download individual PDFs, export a ZIP, or pull a CSV summary.</p>
+    </div>
+    <div class="solution-card">
+      <div class="icon">🎨</div>
+      <h3>Branded PDFs</h3>
+      <p>Invoices include your organization name, address, EIN, and signature — professional every time.</p>
+    </div>
+    <div class="solution-card">
+      <div class="icon">🔒</div>
+      <h3>Secure Access</h3>
+      <p>Google OAuth login — only authorized accounts can sign in. No passwords to manage.</p>
+    </div>
+    <div class="solution-card">
+      <div class="icon">📊</div>
+      <h3>Live Dashboard</h3>
+      <p>See total students, invoices sent, and a real-time activity feed of every action taken.</p>
+    </div>
+  </div>
+  <span class="slide-num">3 / 9</span>
+</div>
+
+<!-- SLIDE 4: Feature List -->
+<div class="slide slide-features">
+  <div class="section-label">Features</div>
+  <h2>Everything you need. <span>Nothing you don't.</span></h2>
+  <p class="lead">Every feature was built for one specific tutoring program — no bloat, no complexity.</p>
+  <div class="feature-list">
+    <div class="feature-row">
+      <div class="check">✓</div>
+      <div>
+        <h3>Student Management</h3>
+        <p>Add students with name, email, grade, hourly rate, default hours, and notes.</p>
+      </div>
+    </div>
+    <div class="feature-row">
+      <div class="check">✓</div>
+      <div>
+        <h3>Monthly Bulk Invoicing</h3>
+        <p>Generate all invoices for the current month in one click — no duplicate invoices created.</p>
+      </div>
+    </div>
+    <div class="feature-row">
+      <div class="check">✓</div>
+      <div>
+        <h3>Ad Hoc Invoices</h3>
+        <p>Create individual invoices with custom amounts, hours, or due dates at any time.</p>
+      </div>
+    </div>
+    <div class="feature-row">
+      <div class="check">✓</div>
+      <div>
+        <h3>In-Memory PDF Generation</h3>
+        <p>PDFs are built on demand — never stored on the server. Always fresh, always accurate.</p>
+      </div>
+    </div>
+    <div class="feature-row">
+      <div class="check">✓</div>
+      <div>
+        <h3>Send + Re-Send Emails</h3>
+        <p>Send on creation, during bulk generation, or resend from Invoice History at any time.</p>
+      </div>
+    </div>
+    <div class="feature-row">
+      <div class="check">✓</div>
+      <div>
+        <h3>ZIP &amp; CSV Export</h3>
+        <p>Download all invoices for a month as a ZIP or export a CSV for bookkeeping.</p>
+      </div>
+    </div>
+    <div class="feature-row">
+      <div class="check">✓</div>
+      <div>
+        <h3>Organization Settings</h3>
+        <p>Update org name, address, EIN, representative, and upload a signature image.</p>
+      </div>
+    </div>
+    <div class="feature-row">
+      <div class="check">✓</div>
+      <div>
+        <h3>Audit Trail</h3>
+        <p>Every create, edit, delete, and email action is logged with a timestamp on the dashboard.</p>
+      </div>
+    </div>
+  </div>
+  <span class="slide-num">4 / 9</span>
+</div>
+
+<!-- SLIDE 5: Workflow -->
+<div class="slide slide-workflow">
+  <div class="section-label">How It Works</div>
+  <h2>From setup to <span>sent invoice</span> in minutes</h2>
+  <p class="lead">The typical monthly workflow takes under five minutes once students are configured.</p>
+  <div class="workflow">
+    <div class="workflow-step">
+      <div class="step-num">1</div>
+      <h3>Add Students</h3>
+      <p>Enter each student once: name, email, hourly rate, and default hours per month.</p>
+    </div>
+    <div class="workflow-step">
+      <div class="step-num">2</div>
+      <h3>Configure Org</h3>
+      <p>Set organization name, address, EIN, and upload your signature — appears on every PDF.</p>
+    </div>
+    <div class="workflow-step">
+      <div class="step-num">3</div>
+      <h3>Generate Invoices</h3>
+      <p>Click "Generate All" to create invoices for every student for the current month.</p>
+    </div>
+    <div class="workflow-step">
+      <div class="step-num">4</div>
+      <h3>Send Emails</h3>
+      <p>Optionally send PDFs to all parents in the same step — or send individually later.</p>
+    </div>
+    <div class="workflow-step">
+      <div class="step-num">5</div>
+      <h3>Track &amp; Export</h3>
+      <p>Review history by month, re-download PDFs, export CSV for accounting.</p>
+    </div>
+  </div>
+  <span class="slide-num">5 / 9</span>
+</div>
+
+<!-- SLIDE 6: Screenshots placeholder -->
+<div class="slide slide-features">
+  <div class="section-label">The App</div>
+  <h2>Clean, simple <span>interface</span></h2>
+  <p class="lead">Designed for non-technical users. No training required — every action is one or two clicks.</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:960px">
+    <div style="background:#f1f5f9;border-radius:16px;padding:32px;text-align:center;border:1px solid #e2e8f0">
+      <div style="font-size:40px;margin-bottom:12px">📊</div>
+      <strong style="font-size:15px;color:#0f172a">Dashboard</strong>
+      <p style="font-size:13px;color:#64748b;margin-top:6px">Live counters + real-time audit feed showing every action</p>
+    </div>
+    <div style="background:#f1f5f9;border-radius:16px;padding:32px;text-align:center;border:1px solid #e2e8f0">
+      <div style="font-size:40px;margin-bottom:12px">👩‍🎓</div>
+      <strong style="font-size:15px;color:#0f172a">Students</strong>
+      <p style="font-size:13px;color:#64748b;margin-top:6px">Add, edit, and remove students with rates and contact info</p>
+    </div>
+    <div style="background:#f1f5f9;border-radius:16px;padding:32px;text-align:center;border:1px solid #e2e8f0">
+      <div style="font-size:40px;margin-bottom:12px">📄</div>
+      <strong style="font-size:15px;color:#0f172a">Generate Invoices</strong>
+      <p style="font-size:13px;color:#64748b;margin-top:6px">Bulk or individual invoice creation with optional email send</p>
+    </div>
+    <div style="background:#f1f5f9;border-radius:16px;padding:32px;text-align:center;border:1px solid #e2e8f0">
+      <div style="font-size:40px;margin-bottom:12px">📂</div>
+      <strong style="font-size:15px;color:#0f172a">Invoice History</strong>
+      <p style="font-size:13px;color:#64748b;margin-top:6px">Browse by month, download PDFs, ZIP export, CSV export</p>
+    </div>
+  </div>
+  <p style="font-size:13px;color:#94a3b8;margin-top:24px">Live demo available at <strong>invoice.wajid.dev</strong></p>
+  <span class="slide-num">6 / 9</span>
+</div>
+
+<!-- SLIDE 7: Technology -->
+<div class="slide slide-tech">
+  <div class="section-label">Technology</div>
+  <h2>Built on <span>proven, modern</span> stack</h2>
+  <p class="lead">Every technology was chosen for reliability, low cost, and ease of maintenance — no exotic dependencies.</p>
+  <div class="tech-grid">
+    <div class="tech-card">
+      <div class="badge">⚛️</div>
+      <h3>React 19</h3>
+      <p>Frontend UI</p>
+    </div>
+    <div class="tech-card">
+      <div class="badge">🟢</div>
+      <h3>Node.js / Express</h3>
+      <p>Backend API</p>
+    </div>
+    <div class="tech-card">
+      <div class="badge">📄</div>
+      <h3>PDFKit</h3>
+      <p>PDF generation</p>
+    </div>
+    <div class="tech-card">
+      <div class="badge">📬</div>
+      <h3>Resend</h3>
+      <p>Email delivery</p>
+    </div>
+    <div class="tech-card">
+      <div class="badge">🔑</div>
+      <h3>Google OAuth</h3>
+      <p>Secure login</p>
+    </div>
+    <div class="tech-card">
+      <div class="badge">🚂</div>
+      <h3>Railway</h3>
+      <p>Cloud hosting</p>
+    </div>
+    <div class="tech-card">
+      <div class="badge">📦</div>
+      <h3>JSON Files</h3>
+      <p>Simple storage</p>
+    </div>
+    <div class="tech-card">
+      <div class="badge">🌐</div>
+      <h3>Custom Domain</h3>
+      <p>HTTPS + SSL</p>
+    </div>
+  </div>
+  <span class="slide-num">7 / 9</span>
+</div>
+
+<!-- SLIDE 8: Security & Privacy -->
+<div class="slide slide-security">
+  <div class="section-label">Security &amp; Privacy</div>
+  <h2>Secure by <span>design</span></h2>
+  <p class="lead">Built for handling sensitive billing data — student names, parent emails, and financial records.</p>
+  <div class="security-list">
+    <div class="security-row">
+      <div class="icon">🔐</div>
+      <div>
+        <h3>Google OAuth — no passwords stored</h3>
+        <p>Login is handled entirely by Google. No passwords are stored anywhere in the system.</p>
+      </div>
+    </div>
+    <div class="security-row">
+      <div class="icon">🎯</div>
+      <div>
+        <h3>Allowlist access — only authorized accounts</h3>
+        <p>Only explicitly approved Google accounts can log in. No open registration.</p>
+      </div>
+    </div>
+    <div class="security-row">
+      <div class="icon">🚫</div>
+      <div>
+        <h3>PDFs never stored on disk</h3>
+        <p>Invoice PDFs are generated in memory and streamed directly to the browser or email. Nothing is written to the server.</p>
+      </div>
+    </div>
+    <div class="security-row">
+      <div class="icon">🔒</div>
+      <div>
+        <h3>HTTPS everywhere</h3>
+        <p>All traffic is encrypted via SSL/TLS. Railway provisions and renews the certificate automatically.</p>
+      </div>
+    </div>
+    <div class="security-row">
+      <div class="icon">🏠</div>
+      <div>
+        <h3>Private deployment — no public data exposure</h3>
+        <p>Student and invoice data is stored in private volumes on Railway — not accessible to the public.</p>
+      </div>
+    </div>
+  </div>
+  <span class="slide-num">8 / 9</span>
+</div>
+
+<!-- SLIDE 9: Cost + CTA -->
+<div class="slide slide-cta">
+  <div class="section-label">Investment</div>
+  <h2>Full solution for <span style="color:#60a5fa">~$6/month</span></h2>
+  <p class="lead">No per-user fees. No invoice limits. No enterprise pricing. Just infrastructure costs.</p>
+
+  <table class="cost-table" style="margin-bottom:40px;background:rgba(255,255,255,0.05);border-radius:12px;overflow:hidden">
+    <thead>
+      <tr>
+        <th style="background:rgba(255,255,255,0.08);color:#94a3b8">Service</th>
+        <th style="background:rgba(255,255,255,0.08);color:#94a3b8">Monthly Cost</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="color:#e2e8f0;background:transparent;border-color:rgba(255,255,255,0.08)">Railway Hobby plan (hosting)</td>
+        <td style="color:#e2e8f0;background:transparent;border-color:rgba(255,255,255,0.08)">$5.00</td>
+      </tr>
+      <tr>
+        <td style="color:#e2e8f0;background:transparent;border-color:rgba(255,255,255,0.08)">Resend email (3,000 emails/mo free tier)</td>
+        <td style="color:#e2e8f0;background:transparent;border-color:rgba(255,255,255,0.08)">$0.00</td>
+      </tr>
+      <tr>
+        <td style="color:#e2e8f0;background:transparent;border-color:rgba(255,255,255,0.08)">Domain (e.g. wajid.dev)</td>
+        <td style="color:#e2e8f0;background:transparent;border-color:rgba(255,255,255,0.08)">~$1.20</td>
+      </tr>
+      <tr>
+        <td style="background:rgba(59,130,246,0.2) !important;color:#93c5fd !important;font-weight:700">Total</td>
+        <td style="background:rgba(59,130,246,0.2) !important;color:#60a5fa !important;font-weight:700">~$6.20/mo</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="cta-points">
+    <div class="cta-point"><div class="dot"></div>Unlimited students</div>
+    <div class="cta-point"><div class="dot"></div>Unlimited invoices</div>
+    <div class="cta-point"><div class="dot"></div>3,000 emails/month included</div>
+    <div class="cta-point"><div class="dot"></div>Full source code ownership</div>
+    <div class="cta-point"><div class="dot"></div>One-time setup, runs itself</div>
+    <div class="cta-point"><div class="dot"></div>No vendor lock-in</div>
+  </div>
+
+  <a href="https://www.wajid.dev" class="cta-btn">View Live App →</a>
+  <span class="slide-num" style="color:rgba(255,255,255,0.3)">9 / 9</span>
+</div>
+
+</body>
+</html>
