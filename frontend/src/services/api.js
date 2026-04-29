@@ -11,6 +11,7 @@ const auth = axios.create({
 });
 
 export const getMe = () => auth.get('/me');
+export const login = (userId, password) => auth.post('/login', { userId, password });
 export const logout = () => auth.post('/logout');
 export const getStudents = () => api.get('/students');
 export const createStudent = (student) => api.post('/students', student);

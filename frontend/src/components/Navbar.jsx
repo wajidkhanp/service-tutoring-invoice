@@ -11,22 +11,9 @@ export default function Navbar() {
   }, []);
 
   const handleLogout = async () => {
-    try {
-      const res = await logout();
-      if (res?.data?.googleLogoutUrl) {
-        window.location.href = res.data.googleLogoutUrl;
-        return;
-      }
-    } finally {
-      setUser(null);
-      navigate('/login');
-    }
-  };
-
-  const formatLastLogin = (iso) => {
-    if (!iso) return '';
-    const d = new Date(iso);
-    return d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' });
+    try { await logout(); } catch { /* ignore */ }
+    setUser(null);
+    navigate('/login');
   };
 
   return (
@@ -47,10 +34,9 @@ export default function Navbar() {
 
       {user && (
         <div className="navbar-user">
-          {user.avatar && <img src={user.avatar} alt="avatar" className="user-avatar" />}
           <div className="user-info">
             <span className="user-name">{user.name}</span>
-            <span className="user-last-login">Last login: {formatLastLogin(user.lastLogin)}</span>
+            <span className="user-last-login">{user.role}</span>
           </div>
           <button className="btn-logout" onClick={handleLogout}>Logout</button>
         </div>

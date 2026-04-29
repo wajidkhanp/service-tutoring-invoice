@@ -1,0 +1,20 @@
+[
+  {
+    "id": "admin",
+    "name": "Administrator",
+    "role": "admin",
+    "passwordHash": "$2b$10$hHwzWSihbgBkkGOqBFC.cugBImWY0YvRmHhFGLUJlQ.cApdcjlL7C"
+  },
+  {
+    "id": "wajid",
+    "name": "Wajid Khan",
+    "role": "admin",
+    "passwordHash": "$2b$10$SmuKhY8qisPsmE0swC4FcOQ7jmrGFaY6.2auUqmX8GYMXWNisC9oS"
+  },
+  {
+    "id": "tariq",
+    "name": "Tariq Khalil",
+    "role": "admin",
+    "passwordHash": "$2b$10$wpgD9iiaZIA.Ntm5U0Ov.uP0oZjcFYTosTECdIMIpeIW0MSPn4rii"
+  }
+]

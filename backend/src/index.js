@@ -1,7 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
-const passport = require('passport');
 const cors = require('cors');
 const path = require('path');
 
@@ -31,16 +30,14 @@ app.use(session({
   secret: process.env.SESSION_SECRET || 'dev-secret',
   resave: false,
   saveUninitialized: false,
+  rolling: true,
   cookie: {
     secure: isProd,
     httpOnly: true,
     sameSite: 'lax',
-    maxAge: 24 * 60 * 60 * 1000,
+    maxAge: 10 * 60 * 1000,
   },
 }));
-
-app.use(passport.initialize());
-app.use(passport.session());
 
 app.use('/api', (_req, res, next) => { res.set('Cache-Control', 'no-store'); next(); });
 
@@ -65,7 +62,6 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString(), dataDir, files, dirError });
 });
 
-// Serve Vite build in production — must come after all API routes
 if (isProd) {
   const distPath = path.join(__dirname, '..', '..', 'frontend', 'dist');
   app.use(express.static(distPath));
