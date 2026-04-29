@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { downloadInvoiceZip, emailInvoice, exportCsv, getInvoices } from '../services/api';
 
 const MONTHS = [
@@ -11,6 +12,7 @@ function formatCurrency(value) {
 }
 
 export default function InvoiceHistory() {
+  const location = useLocation();
   const [month, setMonth] = useState(MONTHS[new Date().getMonth()]);
   const [year, setYear] = useState(new Date().getFullYear().toString());
   const [invoices, setInvoices] = useState([]);
@@ -38,7 +40,8 @@ export default function InvoiceHistory() {
 
   useEffect(() => {
     loadInvoices();
-  }, [month, year]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [month, year, location.key]);
 
   const handleDownloadZip = async () => {
     setZipLoading(true);

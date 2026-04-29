@@ -42,6 +42,8 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use('/api', (_req, res, next) => { res.set('Cache-Control', 'no-store'); next(); });
+
 app.use('/auth', authRoutes);
 app.use('/api/students', studentRoutes);
 app.use('/api/invoices', invoiceRoutes);
