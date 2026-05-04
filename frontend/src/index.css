@@ -1523,9 +1523,13 @@ body {
 @media (max-width: 640px) {
   .rc-mobile-actions {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem;
+    flex-wrap: nowrap;
+    gap: 0.3rem;
     margin-top: 0.5rem;
+  }
+  .rc-mobile-actions .btn-view-details {
+    padding: 0.25rem 0.45rem;
+    font-size: 0.72rem;
   }
   .rc-desktop-actions { display: none !important; }
   .rc-progress-wrap { display: none; }
