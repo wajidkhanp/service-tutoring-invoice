@@ -1,6 +1,8 @@
 /* ── Reset & Base ─────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+html { overflow-x: hidden; }
+
 :root {
   --navy: #0a3d36;
   --navy-light: #0d4d44;
