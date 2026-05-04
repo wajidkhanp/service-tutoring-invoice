@@ -191,7 +191,6 @@ export default function Students() {
               No students yet. Click "+ Add Student" to get started.
             </div>
           ) : (
-            <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
             <table className="student-table">
               <thead>
                 <tr>
@@ -199,38 +198,47 @@ export default function Students() {
                   <th>Grade</th>
                   <th>Gender</th>
                   <th>Joined</th>
-                  <th></th>
+                  <th className="student-desktop-actions-th"></th>
                 </tr>
               </thead>
               <tbody>
-                {students.map((student) => (
-                  <tr key={student.id}>
-                    <td style={{ fontWeight: 500 }}>{student.name}</td>
-                    <td style={{ color: 'var(--gray-600)' }}>{student.grade || '—'}</td>
-                    <td><GenderBadge gender={student.gender} /></td>
-                    <td style={{ color: 'var(--gray-600)', fontSize: '0.85rem' }}>{formatDate(student.joinDate)}</td>
-                    <td className="td-action" style={{ width: 260 }}>
-                      <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end' }}>
-                        <Link
-                          to={`/attendance/student/${student.id}`}
-                          className="btn-view-details"
-                          style={{ textDecoration: 'none' }}
-                        >
-                          Attendance
-                        </Link>
-                        <button className="btn-view-details" onClick={() => handleReportCard(student)}>
-                          Report Card
-                        </button>
-                        <button className="btn-view-details" onClick={() => setSelected(student)}>
-                          Details
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
+                {students.map((student) => {
+                  const actionBtns = (
+                    <>
+                      <Link
+                        to={`/attendance/student/${student.id}`}
+                        className="btn-view-details"
+                        style={{ textDecoration: 'none' }}
+                      >
+                        Attendance
+                      </Link>
+                      <button className="btn-view-details" onClick={() => handleReportCard(student)}>
+                        Report Card
+                      </button>
+                      <button className="btn-view-details" onClick={() => setSelected(student)}>
+                        Details
+                      </button>
+                    </>
+                  );
+                  return (
+                    <tr key={student.id}>
+                      <td style={{ fontWeight: 500 }}>
+                        {student.name}
+                        <div className="student-mobile-actions">{actionBtns}</div>
+                      </td>
+                      <td style={{ color: 'var(--gray-600)' }}>{student.grade || '—'}</td>
+                      <td><GenderBadge gender={student.gender} /></td>
+                      <td style={{ color: 'var(--gray-600)', fontSize: '0.85rem' }}>{formatDate(student.joinDate)}</td>
+                      <td className="td-action student-desktop-actions">
+                        <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end' }}>
+                          {actionBtns}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
-            </div>
           )}
         </div>
       </div>

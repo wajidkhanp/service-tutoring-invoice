@@ -907,6 +907,23 @@ body {
 .gender-badge-male   { background: #dbeafe; color: #1d4ed8; }
 .gender-badge-female { background: #fce7f3; color: #be185d; }
 
+/* Students table — mobile: buttons below name, hide actions column */
+.student-mobile-actions { display: none; }
+@media (max-width: 640px) {
+  .student-mobile-actions {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.3rem;
+    margin-top: 0.5rem;
+  }
+  .student-mobile-actions .btn-view-details {
+    padding: 0.25rem 0.45rem;
+    font-size: 0.72rem;
+  }
+  .student-desktop-actions { display: none !important; }
+  .student-desktop-actions-th { display: none !important; }
+}
+
 /* Gender radio group */
 .gender-radio-group {
   display: flex;
