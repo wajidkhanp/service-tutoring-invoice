@@ -1537,20 +1537,18 @@ body {
 .rc-btn-email { color: #0f766e !important; }
 .rc-btn-delete { color: #dc2626 !important; }
 
-/* Mobile: hide desktop actions column, show inline buttons under name */
-.rc-mobile-actions { display: none; }
+/* Buttons always shown below student name */
+.rc-row-actions {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 0.35rem;
+  margin-top: 0.5rem;
+}
 @media (max-width: 640px) {
-  .rc-mobile-actions {
-    display: flex;
-    flex-wrap: nowrap;
-    gap: 0.3rem;
-    margin-top: 0.5rem;
-  }
-  .rc-mobile-actions .btn-view-details {
+  .rc-row-actions .btn-view-details {
     padding: 0.25rem 0.45rem;
     font-size: 0.72rem;
   }
-  .rc-desktop-actions { display: none !important; }
   .rc-progress-wrap { display: none; }
   .rc-prog-mobile { display: flex; flex-direction: column; }
 }
