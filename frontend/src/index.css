@@ -1518,6 +1518,18 @@ body {
 .rc-btn-email { color: #0f766e !important; }
 .rc-btn-delete { color: #dc2626 !important; }
 
+/* Mobile: hide desktop actions column, show inline buttons under name */
+.rc-mobile-actions { display: none; }
+@media (max-width: 640px) {
+  .rc-mobile-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.5rem;
+  }
+  .rc-desktop-actions { display: none !important; }
+}
+
 /* ── Report Card edit page ────────────────────────────────── */
 .rc-edit-header {
   display: flex;

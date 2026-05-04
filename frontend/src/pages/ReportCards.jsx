@@ -242,6 +242,42 @@ export default function ReportCards() {
                     ? filledCount === 5 ? 'Complete' : `${filledCount}/5`
                     : '—';
 
+                  const actionBtns = (
+                    <>
+                      <button
+                        className="btn-view-details"
+                        onClick={() => handleOpenCard(student)}
+                        disabled={actionId === student.id}
+                      >
+                        {actionId === student.id ? '…' : card ? 'Edit' : 'Start'}
+                      </button>
+                      {card && (
+                        <>
+                          <button
+                            className="btn-view-details"
+                            onClick={() => handleDownloadPdf(card)}
+                            disabled={actionId === card.id + '-pdf'}
+                          >
+                            {actionId === card.id + '-pdf' ? '…' : 'PDF'}
+                          </button>
+                          <button
+                            className="btn-view-details rc-btn-email"
+                            onClick={() => handleEmail(card)}
+                            disabled={actionId === card.id + '-email'}
+                          >
+                            {actionId === card.id + '-email' ? 'Sending…' : card.status === 'sent' ? 'Re-send' : 'Send'}
+                          </button>
+                          <button
+                            className="btn-view-details rc-btn-delete"
+                            onClick={() => handleDelete(card)}
+                          >
+                            Del
+                          </button>
+                        </>
+                      )}
+                    </>
+                  );
+
                   return (
                     <tr key={student.id}>
                       <td>
@@ -250,6 +286,8 @@ export default function ReportCards() {
                           <GenderBadge gender={student.gender} />
                         </div>
                         {student.grade && <div style={{ fontSize: '0.78rem', color: 'var(--gray-500)' }}>{student.grade}</div>}
+                        {/* Buttons shown below name on mobile only */}
+                        <div className="rc-mobile-actions">{actionBtns}</div>
                       </td>
                       <td style={{ fontSize: '0.875rem', color: 'var(--gray-700)' }}>
                         {att ? (
@@ -267,39 +305,10 @@ export default function ReportCards() {
                       <td>
                         {card ? <StatusBadge status={card.status} /> : <span className="rc-status-badge rc-status-none">Not Started</span>}
                       </td>
-                      <td className="td-action">
+                      {/* Actions column — desktop only */}
+                      <td className="td-action rc-desktop-actions">
                         <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end', flexWrap: 'wrap' }}>
-                          <button
-                            className="btn-view-details"
-                            onClick={() => handleOpenCard(student)}
-                            disabled={actionId === student.id}
-                          >
-                            {actionId === student.id ? '…' : card ? 'Edit' : 'Start'}
-                          </button>
-                          {card && (
-                            <>
-                              <button
-                                className="btn-view-details"
-                                onClick={() => handleDownloadPdf(card)}
-                                disabled={actionId === card.id + '-pdf'}
-                              >
-                                {actionId === card.id + '-pdf' ? '…' : 'PDF'}
-                              </button>
-                              <button
-                                className="btn-view-details rc-btn-email"
-                                onClick={() => handleEmail(card)}
-                                disabled={actionId === card.id + '-email'}
-                              >
-                                {actionId === card.id + '-email' ? 'Sending…' : card.status === 'sent' ? 'Re-send' : 'Send'}
-                              </button>
-                              <button
-                                className="btn-view-details rc-btn-delete"
-                                onClick={() => handleDelete(card)}
-                              >
-                                Del
-                              </button>
-                            </>
-                          )}
+                          {actionBtns}
                         </div>
                       </td>
                     </tr>
