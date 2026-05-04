@@ -191,6 +191,7 @@ export default function Students() {
               No students yet. Click "+ Add Student" to get started.
             </div>
           ) : (
+            <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
             <table className="student-table">
               <thead>
                 <tr>
@@ -229,6 +230,7 @@ export default function Students() {
                 ))}
               </tbody>
             </table>
+            </div>
           )}
         </div>
       </div>
