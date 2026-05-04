@@ -17,7 +17,18 @@ const MONTHS = [
 ];
 const CURRENT_MONTH = MONTHS[new Date().getMonth()];
 const CURRENT_YEAR = new Date().getFullYear().toString();
-const YEAR_OPTIONS = [new Date().getFullYear(), new Date().getFullYear() + 1];
+const YEAR_OPTIONS = [new Date().getFullYear(), new Date().getFullYear() - 1];
+
+function getValidMonths(selectedYear) {
+  const now = new Date();
+  if (Number(selectedYear) < now.getFullYear()) return MONTHS;
+  return MONTHS.slice(0, now.getMonth() + 1);
+}
+
+function clampMonth(month, selectedYear) {
+  const valid = getValidMonths(selectedYear);
+  return valid.includes(month) ? month : valid[valid.length - 1];
+}
 
 const EMPTY_INVOICE_FORM = {
   studentId: '',
@@ -261,12 +272,15 @@ export default function Generate() {
               <div className="form-row" style={{ marginTop: '1rem' }}>
                 <label>Month</label>
                 <select value={bulkForm.month} onChange={(e) => setBulkForm((c) => ({ ...c, month: e.target.value }))}>
-                  {MONTHS.map((m) => <option key={m} value={m}>{m}</option>)}
+                  {getValidMonths(bulkForm.year).map((m) => <option key={m} value={m}>{m}</option>)}
                 </select>
               </div>
               <div className="form-row">
                 <label>Year</label>
-                <select value={bulkForm.year} onChange={(e) => setBulkForm((c) => ({ ...c, year: e.target.value }))}>
+                <select value={bulkForm.year} onChange={(e) => {
+                  const y = e.target.value;
+                  setBulkForm((c) => ({ ...c, year: y, month: clampMonth(c.month, y) }));
+                }}>
                   {YEAR_OPTIONS.map((y) => <option key={y} value={y}>{y}</option>)}
                 </select>
               </div>
@@ -305,12 +319,15 @@ export default function Generate() {
               <div className="form-row" style={{ marginTop: '1rem' }}>
                 <label>Month</label>
                 <select value={zipForm.month} onChange={(e) => setZipForm((c) => ({ ...c, month: e.target.value }))}>
-                  {MONTHS.map((m) => <option key={m} value={m}>{m}</option>)}
+                  {getValidMonths(zipForm.year).map((m) => <option key={m} value={m}>{m}</option>)}
                 </select>
               </div>
               <div className="form-row">
                 <label>Year</label>
-                <select value={zipForm.year} onChange={(e) => setZipForm((c) => ({ ...c, year: e.target.value }))}>
+                <select value={zipForm.year} onChange={(e) => {
+                  const y = e.target.value;
+                  setZipForm((c) => ({ ...c, year: y, month: clampMonth(c.month, y) }));
+                }}>
                   {YEAR_OPTIONS.map((y) => <option key={y} value={y}>{y}</option>)}
                 </select>
               </div>
@@ -349,12 +366,15 @@ export default function Generate() {
                   <div className="invoice-row">
                     <label htmlFor="i-month">Month</label>
                     <select id="i-month" name="month" value={invoiceForm.month} onChange={handleInvoiceChange} required>
-                      {MONTHS.map((m) => <option key={m} value={m}>{m}</option>)}
+                      {getValidMonths(invoiceForm.year).map((m) => <option key={m} value={m}>{m}</option>)}
                     </select>
                   </div>
                   <div className="invoice-row">
                     <label htmlFor="i-year">Year</label>
-                    <select id="i-year" name="year" value={invoiceForm.year} onChange={handleInvoiceChange} required>
+                    <select id="i-year" name="year" value={invoiceForm.year} onChange={(e) => {
+                      const y = e.target.value;
+                      setInvoiceForm((c) => ({ ...c, year: y, month: clampMonth(c.month, y) }));
+                    }} required>
                       {YEAR_OPTIONS.map((y) => <option key={y} value={y}>{y}</option>)}
                     </select>
                   </div>

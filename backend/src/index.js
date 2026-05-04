@@ -9,6 +9,7 @@ const studentRoutes = require('./routes/students');
 const invoiceRoutes = require('./routes/invoices');
 const auditRoutes = require('./routes/audit');
 const settingsRoutes = require('./routes/settings');
+const attendanceRoutes = require('./routes/attendance');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -46,6 +47,7 @@ app.use('/api/students', studentRoutes);
 app.use('/api/invoices', invoiceRoutes);
 app.use('/api/audit', auditRoutes);
 app.use('/api/settings', settingsRoutes);
+app.use('/api/attendance', attendanceRoutes);
 
 app.get('/health', (req, res) => {
   const dataDir = path.join(__dirname, 'data');

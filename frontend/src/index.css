@@ -891,3 +891,592 @@ body {
 @media (max-width: 480px) {
   .invoice-card-actions { flex-wrap: wrap; }
 }
+
+/* ── Gender badge ─────────────────────────────────────────── */
+.gender-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 0.72rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.gender-badge-male   { background: #dbeafe; color: #1d4ed8; }
+.gender-badge-female { background: #fce7f3; color: #be185d; }
+
+/* Gender radio group */
+.gender-radio-group {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 0.15rem;
+}
+.gender-radio-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.9rem;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 8px;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+  user-select: none;
+}
+.gender-radio-label input { display: none; }
+.gender-radio-label.selected { border-color: var(--teal); background: var(--teal-light); color: var(--teal-dark); font-weight: 600; }
+.gender-radio-label:hover:not(.selected) { border-color: var(--gray-400); }
+.gender-radio-clear {
+  background: none; border: none; color: var(--gray-400); cursor: pointer;
+  font-size: 0.78rem; padding: 0.2rem 0.4rem; border-radius: 4px;
+}
+.gender-radio-clear:hover { color: var(--red); }
+
+/* ── Attendance: Controls ─────────────────────────────────── */
+.att-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.att-month-select {
+  padding: 0.5rem 0.85rem;
+  border: 1.5px solid var(--gray-200);
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  background: var(--white);
+  cursor: pointer;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.att-month-select:focus { border-color: var(--teal); }
+
+.att-gender-tabs {
+  display: flex;
+  gap: 0.25rem;
+  background: var(--gray-100);
+  padding: 3px;
+  border-radius: 9px;
+}
+.att-gender-tab {
+  padding: 0.35rem 0.85rem;
+  border: none;
+  border-radius: 7px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  background: transparent;
+  color: var(--gray-600);
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+.att-gender-tab:hover { background: var(--gray-200); color: var(--gray-800); }
+.att-gender-tab-active { background: var(--white) !important; color: var(--teal-dark) !important; font-weight: 700; box-shadow: 0 1px 4px rgba(0,0,0,.1); }
+
+/* ── Attendance: Summary bar ──────────────────────────────── */
+.att-summary-bar {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 0.85rem 1.5rem;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+  gap: 0;
+}
+.att-summary-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.25rem 0; }
+.att-summary-num { font-size: 1.3rem; font-weight: 700; color: var(--teal-dark); }
+.att-num-absent  { color: #dc2626; }
+.att-num-tardy   { color: #a16207; }
+.att-summary-lbl { font-size: 0.8rem; color: var(--gray-500); }
+.att-summary-divider { width: 1px; height: 2rem; background: var(--gray-200); margin: 0 1.25rem; }
+
+/* ── Attendance: Desktop grid ─────────────────────────────── */
+.att-grid-wrap {
+  overflow-x: auto;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  background: var(--white);
+  margin-bottom: 1rem;
+}
+
+/* Hide desktop grid on mobile */
+@media (max-width: 640px) { .att-grid-wrap { display: none; } }
+
+.att-table {
+  border-collapse: collapse;
+  width: max-content;
+  min-width: 100%;
+}
+
+/* Sticky name column */
+.att-name-col {
+  position: sticky;
+  left: 0;
+  background: var(--white);
+  z-index: 2;
+  min-width: 150px;
+  max-width: 200px;
+}
+.att-name-th {
+  background: var(--gray-50) !important;
+  z-index: 3 !important;
+  border-right: 1px solid var(--gray-200);
+}
+
+/* Week header */
+.att-week-th {
+  background: var(--navy);
+  color: rgba(255,255,255,0.9);
+  text-align: center;
+  padding: 0.45rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border-right: 2px solid var(--navy-light);
+}
+
+/* Day header */
+.att-day-th {
+  background: var(--gray-50);
+  text-align: center;
+  padding: 0.3rem 0.25rem 0.2rem;
+  border-bottom: 2px solid var(--gray-200);
+  border-right: 1px solid var(--gray-100);
+  min-width: 42px;
+  vertical-align: top;
+}
+.att-day-th:last-child { border-right: none; }
+.att-day-today { background: var(--teal-light) !important; }
+.att-day-future { opacity: 0.5; }
+.att-day-dow { display: block; font-size: 0.65rem; color: var(--gray-500); font-weight: 600; text-transform: uppercase; }
+.att-day-num { display: block; font-size: 0.85rem; font-weight: 700; color: var(--gray-800); line-height: 1.3; }
+
+/* Confirm-day button in header */
+.att-confirm-btn {
+  display: block;
+  margin: 0.15rem auto 0;
+  background: none;
+  border: 1px solid var(--gray-300);
+  color: var(--gray-400);
+  border-radius: 4px;
+  font-size: 0.6rem;
+  padding: 1px 4px;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  line-height: 1.4;
+  white-space: nowrap;
+}
+.att-confirm-btn:hover { background: var(--teal-light); color: var(--teal-dark); border-color: var(--teal); }
+.att-confirm-done { background: #dcfce7 !important; color: #15803d !important; border-color: #bbf7d0 !important; cursor: default; }
+
+/* Name col td */
+.att-table td.att-name-col {
+  border-right: 1px solid var(--gray-200);
+  border-bottom: 1px solid var(--gray-100);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+/* Group separator row */
+.att-group-sep {
+  background: var(--gray-50);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--gray-600);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-bottom: 1px solid var(--gray-200);
+}
+.att-group-count { font-weight: 400; color: var(--gray-400); }
+
+/* Student link in grid */
+.att-student-link {
+  color: var(--gray-800);
+  text-decoration: none;
+  font-weight: 500;
+}
+.att-student-link:hover { color: var(--teal); text-decoration: underline; }
+
+/* ── Attendance cells ─────────────────────────────────────── */
+.att-cell {
+  text-align: center;
+  padding: 0.4rem 0.2rem;
+  border-bottom: 1px solid var(--gray-100);
+  border-right: 1px solid var(--gray-100);
+  font-size: 0.8rem;
+  font-weight: 700;
+  min-width: 38px;
+  vertical-align: middle;
+}
+.att-cell:last-child { border-right: none; }
+
+.att-cell-edit { cursor: pointer; transition: opacity 0.1s, transform 0.1s; }
+.att-cell-edit:hover { opacity: 0.75; }
+.att-cell-edit:active { transform: scale(0.88); }
+
+.att-present { background: #dcfce7; color: #15803d; }
+.att-absent  { background: #fee2e2; color: #dc2626; }
+.att-tardy   { background: #fef9c3; color: #a16207; }
+.att-empty   { background: var(--white); color: var(--gray-400); }
+
+.att-cell-future    { background: var(--gray-100); color: var(--gray-300); cursor: default; }
+.att-cell-preenroll { background: var(--gray-50);  color: var(--gray-300); cursor: default; font-size: 0.65rem; }
+.att-saving { opacity: 0.5; pointer-events: none; }
+
+/* ── Attendance: Legend ───────────────────────────────────── */
+.att-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 0.75rem;
+  font-size: 0.78rem;
+  color: var(--gray-600);
+}
+.att-legend-item { display: flex; align-items: center; gap: 0.35rem; }
+.att-legend-swatch {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 20px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  border: 1px solid transparent;
+  min-width: unset;
+  padding: 0;
+}
+
+/* ── Attendance: Mobile day-stack ─────────────────────────── */
+.att-mobile-wrap { display: none; }
+@media (max-width: 640px) { .att-mobile-wrap { display: block; } }
+
+.mob-week-block { margin-bottom: 1.25rem; }
+.mob-week-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--gray-500);
+  padding: 0 0 0.4rem;
+  border-bottom: 1px solid var(--gray-200);
+  margin-bottom: 0.4rem;
+}
+
+.mob-day-block {
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  background: var(--white);
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+}
+.mob-day-today { border-left: 3px solid var(--teal); }
+
+.mob-day-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  gap: 0.5rem;
+}
+.mob-day-header:disabled { cursor: default; opacity: 0.6; }
+.mob-day-title { font-size: 0.9rem; font-weight: 600; color: var(--gray-800); display: flex; align-items: center; gap: 0.5rem; }
+.mob-today-badge { background: var(--teal); color: var(--white); font-size: 0.65rem; padding: 2px 6px; border-radius: 99px; font-weight: 700; }
+.mob-day-right { display: flex; align-items: center; gap: 0.5rem; flex-shrink: 0; }
+.mob-future-label    { font-size: 0.75rem; color: var(--gray-400); }
+.mob-recorded-badge  { font-size: 0.75rem; color: #15803d; background: #dcfce7; padding: 2px 7px; border-radius: 99px; font-weight: 600; }
+.mob-unrecorded-badge{ font-size: 0.75rem; color: var(--gray-500); }
+.mob-chevron { font-size: 0.6rem; color: var(--gray-400); }
+
+.mob-day-body {
+  border-top: 1px solid var(--gray-100);
+  padding: 0.5rem 0.75rem 0.75rem;
+}
+
+.mob-confirm-all-btn {
+  width: 100%;
+  padding: 0.55rem;
+  background: var(--teal-light);
+  color: var(--teal-dark);
+  border: 1px solid #99f6e4;
+  border-radius: 7px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  margin-bottom: 0.75rem;
+  transition: background 0.15s;
+}
+.mob-confirm-all-btn:hover { background: #99f6e4; }
+
+.mob-group-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gray-500);
+  padding: 0.4rem 0 0.2rem;
+}
+
+.mob-student-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--gray-100);
+  gap: 0.5rem;
+}
+.mob-student-row:last-child { border-bottom: none; }
+.mob-student-locked { opacity: 0.45; }
+.mob-student-name { font-size: 0.875rem; color: var(--gray-800); flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mob-locked-label { font-size: 0.75rem; color: var(--gray-400); }
+
+.mob-att-btns { display: flex; gap: 0.3rem; flex-shrink: 0; }
+.mob-att-btn {
+  width: 38px;
+  height: 36px;
+  border-radius: 7px;
+  border: 1.5px solid var(--gray-200);
+  background: var(--white);
+  color: var(--gray-500);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+}
+.mob-att-btn:active { transform: scale(0.9); }
+.mob-att-p.mob-att-active { background: #dcfce7; color: #15803d; border-color: #bbf7d0; }
+.mob-att-a.mob-att-active { background: #fee2e2; color: #dc2626; border-color: #fecaca; }
+.mob-att-t.mob-att-active { background: #fef9c3; color: #a16207; border-color: #fde047; }
+
+/* ── Student Attendance page ──────────────────────────────── */
+.sa-back-link {
+  display: inline-block;
+  font-size: 0.875rem;
+  color: var(--teal);
+  text-decoration: none;
+  margin-bottom: 1.25rem;
+  font-weight: 500;
+}
+.sa-back-link:hover { text-decoration: underline; }
+
+.sa-student-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.sa-student-meta { font-size: 0.875rem; color: var(--gray-600); margin-top: 0.25rem; }
+.sa-meta-dot { margin: 0 0.35rem; }
+
+.sa-year-nav { display: flex; align-items: center; gap: 0.5rem; }
+.sa-year-label { font-size: 0.8rem; color: var(--gray-600); font-weight: 600; }
+
+.sa-stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+@media (max-width: 640px) { .sa-stats-row { grid-template-columns: repeat(2, 1fr); } }
+
+.sa-stat-card {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1rem 1.25rem;
+  text-align: center;
+  border-top: 3px solid transparent;
+}
+.sa-stat-present { border-top-color: #15803d; }
+.sa-stat-absent  { border-top-color: #dc2626; }
+.sa-stat-tardy   { border-top-color: #a16207; }
+.sa-stat-rate    { border-top-color: var(--teal); }
+
+.sa-stat-num { font-size: 1.6rem; font-weight: 700; color: var(--gray-800); }
+.sa-stat-present .sa-stat-num { color: #15803d; }
+.sa-stat-absent  .sa-stat-num { color: #dc2626; }
+.sa-stat-tardy   .sa-stat-num { color: #a16207; }
+.sa-stat-rate    .sa-stat-num { color: var(--teal-dark); }
+.sa-stat-lbl { font-size: 0.75rem; color: var(--gray-500); margin-top: 0.2rem; }
+
+.sa-months { display: grid; gap: 0.6rem; }
+
+.sa-month-block {
+  background: var(--white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.sa-month-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.9rem 1.25rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  gap: 1rem;
+  transition: background 0.15s;
+}
+.sa-month-toggle:hover { background: var(--gray-50); }
+
+.sa-month-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.sa-month-total { font-size: 0.78rem; color: var(--gray-500); font-weight: 400; }
+
+.sa-month-mini { display: flex; align-items: center; gap: 0.75rem; font-size: 0.8rem; flex-shrink: 0; }
+.sa-mini-p { color: #15803d; font-weight: 600; }
+.sa-mini-a { color: #dc2626; font-weight: 600; }
+.sa-mini-t { color: #a16207; font-weight: 600; }
+.sa-chevron { font-size: 0.6rem; color: var(--gray-400); margin-left: 0.25rem; }
+
+.sa-month-body { border-top: 1px solid var(--gray-100); }
+
+.sa-day-table { width: 100%; border-collapse: collapse; }
+.sa-day-table th {
+  text-align: left;
+  padding: 0.5rem 1.25rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--gray-500);
+  background: var(--gray-50);
+  border-bottom: 1px solid var(--gray-200);
+}
+.sa-day-table td {
+  padding: 0.6rem 1.25rem;
+  font-size: 0.875rem;
+  border-bottom: 1px solid var(--gray-100);
+  color: var(--gray-800);
+}
+.sa-day-table tbody tr:last-child td { border-bottom: none; }
+.sa-day-table tbody tr:hover td { background: var(--gray-50); }
+
+.sa-status-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 22px;
+  border-radius: 5px;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+/* ── Student attendance week grid ──────────────────────────── */
+.sa-week-grid-wrap {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.75rem 1.25rem 1rem;
+}
+
+.sa-week-table {
+  border-collapse: collapse;
+  min-width: 300px;
+  width: 100%;
+}
+
+.sa-week-table th,
+.sa-week-table td {
+  padding: 0.45rem 0.6rem;
+  text-align: center;
+  border: 1px solid var(--gray-200);
+  font-size: 0.82rem;
+}
+
+.sa-wk-th { width: 36px; border: none !important; }
+
+.sa-wk-label {
+  font-weight: 600;
+  color: var(--gray-500);
+  font-size: 0.75rem;
+  background: var(--gray-50);
+  white-space: nowrap;
+}
+
+.sa-day-col {
+  color: var(--navy);
+  font-weight: 600;
+  font-size: 0.78rem;
+  min-width: 46px;
+}
+
+.sa-week-cell { cursor: default; vertical-align: middle; }
+
+.sa-cell-d {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--gray-500);
+  line-height: 1.2;
+}
+
+.sa-cell-s {
+  display: block;
+  font-weight: 700;
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.sa-cell-noschool {
+  background: var(--gray-50);
+  color: var(--gray-300);
+}
+
+.sa-cell-blank {
+  background: transparent;
+  border-color: transparent !important;
+}
+
+/* ── Form section label & detail divider ──────────────────── */
+.form-section-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--gray-500);
+  padding: 0.75rem 0 0.25rem;
+  border-top: 1px solid var(--gray-200);
+  margin-top: 0.5rem;
+}
+
+.detail-section-divider {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--gray-500);
+  padding: 0.6rem 0 0.25rem;
+  border-top: 1px solid var(--gray-200);
+  margin-top: 0.25rem;
+}
+
+/* page wrapper */
+.page { padding-bottom: 2rem; }

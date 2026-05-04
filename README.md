@@ -1,21 +1,22 @@
 # Noor Tutoring Invoice Manager
 
-A full-stack web application for generating, managing, and emailing monthly invoices for tutoring students. Built for **Noor Tutoring** (operated by Momin Services of Arizona).
+A full-stack web application for managing daily attendance, generating monthly invoices, and emailing parents at Al Noor Hifz Academy (operated by Momin Services of Arizona).
 
 ---
 
 ## Features
 
-- **Dashboard** — live student and invoice counts, recent activity audit feed
-- **Students** — add, edit, and remove students with per-student hourly rate, default hours, grade, and notes
-- **Invoice Generation** — bulk generate all invoices in one click, or create individual ad hoc invoices
+- **Dashboard** — live student and invoice counts, recent activity feed, quick-action links
+- **Attendance Tracker** — daily attendance grid (Mon–Fri, Week 1–5); present by default, only absences/tardies stored; gender-grouped view (Boys/Girls/All); future dates and pre-enrollment dates locked; mobile day-stack view; per-student year history with attendance rate %
+- **Students** — add, edit, and remove students with gender, join date, grade, hourly rate, and parent contact info (name, phone, email)
+- **Invoice Generation** — bulk generate all invoices in one click, or create individual ad hoc invoices; restricted to past and current months only
 - **PDF Invoices** — professional PDFs generated on demand with org branding and optional signature; nothing stored on disk
 - **Email Delivery** — send invoices to parents via Resend with PDF attachment; available on create, bulk generate, and re-send
-- **Invoice History** — browse by month/year, download individual PDFs, bulk ZIP download, CSV export
+- **Invoice History** — period dropdown shows only months with actual invoices; download individual PDFs, bulk ZIP, CSV export
 - **Settings** — edit organization info and upload invoice signature image
-- **Help & FAQ** — in-app guidance covering all features
-- **Staff Login** — username/password login with bcrypt hashing; 10-minute idle session timeout; no external auth provider needed
-- **Responsive** — works on desktop, tablet, and mobile
+- **Help & FAQ** — in-app guidance covering all features including attendance
+- **Staff Login** — username/password login with bcrypt hashing; 10-minute idle session timeout
+- **Responsive** — desktop grid + mobile day-stack for attendance; all other pages work on phone, tablet, and desktop
 
 ---
 
@@ -39,26 +40,55 @@ A full-stack web application for generating, managing, and emailing monthly invo
 ```
 noor-tutoring-invoice/
 ├── backend/
+│   ├── nodemon.json               # Ignores src/data/ to prevent session wipes on data writes
 │   ├── scripts/
-│   │   └── hash-password.js   # CLI tool to generate bcrypt hashes for users.json
+│   │   └── hash-password.js       # CLI tool to generate bcrypt hashes for users.json
 │   ├── src/
 │   │   ├── config/
-│   │   │   └── users.json     # Staff user accounts (id, name, role, passwordHash)
-│   │   ├── data/              # JSON data files (invoices, students, config, audit) — Railway volume
-│   │   ├── assets/            # Signature image — Railway volume
+│   │   │   └── users.json         # Staff user accounts (id, name, role, passwordHash)
+│   │   ├── data/                  # JSON data files — Railway volume
+│   │   │   ├── students.json
+│   │   │   ├── invoices.json
+│   │   │   ├── attendance.json    # Date-keyed; only A/T stored; date key = school day
+│   │   │   ├── config.json
+│   │   │   └── audit.json
+│   │   ├── assets/                # Signature image — Railway volume
 │   │   ├── middleware/
-│   │   ├── routes/            # auth, invoices, students, settings, audit
-│   │   └── services/          # pdfService, emailService, auditService, storageService, userService
+│   │   ├── routes/                # auth, invoices, students, attendance, settings, audit
+│   │   └── services/              # pdfService, emailService, auditService, storageService,
+│   │                              # attendanceService, userService
 │   └── package.json
 ├── frontend/
 │   ├── src/
-│   │   ├── components/        # Navbar, ProtectedRoute, AuditFeed
-│   │   ├── pages/             # Dashboard, Students, Generate, InvoiceHistory, Settings, Help, Login
-│   │   └── services/          # api.js (axios)
+│   │   ├── components/            # Navbar, ProtectedRoute, AuditFeed
+│   │   ├── pages/                 # Dashboard, Students, Attendance, StudentAttendance,
+│   │   │                          # Generate, InvoiceHistory, Settings, Help, Login
+│   │   └── services/              # api.js (axios)
 │   └── package.json
-├── package.json               # Root build/start scripts
-└── .env.example               # Template for required environment variables
+├── package.json                   # Root build/start scripts
+└── .env.example                   # Template for required environment variables
 ```
+
+---
+
+## Attendance Data Model
+
+Attendance is stored in `backend/src/data/attendance.json`. **Present is the default** — only absences and tardies are stored:
+
+```json
+{
+  "2026-05-01": {},
+  "2026-05-05": { "student-uuid-1": "A" },
+  "2026-05-06": { "student-uuid-2": "T", "student-uuid-3": "A" }
+}
+```
+
+- A date key existing = recorded school day
+- No student entry on a school day = **Present**
+- `"A"` = Absent, `"T"` = Tardy (only these two values are stored)
+- Empty `{}` = all students were present that day
+
+This keeps the file small — only exceptions are stored, not a record per student per day.
 
 ---
 
@@ -85,8 +115,6 @@ cd backend
 npm run hash-password -- YourNewPassword123
 ```
 
-Copy the output hash.
-
 **Step 2** — Edit `backend/src/config/users.json`:
 
 ```json
@@ -107,10 +135,6 @@ git add backend/src/config/users.json
 git commit -m "Add user: newuser"
 git push
 ```
-
-### Roles
-
-The `role` field is stored in the session and shown in the navbar. Currently all roles have equal access. Reserved for future role-based access control.
 
 ### Session timeout
 
@@ -156,11 +180,11 @@ RESEND_FROM_EMAIL=invoices@yourdomain.com
 npm install --prefix backend
 npm install --prefix frontend
 
-# Terminal 1
-cd backend && node src/index.js
+# Terminal 1 — backend (nodemon watches src/, ignores src/data/)
+npm run dev:backend
 
-# Terminal 2
-cd frontend && npm run dev
+# Terminal 2 — frontend
+npm run dev:frontend
 ```
 
 Open [http://localhost:5173](http://localhost:5173) and log in with a user from `users.json`.
@@ -181,7 +205,7 @@ The backend serves the built React frontend in production — one process, one s
 
 ### Step 2 — Set environment variables
 
-Railway → your service → **Variables** tab. Add all of the following:
+Railway → your service → **Variables** tab:
 
 | Variable | Value |
 |---|---|
@@ -191,17 +215,15 @@ Railway → your service → **Variables** tab. Add all of the following:
 | `RESEND_API_KEY` | from Resend dashboard |
 | `RESEND_FROM_EMAIL` | `invoices@yourdomain.com` |
 
-> ⚠️ No Google OAuth variables are needed. Auth is handled entirely by the local `users.json` file.
-
 ### Step 3 — Add persistent volumes
 
-Without volumes, all invoice/student data is wiped on every deploy.
+Without volumes, all data is wiped on every deploy.
 
 Railway → your service → **Volumes** → **Add Volume** (do this twice):
 
 | Mount Path | Purpose |
 |---|---|
-| `/app/backend/src/data` | Invoice, student, config, audit JSON files |
+| `/app/backend/src/data` | Student, invoice, attendance, config, audit JSON files |
 | `/app/backend/src/assets` | Signature image |
 
 ### Step 4 — Set build and start commands
@@ -214,18 +236,14 @@ Railway → **Settings → Deploy**:
 
 Railway → **Settings → Networking → Add Custom Domain** → enter `www.yourdomain.com`
 
-Railway will show two DNS records to add:
+Add the two DNS records Railway gives you:
 
 ```
 CNAME   www                    →  xxxx.up.railway.app
 TXT     _railway-verify.www    →  railway-verify=xxxxxxxxxxxx
 ```
 
-> ⚠️ Both records must be added. The CNAME connects traffic; the TXT proves domain ownership so Railway can provision the SSL certificate.
-
-Add them in your DNS provider, then wait 5–10 minutes for Railway to show both as ✅ and issue the SSL cert.
-
-> **Root domain redirect:** If your DNS provider does not support CNAME on `@`, use `www.yourdomain.com` only and set up a URL redirect from the bare domain to `www`.
+Wait 5–10 minutes for Railway to show both as ✅ and issue the SSL cert.
 
 ---
 
@@ -233,48 +251,10 @@ Add them in your DNS provider, then wait 5–10 minutes for Railway to show both
 
 Railway blocks all outbound SMTP ports. Resend sends over HTTPS (port 443) which works.
 
-### 1. Create a Resend account
-
-Go to [resend.com](https://resend.com) → sign up (free: 3,000 emails/month).
-
-### 2. Verify your sending domain
-
-Resend → **Domains → Add Domain** → enter your domain (e.g. `yourdomain.com`)
-
-Resend will give you DNS records to add (TXT + CNAME). Add them in your DNS provider. Verification takes 2–10 minutes.
-
-### 3. Create an API key
-
-Resend → **API Keys → Create API Key** → copy the key (starts with `re_`)
-
-### 4. Set Railway variables
-
-```
-RESEND_API_KEY     = re_xxxxxxxxxxxx
-RESEND_FROM_EMAIL  = invoices@yourdomain.com
-```
-
----
-
-## DNS Configuration (Complete Reference)
-
-### DNS Provider (Squarespace / Cloudflare / etc.)
-
-| Type | Name | Value | Purpose |
-|---|---|---|---|
-| `CNAME` | `www` | `xxxx.up.railway.app` | Points traffic to Railway |
-| `TXT` | `_railway-verify.www` | `railway-verify=xxxx...` | Railway SSL verification |
-| `TXT` | `_dmarc` | (from Resend) | Email deliverability |
-| `TXT` | `resend._domainkey` | (from Resend) | Email signing (DKIM) |
-
-### New Domain Setup (end-to-end)
-
-Follow this order when pointing a new domain at the app:
-
-1. **Railway** → service → **Settings → Networking → Add Custom Domain** → get CNAME + TXT values
-2. **DNS provider** → add CNAME and TXT records → wait for Railway ✅ and SSL cert
-3. **Resend** → **Domains → Add Domain** → add DKIM + DMARC records → wait for Verified
-4. **Railway Variables** → update `RESEND_FROM_EMAIL` to `invoices@newdomain.com`
+1. Go to [resend.com](https://resend.com) → sign up (free: 3,000 emails/month)
+2. **Domains → Add Domain** → enter your domain → add the DNS records Resend gives you
+3. **API Keys → Create API Key** → copy the key
+4. Set `RESEND_API_KEY` and `RESEND_FROM_EMAIL` in Railway variables
 
 ---
 
@@ -296,8 +276,9 @@ All runtime data is stored as JSON files in `backend/src/data/` (mounted as a Ra
 
 | File | Contents |
 |---|---|
-| `students.json` | Student records |
+| `students.json` | Student records (name, gender, joinDate, rate, parent contacts) |
 | `invoices.json` | Invoice records (no PDFs stored) |
+| `attendance.json` | Date-keyed attendance — only A/T exceptions stored |
 | `config.json` | Org info and next invoice number |
 | `audit.json` | Audit log events |
 
@@ -315,16 +296,6 @@ PDFs are generated fresh on every download — nothing is written to the server 
 | Resend free tier (3,000 emails/mo) | $0.00/mo |
 | Domain (e.g. wajid.dev) | ~$1.20/mo |
 | **Total** | **~$6.20/mo** |
-
----
-
-## Screenshots
-
-<img width="1361" height="1229" alt="Dashboard" src="https://github.com/user-attachments/assets/a274ca30-e78d-401b-9934-61d669a0bbd1" />
-<img width="1365" height="1228" alt="Students" src="https://github.com/user-attachments/assets/6440884b-bb93-406e-9fbb-35129a1a5be5" />
-<img width="1612" height="1208" alt="Generate" src="https://github.com/user-attachments/assets/370c4f12-7d5b-4ab7-a97d-369226b8b76f" />
-<img width="1358" height="1226" alt="Invoice History" src="https://github.com/user-attachments/assets/8924c25f-9eed-4a97-a0f2-4e9ae972ffd0" />
-<img width="1361" height="1232" alt="Settings" src="https://github.com/user-attachments/assets/d28bf435-5a73-498f-97e3-2c717093cd59" />
 
 ---
 

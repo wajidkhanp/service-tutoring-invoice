@@ -8,6 +8,8 @@ import Generate from './pages/Generate';
 import InvoiceHistory from './pages/InvoiceHistory';
 import Settings from './pages/Settings';
 import Help from './pages/Help';
+import Attendance from './pages/Attendance';
+import StudentAttendance from './pages/StudentAttendance';
 
 function Layout({ children }) {
   return (
@@ -78,6 +80,22 @@ export default function App() {
               <Layout>
                 <Help />
               </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/attendance"
+          element={
+            <ProtectedRoute>
+              <Layout><Attendance /></Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/attendance/student/:studentId"
+          element={
+            <ProtectedRoute>
+              <Layout><StudentAttendance /></Layout>
             </ProtectedRoute>
           }
         />

@@ -45,6 +45,11 @@ export const generateAllInvoices = (payload) => api.post('/invoices/generate-all
 export const downloadInvoiceZip = (year, month) => api.get(`/invoices/zip/${year}/${month}`, { responseType: 'blob' });
 export const emailInvoice = (invoiceNumber) => api.post(`/invoices/${invoiceNumber}/email`);
 export const exportCsv = (params = {}) => api.get('/invoices/export/csv', { params, responseType: 'blob' });
+export const getMonthAttendance = (year, month) => api.get('/attendance', { params: { year, month } });
+export const getStudentAttendance = (studentId, year) => api.get(`/attendance/student/${studentId}`, { params: year ? { year } : {} });
+export const saveAttendance = (date, records) => api.post('/attendance', { date, records });
+export const confirmAllPresent = (date) => api.post(`/attendance/${date}/confirm`);
+export const clearAttendanceEntry = (date, studentId) => api.delete(`/attendance/${date}/${studentId}`);
 export const getAuditRecent = () => api.get('/audit/recent');
 export const getAuditAll = () => api.get('/audit/all');
 export const getSettings = () => api.get('/settings');

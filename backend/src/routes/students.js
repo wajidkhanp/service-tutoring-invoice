@@ -23,7 +23,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-  const { name, email, rate, notes, address, grade, joinDate } = req.body;
+  const { name, email, rate, notes, address, grade, joinDate, gender, parentName, parentPhone, parentEmail } = req.body;
   if (!name || !email) {
     return res.status(400).json({ error: 'Name and email are required' });
   }
@@ -37,7 +37,11 @@ router.post('/', (req, res) => {
     notes: notes?.trim() || '',
     address: address?.trim() || '',
     grade: grade?.trim() || '',
+    gender: gender === 'male' || gender === 'female' ? gender : null,
     joinDate: joinDate || null,
+    parentName: parentName?.trim() || '',
+    parentPhone: parentPhone?.trim() || '',
+    parentEmail: parentEmail?.trim() || '',
     createdAt: new Date().toISOString(),
   };
 
@@ -50,7 +54,7 @@ router.post('/', (req, res) => {
 
 router.put('/:id', (req, res) => {
   const { id } = req.params;
-  const { name, email, rate, notes, address, grade, joinDate } = req.body;
+  const { name, email, rate, notes, address, grade, joinDate, gender, parentName, parentPhone, parentEmail } = req.body;
   const students = loadStudents();
   const index = students.findIndex((student) => student.id === id);
   if (index === -1) return res.status(404).json({ error: 'Student not found' });
@@ -63,7 +67,11 @@ router.put('/:id', (req, res) => {
     notes: notes !== undefined ? notes.trim() : students[index].notes,
     address: address !== undefined ? address.trim() : students[index].address,
     grade: grade !== undefined ? grade.trim() : students[index].grade,
+    gender: gender !== undefined ? (gender === 'male' || gender === 'female' ? gender : null) : students[index].gender,
     joinDate: joinDate !== undefined ? (joinDate || null) : students[index].joinDate,
+    parentName: parentName !== undefined ? parentName.trim() : (students[index].parentName || ''),
+    parentPhone: parentPhone !== undefined ? parentPhone.trim() : (students[index].parentPhone || ''),
+    parentEmail: parentEmail !== undefined ? parentEmail.trim() : (students[index].parentEmail || ''),
     updatedAt: new Date().toISOString(),
   };
 

@@ -57,8 +57,10 @@ export default function Dashboard() {
             <h3>Quick Actions</h3>
           </div>
           <div className="panel-body dashboard-actions">
-            <Link to="/generate" className="btn-primary">Generate Invoice</Link>
-            <Link to="/history" className="btn-secondary">View Invoice History</Link>
+            <Link to="/attendance" className="btn-primary">Mark Attendance</Link>
+            <Link to="/generate" className="btn-secondary">Generate Invoice</Link>
+            <Link to="/history" className="btn-secondary">Invoice History</Link>
+            <Link to="/students" className="btn-secondary">Manage Students</Link>
           </div>
         </div>
 

@@ -41,6 +41,7 @@ export default function Navbar() {
       <div className={`navbar-links${menuOpen ? ' open' : ''}`}>
         {navLink('/', 'Dashboard', true)}
         {navLink('/students', 'Students')}
+        {navLink('/attendance', 'Attendance')}
         {navLink('/generate', 'Generate')}
         {navLink('/history', 'History')}
         {navLink('/settings', 'Settings')}
