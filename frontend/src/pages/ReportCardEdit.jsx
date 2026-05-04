@@ -240,8 +240,8 @@ export default function ReportCardEdit() {
       <div className="panel">
         <div className="panel-header"><h3>Progress Summary</h3></div>
         <div className="panel-body" style={{ padding: 0 }}>
+          {/* Desktop table */}
           <div className="rc-progress-wrap">
-            {/* Desktop table */}
             <table className="rc-progress-table">
               <thead>
                 <tr>
@@ -284,6 +284,37 @@ export default function ReportCardEdit() {
                 })}
               </tbody>
             </table>
+          </div>
+          {/* Mobile stacked cards */}
+          <div className="rc-prog-mobile">
+            {CATS.map((cat) => {
+              const catData = progress[cat.key] || { rating: '', notes: '' };
+              return (
+                <div key={cat.key} className="rc-prog-card">
+                  <div className="rc-prog-card-title">{cat.label}</div>
+                  <div className="rc-prog-card-desc">{cat.desc}</div>
+                  <div className="rc-prog-pills">
+                    {RATINGS.map((r) => (
+                      <button
+                        key={r}
+                        type="button"
+                        className={`rc-prog-pill${catData.rating === r ? ' rc-prog-pill-sel' : ''}`}
+                        onClick={() => setRating(cat.key, catData.rating === r ? '' : r)}
+                      >
+                        {catData.rating === r ? `✓ ${r}` : r}
+                      </button>
+                    ))}
+                  </div>
+                  <input
+                    type="text"
+                    className="rc-notes-input"
+                    placeholder="Teacher note (optional)…"
+                    value={catData.notes || ''}
+                    onChange={(e) => setNotes(cat.key, e.target.value)}
+                  />
+                </div>
+              );
+            })}
           </div>
         </div>
       </div>

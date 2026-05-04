@@ -1528,6 +1528,8 @@ body {
     margin-top: 0.5rem;
   }
   .rc-desktop-actions { display: none !important; }
+  .rc-progress-wrap { display: none; }
+  .rc-prog-mobile { display: flex; flex-direction: column; }
 }
 
 /* ── Report Card edit page ────────────────────────────────── */
@@ -1574,6 +1576,7 @@ body {
 
 /* Progress table */
 .rc-progress-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.rc-prog-mobile { display: none; }
 
 .rc-progress-table {
   width: 100%;
@@ -1634,6 +1637,41 @@ body {
   background: var(--white);
 }
 .rc-notes-input:focus { outline: none; border-color: var(--teal, #0d9488); }
+
+/* Mobile progress cards */
+.rc-prog-card {
+  padding: 0.9rem 1rem;
+  border-bottom: 1px solid var(--gray-100);
+}
+.rc-prog-card:last-child { border-bottom: none; }
+.rc-prog-card-title { font-weight: 600; font-size: 0.95rem; color: var(--gray-800); }
+.rc-prog-card-desc  { font-size: 0.78rem; color: var(--gray-500); margin: 0.15rem 0 0.6rem; }
+.rc-prog-pills {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-bottom: 0.6rem;
+}
+.rc-prog-pill {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 2px solid var(--gray-200);
+  border-radius: 8px;
+  background: var(--white);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--gray-700);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 0.12s, background 0.12s, color 0.12s;
+}
+.rc-prog-pill:hover { border-color: var(--teal); }
+.rc-prog-pill-sel {
+  background: var(--teal) !important;
+  border-color: var(--teal) !important;
+  color: var(--white) !important;
+  font-weight: 600;
+}
 
 /* Stars row */
 .rc-stars-row {
