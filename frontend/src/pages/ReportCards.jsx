@@ -239,7 +239,7 @@ export default function ReportCards() {
                   const progress = card?.progress || {};
                   const filledCount = Object.values(progress).filter((p) => p.rating).length;
                   const progLabel = card
-                    ? filledCount === 5 ? 'Complete' : `${filledCount}/5`
+                    ? filledCount === 4 ? 'Complete' : `${filledCount}/4`
                     : '—';
 
                   const actionBtns = (
@@ -299,7 +299,7 @@ export default function ReportCards() {
                       </td>
                       <td style={{ fontSize: '0.875rem' }}>
                         {card ? (
-                          <span style={{ color: filledCount === 5 ? '#15803d' : 'var(--gray-500)' }}>{progLabel}</span>
+                          <span style={{ color: filledCount === 4 ? '#15803d' : 'var(--gray-500)' }}>{progLabel}</span>
                         ) : <span style={{ color: 'var(--gray-400)' }}>—</span>}
                       </td>
                       <td>

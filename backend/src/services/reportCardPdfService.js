@@ -12,7 +12,6 @@ const CATS = [
   { key: 'sabqi', label: 'Sabqi (Recent Review)' },
   { key: 'manzil', label: 'Manzil (Long-term Review)' },
   { key: 'akhlaq', label: 'Akhlaq (Character & Behavior)' },
-  { key: 'fluency', label: 'Fluency / Nazra (Recitation)' },
 ];
 const RATINGS = ['Excellent', 'Good', 'Needs Improvement'];
 

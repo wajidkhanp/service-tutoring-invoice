@@ -7,7 +7,6 @@ const CATS = [
   { key: 'sabqi', label: 'Sabqi', desc: 'Recent lesson review' },
   { key: 'manzil', label: 'Manzil', desc: 'Long-term review (full cycle)' },
   { key: 'akhlaq', label: 'Akhlaq', desc: 'Character & behavior' },
-  { key: 'fluency', label: 'Fluency / Nazra', desc: 'Recitation quality' },
 ];
 const RATINGS = ['Excellent', 'Good', 'Needs Improvement'];
 
