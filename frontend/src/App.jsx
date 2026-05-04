@@ -4,8 +4,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Students from './pages/Students';
-import Generate from './pages/Generate';
-import InvoiceHistory from './pages/InvoiceHistory';
+import Invoices from './pages/Invoices';
 import Settings from './pages/Settings';
 import Help from './pages/Help';
 import Attendance from './pages/Attendance';
@@ -46,25 +45,17 @@ export default function App() {
           }
         />
         <Route
-          path="/generate"
+          path="/invoices"
           element={
             <ProtectedRoute>
               <Layout>
-                <Generate />
+                <Invoices />
               </Layout>
             </ProtectedRoute>
           }
         />
-        <Route
-          path="/history"
-          element={
-            <ProtectedRoute>
-              <Layout>
-                <InvoiceHistory />
-              </Layout>
-            </ProtectedRoute>
-          }
-        />
+        <Route path="/generate" element={<Navigate to="/invoices" replace />} />
+        <Route path="/history" element={<Navigate to="/invoices?tab=history" replace />} />
         <Route
           path="/settings"
           element={

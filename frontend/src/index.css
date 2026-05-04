@@ -1751,5 +1751,38 @@ body {
   border-top: 1px solid var(--gray-200);
 }
 
+/* ── Invoice tabs ─────────────────────────────────────────── */
+.inv-tabs {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1.25rem;
+  border: 1px solid var(--gray-200);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--white);
+}
+.inv-tab {
+  flex: 1;
+  padding: 0.6rem 1.25rem;
+  background: var(--white);
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  border-right: 1px solid var(--gray-200);
+}
+.inv-tab:last-child { border-right: none; }
+.inv-tab:hover { background: var(--gray-50); color: var(--gray-800); }
+.inv-tab-active {
+  background: var(--teal) !important;
+  color: var(--white) !important;
+  font-weight: 600;
+}
+@media (max-width: 640px) {
+  .inv-tab { padding: 0.6rem 0.5rem; font-size: 0.85rem; }
+}
+
 /* page wrapper */
 .page { padding-bottom: 2rem; }
