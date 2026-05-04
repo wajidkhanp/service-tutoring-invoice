@@ -58,6 +58,7 @@ export default function Dashboard() {
           </div>
           <div className="panel-body dashboard-actions">
             <Link to="/attendance" className="btn-primary">Mark Attendance</Link>
+            <Link to="/report-cards" className="btn-primary">Report Cards</Link>
             <Link to="/generate" className="btn-secondary">Generate Invoice</Link>
             <Link to="/history" className="btn-secondary">Invoice History</Link>
             <Link to="/students" className="btn-secondary">Manage Students</Link>

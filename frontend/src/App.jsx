@@ -10,6 +10,8 @@ import Settings from './pages/Settings';
 import Help from './pages/Help';
 import Attendance from './pages/Attendance';
 import StudentAttendance from './pages/StudentAttendance';
+import ReportCards from './pages/ReportCards';
+import ReportCardEdit from './pages/ReportCardEdit';
 
 function Layout({ children }) {
   return (
@@ -96,6 +98,22 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Layout><StudentAttendance /></Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/report-cards"
+          element={
+            <ProtectedRoute>
+              <Layout><ReportCards /></Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/report-cards/:id/edit"
+          element={
+            <ProtectedRoute>
+              <Layout><ReportCardEdit /></Layout>
             </ProtectedRoute>
           }
         />

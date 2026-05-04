@@ -17,10 +17,11 @@ try {
 }
 
 const DEFAULTS = {
-  'invoices.json':    [],
-  'students.json':    [],
-  'audit.json':       [],
-  'attendance.json':  {},
+  'invoices.json':     [],
+  'students.json':     [],
+  'audit.json':        [],
+  'attendance.json':   {},
+  'reportcards.json':  [],
   'config.json': {
     nextInvoiceNumber: 1000,
     organizationName: 'Noor Tutoring',

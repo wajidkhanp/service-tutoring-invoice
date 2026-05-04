@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import { createStudent, deleteStudent, getStudents, updateStudent } from '../services/api';
+import { Link, useNavigate } from 'react-router-dom';
+import { createStudent, deleteStudent, getStudents, updateStudent, createReportCard } from '../services/api';
 
 function formatDate(iso) {
   if (!iso) return '—';
@@ -46,7 +46,10 @@ function GenderRadio({ value, onChange }) {
   );
 }
 
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
 export default function Students() {
+  const navigate = useNavigate();
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -151,6 +154,22 @@ export default function Students() {
   const closeAdd = () => { setShowAdd(false); setAddError(''); setForm(EMPTY_FORM); };
   const closeDetail = () => { setSelected(null); setEditing(false); setEditError(''); };
 
+  const handleReportCard = async (student) => {
+    const now = new Date();
+    const month = MONTHS[now.getMonth()];
+    const year = String(now.getFullYear());
+    try {
+      const res = await createReportCard({ studentId: student.id, month, year });
+      navigate(`/report-cards/${res.data.reportCard.id}/edit`);
+    } catch (err) {
+      if (err?.response?.status === 409) {
+        navigate(`/report-cards/${err.response.data.reportCard.id}/edit`);
+      } else {
+        setError('Unable to open report card.');
+      }
+    }
+  };
+
   return (
     <div className="page">
       <div className="page-header students-page-header">
@@ -189,8 +208,8 @@ export default function Students() {
                     <td style={{ color: 'var(--gray-600)' }}>{student.grade || '—'}</td>
                     <td><GenderBadge gender={student.gender} /></td>
                     <td style={{ color: 'var(--gray-600)', fontSize: '0.85rem' }}>{formatDate(student.joinDate)}</td>
-                    <td className="td-action" style={{ width: 200 }}>
-                      <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
+                    <td className="td-action" style={{ width: 260 }}>
+                      <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end' }}>
                         <Link
                           to={`/attendance/student/${student.id}`}
                           className="btn-view-details"
@@ -198,6 +217,9 @@ export default function Students() {
                         >
                           Attendance
                         </Link>
+                        <button className="btn-view-details" onClick={() => handleReportCard(student)}>
+                          Report Card
+                        </button>
                         <button className="btn-view-details" onClick={() => setSelected(student)}>
                           Details
                         </button>

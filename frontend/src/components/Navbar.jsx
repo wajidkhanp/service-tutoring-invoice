@@ -42,6 +42,7 @@ export default function Navbar() {
         {navLink('/', 'Dashboard', true)}
         {navLink('/students', 'Students')}
         {navLink('/attendance', 'Attendance')}
+        {navLink('/report-cards', 'Reports')}
         {navLink('/generate', 'Generate')}
         {navLink('/history', 'History')}
         {navLink('/settings', 'Settings')}

@@ -50,6 +50,15 @@ export const getStudentAttendance = (studentId, year) => api.get(`/attendance/st
 export const saveAttendance = (date, records) => api.post('/attendance', { date, records });
 export const confirmAllPresent = (date) => api.post(`/attendance/${date}/confirm`);
 export const clearAttendanceEntry = (date, studentId) => api.delete(`/attendance/${date}/${studentId}`);
+export const getReportCards = (params = {}) => api.get('/reportcards', { params });
+export const getReportCardMonths = () => api.get('/reportcards/months');
+export const getReportCard = (id) => api.get(`/reportcards/${id}`);
+export const createReportCard = (payload) => api.post('/reportcards', payload);
+export const bulkCreateReportCards = (payload) => api.post('/reportcards/bulk', payload);
+export const updateReportCard = (id, payload) => api.put(`/reportcards/${id}`, payload);
+export const deleteReportCard = (id) => api.delete(`/reportcards/${id}`);
+export const downloadReportCardPdf = (id) => api.get(`/reportcards/${id}/pdf`, { responseType: 'blob' });
+export const emailReportCard = (id) => api.post(`/reportcards/${id}/email`);
 export const getAuditRecent = () => api.get('/audit/recent');
 export const getAuditAll = () => api.get('/audit/all');
 export const getSettings = () => api.get('/settings');
