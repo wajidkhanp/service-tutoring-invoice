@@ -74,7 +74,7 @@ function inlineRow(doc, items, y) {
 function buildReportCardPdf(reportCard, config) {
   return new Promise((resolve, reject) => {
     const chunks = [];
-    const doc = new PDFDocument({ size: 'A4', margin: M });
+    const doc = new PDFDocument({ size: 'A4', margins: { top: M, bottom: 0, left: M, right: M } });
     doc.on('data', (c) => chunks.push(c));
     doc.on('end', () => resolve(Buffer.concat(chunks)));
     doc.on('error', reject);
