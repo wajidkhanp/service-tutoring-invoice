@@ -3,14 +3,61 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getReportCard, updateReportCard, downloadReportCardPdf, emailReportCard, deleteReportCard } from '../services/api';
 
 const CATS = [
-  { key: 'newLesson', label: 'New Lesson', desc: 'New pages memorized this month' },
-  { key: 'sabqi', label: 'Sabqi', desc: 'Recent lesson review' },
-  { key: 'manzil', label: 'Manzil', desc: 'Long-term review (full cycle)' },
-  { key: 'akhlaq', label: 'Akhlaq', desc: 'Character & behavior' },
+  {
+    key: 'newLesson',
+    label: 'New Lesson',
+    desc: 'New pages memorized this month',
+    fields: [
+      { key: 'targetLines', label: 'Target Lines', type: 'number' },
+      { key: 'linesCompleted', label: 'Lines Completed', type: 'number' },
+      { key: 'daysWithoutLesson', label: 'Days Without Lesson', type: 'number' },
+      { key: 'targetMet', label: 'Target Met', type: 'yesno' },
+    ],
+  },
+  {
+    key: 'sabqi',
+    label: 'Sabqi',
+    desc: 'Recent lesson review',
+    fields: [
+      { key: 'recitedDays', label: 'Recited Days', type: 'number' },
+      { key: 'notRecitedDays', label: 'Not Recited Days', type: 'number' },
+      { key: 'targetMet', label: 'Target Met', type: 'yesno' },
+    ],
+  },
+  {
+    key: 'manzil',
+    label: 'Manzil',
+    desc: 'Long-term review (full cycle)',
+    fields: [
+      { key: 'targetAjza', label: 'Target Ajza / Week', type: 'text' },
+      { key: 'week1', label: 'Week 1', type: 'text' },
+      { key: 'week2', label: 'Week 2', type: 'text' },
+      { key: 'week3', label: 'Week 3', type: 'text' },
+      { key: 'week4', label: 'Week 4', type: 'text' },
+      { key: 'targetMet', label: 'Target Met', type: 'yesno' },
+    ],
+  },
+  {
+    key: 'akhlaq',
+    label: 'Akhlaq',
+    desc: 'Character & behavior',
+    fields: [],
+  },
 ];
 const RATINGS = ['Excellent', 'Good', 'Needs Improvement'];
 
-const EMPTY_PROGRESS = Object.fromEntries(CATS.map((c) => [c.key, { rating: '', notes: '' }]));
+function makeEmptyProgress() {
+  const p = {};
+  for (const cat of CATS) {
+    const entry = { rating: '', notes: '' };
+    for (const f of (cat.fields || [])) {
+      entry[f.key] = f.type === 'yesno' ? null : '';
+    }
+    p[cat.key] = entry;
+  }
+  return p;
+}
+const EMPTY_PROGRESS = makeEmptyProgress();
 
 export default function ReportCardEdit() {
   const { id } = useParams();
@@ -133,6 +180,9 @@ export default function ReportCardEdit() {
   const setNotes = (key, notes) =>
     setProgress((p) => ({ ...p, [key]: { ...p[key], notes } }));
 
+  const setExtraField = (catKey, fieldKey, value) =>
+    setProgress((p) => ({ ...p, [catKey]: { ...p[catKey], [fieldKey]: value } }));
+
   const setAttField = (field, val) =>
     setAttendance((a) => ({ ...a, [field]: Math.max(0, Number(val) || 0) }));
 
@@ -238,83 +288,72 @@ export default function ReportCardEdit() {
       {/* Progress Summary */}
       <div className="panel">
         <div className="panel-header"><h3>Progress Summary</h3></div>
-        <div className="panel-body" style={{ padding: 0 }}>
-          {/* Desktop table */}
-          <div className="rc-progress-wrap">
-            <table className="rc-progress-table">
-              <thead>
-                <tr>
-                  <th className="rc-cat-th">Category</th>
-                  {RATINGS.map((r) => <th key={r} className="rc-rating-th">{r}</th>)}
-                  <th className="rc-notes-th">Teacher Notes</th>
-                </tr>
-              </thead>
-              <tbody>
-                {CATS.map((cat, i) => {
-                  const catData = progress[cat.key] || { rating: '', notes: '' };
-                  return (
-                    <tr key={cat.key} className={i % 2 === 0 ? '' : 'rc-row-alt'}>
-                      <td className="rc-cat-td">
-                        <div style={{ fontWeight: 500 }}>{cat.label}</div>
-                        <div style={{ fontSize: '0.75rem', color: 'var(--gray-500)' }}>{cat.desc}</div>
-                      </td>
-                      {RATINGS.map((r) => (
-                        <td key={r} className="rc-rating-td">
-                          <button
-                            type="button"
-                            className={`rc-rating-btn${catData.rating === r ? ' rc-rating-selected' : ''}`}
-                            onClick={() => setRating(cat.key, catData.rating === r ? '' : r)}
-                          >
-                            {catData.rating === r ? '✓' : ''}
-                          </button>
-                        </td>
-                      ))}
-                      <td className="rc-notes-td">
-                        <input
-                          type="text"
-                          className="rc-notes-input"
-                          placeholder="Optional note…"
-                          value={catData.notes || ''}
-                          onChange={(e) => setNotes(cat.key, e.target.value)}
-                        />
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-          {/* Mobile stacked cards */}
-          <div className="rc-prog-mobile">
-            {CATS.map((cat) => {
-              const catData = progress[cat.key] || { rating: '', notes: '' };
-              return (
-                <div key={cat.key} className="rc-prog-card">
-                  <div className="rc-prog-card-title">{cat.label}</div>
-                  <div className="rc-prog-card-desc">{cat.desc}</div>
-                  <div className="rc-prog-pills">
-                    {RATINGS.map((r) => (
-                      <button
-                        key={r}
-                        type="button"
-                        className={`rc-prog-pill${catData.rating === r ? ' rc-prog-pill-sel' : ''}`}
-                        onClick={() => setRating(cat.key, catData.rating === r ? '' : r)}
-                      >
-                        {catData.rating === r ? `✓ ${r}` : r}
-                      </button>
-                    ))}
-                  </div>
-                  <input
-                    type="text"
-                    className="rc-notes-input"
-                    placeholder="Teacher note (optional)…"
-                    value={catData.notes || ''}
-                    onChange={(e) => setNotes(cat.key, e.target.value)}
-                  />
+        <div className="panel-body rc-progress-cards">
+          {CATS.map((cat) => {
+            const catData = progress[cat.key] || { rating: '', notes: '' };
+            return (
+              <div key={cat.key} className="rc-cat-card">
+                <div className="rc-cat-card-header">
+                  <span className="rc-cat-card-title">{cat.label}</span>
+                  <span className="rc-cat-card-desc">{cat.desc}</span>
                 </div>
-              );
-            })}
-          </div>
+                <div className="rc-cat-card-body">
+                  {cat.fields && cat.fields.length > 0 && (
+                    <div className="rc-cat-fields">
+                      {cat.fields.map((f) =>
+                        f.type === 'yesno' ? (
+                          <div key={f.key} className="rc-cat-field rc-cat-field-yesno">
+                            <span className="rc-cat-field-label">{f.label}</span>
+                            <div className="rc-yesno-btns">
+                              <button type="button"
+                                className={`rc-yesno-btn${catData[f.key] === true ? ' rc-yesno-yes' : ''}`}
+                                onClick={() => setExtraField(cat.key, f.key, catData[f.key] === true ? null : true)}
+                              >Yes</button>
+                              <button type="button"
+                                className={`rc-yesno-btn${catData[f.key] === false ? ' rc-yesno-no' : ''}`}
+                                onClick={() => setExtraField(cat.key, f.key, catData[f.key] === false ? null : false)}
+                              >No</button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div key={f.key} className="rc-cat-field">
+                            <label className="rc-cat-field-label">{f.label}</label>
+                            <input
+                              type={f.type === 'number' ? 'number' : 'text'}
+                              min={f.type === 'number' ? '0' : undefined}
+                              className="rc-cat-field-input"
+                              value={catData[f.key] || ''}
+                              onChange={(e) => setExtraField(cat.key, f.key, e.target.value)}
+                            />
+                          </div>
+                        )
+                      )}
+                    </div>
+                  )}
+                  <div className="rc-cat-rating-row">
+                    <span className="rc-cat-field-label">Overall Rating</span>
+                    <div className="rc-cat-rating-btns">
+                      {RATINGS.map((r) => (
+                        <button key={r} type="button"
+                          className={`rc-prog-pill${catData.rating === r ? ' rc-prog-pill-sel' : ''}`}
+                          onClick={() => setRating(cat.key, catData.rating === r ? '' : r)}
+                        >
+                          {catData.rating === r ? `✓ ${r}` : r}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                  <div className="rc-cat-notes-row">
+                    <input type="text" className="rc-notes-input"
+                      placeholder="Teacher notes (optional)…"
+                      value={catData.notes || ''}
+                      onChange={(e) => setNotes(cat.key, e.target.value)}
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
       </div>
 

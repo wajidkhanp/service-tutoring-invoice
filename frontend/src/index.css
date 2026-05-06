@@ -1549,8 +1549,6 @@ body {
     padding: 0.25rem 0.45rem;
     font-size: 0.72rem;
   }
-  .rc-progress-wrap { display: none; }
-  .rc-prog-mobile { display: flex; flex-direction: column; }
 }
 
 /* ── Report Card edit page ────────────────────────────────── */
@@ -1595,58 +1593,83 @@ body {
 .rc-att-input:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 2px rgba(13,148,136,.15); }
 .rc-att-rate { font-size: 1.2rem; font-weight: 700; padding-top: 0.3rem; }
 
-/* Progress table */
-.rc-progress-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.rc-prog-mobile { display: none; }
-
-.rc-progress-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 560px;
+/* ── Report card unified progress cards ────────────────────── */
+.rc-progress-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
 }
-.rc-progress-table th {
+.rc-cat-card {
+  border-bottom: 1px solid var(--gray-100);
+}
+.rc-cat-card:last-child { border-bottom: none; }
+.rc-cat-card-header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.65rem 1rem 0.4rem;
   background: #f0fdfa;
-  color: var(--teal, #0d9488);
-  font-size: 0.78rem;
-  font-weight: 700;
-  padding: 0.55rem 0.75rem;
+  border-bottom: 1px solid var(--gray-100);
+}
+.rc-cat-card-title { font-weight: 700; font-size: 0.9rem; color: var(--teal-dark); }
+.rc-cat-card-desc  { font-size: 0.75rem; color: var(--gray-500); }
+.rc-cat-card-body  { padding: 0.75rem 1rem 0.85rem; display: flex; flex-direction: column; gap: 0.65rem; }
+
+.rc-cat-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 0.5rem 0.75rem;
+}
+.rc-cat-field { display: flex; flex-direction: column; gap: 0.2rem; }
+.rc-cat-field-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.rc-cat-field-input {
+  padding: 0.3rem 0.5rem;
   border: 1px solid var(--gray-200);
-  text-align: center;
-}
-.rc-cat-th   { text-align: left !important; width: 220px; }
-.rc-rating-th { width: 100px; }
-.rc-notes-th { text-align: left !important; }
-
-.rc-progress-table td {
-  padding: 0.6rem 0.75rem;
-  border: 1px solid var(--gray-100);
-  vertical-align: middle;
-}
-.rc-row-alt td { background: #f9fafb; }
-.rc-cat-td { font-size: 0.875rem; }
-.rc-rating-td { text-align: center; }
-
-.rc-rating-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: 2px solid var(--gray-300);
+  border-radius: 6px;
+  font-size: 0.875rem;
+  color: var(--gray-800);
   background: var(--white);
-  cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 700;
-  color: var(--white);
-  transition: all 0.12s;
-  display: inline-flex;
+  width: 100%;
+}
+.rc-cat-field-input:focus { outline: none; border-color: var(--teal); }
+
+.rc-cat-field-yesno {
+  flex-direction: row;
   align-items: center;
-  justify-content: center;
+  gap: 0.5rem;
 }
-.rc-rating-btn:hover { border-color: var(--teal, #0d9488); }
-.rc-rating-selected {
-  background: var(--teal, #0d9488) !important;
-  border-color: var(--teal, #0d9488) !important;
-  color: var(--white) !important;
+.rc-yesno-btns { display: flex; gap: 0.3rem; }
+.rc-yesno-btn {
+  padding: 0.25rem 0.65rem;
+  border: 1.5px solid var(--gray-300);
+  border-radius: 20px;
+  background: var(--white);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: all 0.12s;
 }
+.rc-yesno-btn:hover { border-color: var(--teal); color: var(--teal); }
+.rc-yesno-yes { background: #dcfce7 !important; border-color: #16a34a !important; color: #15803d !important; }
+.rc-yesno-no  { background: #fee2e2 !important; border-color: #dc2626 !important; color: #dc2626 !important; }
+
+.rc-cat-rating-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+.rc-cat-rating-btns { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+
+.rc-cat-notes-row { /* just the notes input spans full width */ }
 
 .rc-notes-input {
   width: 100%;
@@ -1659,20 +1682,7 @@ body {
 }
 .rc-notes-input:focus { outline: none; border-color: var(--teal, #0d9488); }
 
-/* Mobile progress cards */
-.rc-prog-card {
-  padding: 0.9rem 1rem;
-  border-bottom: 1px solid var(--gray-100);
-}
-.rc-prog-card:last-child { border-bottom: none; }
-.rc-prog-card-title { font-weight: 600; font-size: 0.95rem; color: var(--gray-800); }
-.rc-prog-card-desc  { font-size: 0.78rem; color: var(--gray-500); margin: 0.15rem 0 0.6rem; }
-.rc-prog-pills {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-  margin-bottom: 0.6rem;
-}
+/* Rating pills (reused for overall rating buttons) */
 .rc-prog-pill {
   width: 100%;
   padding: 0.55rem 0.75rem;
