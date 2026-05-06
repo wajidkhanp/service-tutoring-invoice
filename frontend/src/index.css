@@ -732,6 +732,14 @@ body {
 
 .td-action { width: 120px; text-align: right; }
 
+/* Gender column — hidden on mobile (badge shown inline in name cell instead) */
+.student-gender-inline { display: none; }
+@media (max-width: 640px) {
+  .student-gender-col,
+  .student-table th:nth-child(3) { display: none; }
+  .student-gender-inline { display: inline; }
+}
+
 /* ── View Details button ──────────────────────────────────── */
 .btn-view-details {
   background: none;

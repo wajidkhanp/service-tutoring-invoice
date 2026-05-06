@@ -228,11 +228,14 @@ export default function Students() {
                     return (
                       <tr key={student.id}>
                         <td style={{ fontWeight: 500 }}>
-                          {student.name}
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                            {student.name}
+                            <span className="student-gender-inline"><GenderBadge gender={student.gender} /></span>
+                          </div>
                           <div className="student-mobile-actions">{actionBtns}</div>
                         </td>
                         <td style={{ color: 'var(--gray-600)' }}>{student.grade || '—'}</td>
-                        <td><GenderBadge gender={student.gender} /></td>
+                        <td className="student-gender-col"><GenderBadge gender={student.gender} /></td>
                         <td style={{ color: 'var(--gray-600)', fontSize: '0.85rem' }}>{formatDate(student.joinDate)}</td>
                         <td className="td-action student-desktop-actions">
                           <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end' }}>
