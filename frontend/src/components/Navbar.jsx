@@ -51,9 +51,23 @@ export default function Navbar() {
         {navLink('/invoices', <Receipt size={15}/>, 'Invoices')}
         {navLink('/settings', <Settings size={15}/>, 'Settings')}
         {navLink('/help', <HelpCircle size={15}/>, 'Help')}
+
+        {/* Logout section — only visible inside the mobile dropdown */}
+        {user && (
+          <div className="nav-menu-logout">
+            <div className="nav-menu-user">
+              <span className="nav-menu-user-name">{user.name}</span>
+              <span className="nav-menu-user-role">{user.role}</span>
+            </div>
+            <button className="nav-menu-logout-btn" onClick={handleLogout}>
+              <LogOut size={15}/>
+              Log out
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Right side: user info + logout + hamburger */}
+      {/* Right side: user info + logout (desktop only) + hamburger */}
       <div className="navbar-right">
         {user && (
           <div className="navbar-user">
