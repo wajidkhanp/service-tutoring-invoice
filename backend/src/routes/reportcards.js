@@ -4,6 +4,7 @@ const { readJson, writeJson } = require('../services/storageService');
 const requireAuth = require('../middleware/requireAuth');
 const { appendEvent } = require('../services/auditService');
 const { getStudentAttendance } = require('../services/attendanceService');
+const { getMonthProgress } = require('../services/dailyProgressService');
 const { buildReportCardPdf } = require('../services/reportCardPdfService');
 const { Resend } = require('resend');
 
@@ -18,7 +19,7 @@ function getStudents() { return readJson('students.json'); }
 function getConfig() { return readJson('config.json'); }
 
 function getMonthAttendanceForStudent(studentId, month, year) {
-  const { attendance, summary } = getStudentAttendance(studentId, year);
+  const { attendance } = getStudentAttendance(studentId, year);
   const prefix = `${year}-${String(MONTHS.indexOf(month) + 1).padStart(2, '0')}`;
   let present = 0, absent = 0, tardy = 0;
   for (const [date, status] of Object.entries(attendance)) {
@@ -29,6 +30,52 @@ function getMonthAttendanceForStudent(studentId, month, year) {
   }
   const totalDays = present + absent + tardy;
   return { totalDays, present, absent, tardy };
+}
+
+function getPresentDaysForMonth(studentId, month, year) {
+  const { attendance } = getStudentAttendance(studentId, year);
+  const prefix = `${year}-${String(MONTHS.indexOf(month) + 1).padStart(2, '0')}`;
+  return Object.entries(attendance)
+    .filter(([d, s]) => d.startsWith(prefix) && s !== 'A')
+    .map(([d]) => d);
+}
+
+function buildProgressFromDailyData(studentId, month, year) {
+  const empty = {
+    newLesson: { targetLines: '', linesCompleted: '', daysWithoutLesson: '', targetMet: null, rating: '', notes: '' },
+    sabqi:     { recitedDays: '', notRecitedDays: '', targetMet: null, rating: '', notes: '' },
+    manzil:    { targetAjza: '', week1: '', week2: '', week3: '', week4: '', targetMet: null, rating: '', notes: '' },
+    akhlaq:    { rating: '', notes: '' },
+  };
+  try {
+    const monthNum = MONTHS.indexOf(month) + 1;
+    const presentDays = getPresentDaysForMonth(studentId, month, year);
+    const { summary } = getMonthProgress(String(year), monthNum, studentId, presentDays);
+    return {
+      newLesson: {
+        targetLines: '',
+        linesCompleted: summary.newLesson.linesCompleted > 0 ? String(summary.newLesson.linesCompleted) : '',
+        daysWithoutLesson: summary.newLesson.daysWithoutLesson > 0 ? String(summary.newLesson.daysWithoutLesson) : '',
+        targetMet: null, rating: '', notes: '',
+      },
+      sabqi: {
+        recitedDays:    summary.sabqi.recitedDays > 0    ? String(summary.sabqi.recitedDays)    : '',
+        notRecitedDays: summary.sabqi.notRecitedDays > 0 ? String(summary.sabqi.notRecitedDays) : '',
+        targetMet: null, rating: '', notes: '',
+      },
+      manzil: {
+        targetAjza: '',
+        week1: summary.manzil.week1 || '',
+        week2: summary.manzil.week2 || '',
+        week3: summary.manzil.week3 || '',
+        week4: summary.manzil.week4 || '',
+        targetMet: null, rating: '', notes: '',
+      },
+      akhlaq: { rating: '', notes: '' },
+    };
+  } catch {
+    return empty;
+  }
 }
 
 router.use(requireAuth);
@@ -82,6 +129,7 @@ router.post('/', (req, res) => {
   if (existing) return res.status(409).json({ error: 'Report card already exists for this student and month', reportCard: existing });
 
   const attendance = getMonthAttendanceForStudent(studentId, month, Number(year));
+  const progress = buildProgressFromDailyData(studentId, month, Number(year));
 
   const card = {
     id: uuidv4(),
@@ -92,13 +140,7 @@ router.post('/', (req, res) => {
     teacherName: req.user.name || '',
     classLevel: student.grade || '',
     attendance,
-    progress: {
-      newLesson: { rating: '', notes: '' },
-      sabqi: { rating: '', notes: '' },
-      manzil: { rating: '', notes: '' },
-      akhlaq: { rating: '', notes: '' },
-      fluency: { rating: '', notes: '' },
-    },
+    progress,
     stars: 0,
     achievements: '',
     remarks: '',
@@ -130,6 +172,7 @@ router.post('/bulk', (req, res) => {
     if (exists) { skipped++; continue; }
 
     const attendance = getMonthAttendanceForStudent(student.id, month, Number(year));
+    const progress = buildProgressFromDailyData(student.id, month, Number(year));
     cards.push({
       id: uuidv4(),
       studentId: student.id,
@@ -139,13 +182,7 @@ router.post('/bulk', (req, res) => {
       teacherName: req.user.name || '',
       classLevel: student.grade || '',
       attendance,
-      progress: {
-        newLesson: { rating: '', notes: '' },
-        sabqi: { rating: '', notes: '' },
-        manzil: { rating: '', notes: '' },
-        akhlaq: { rating: '', notes: '' },
-        fluency: { rating: '', notes: '' },
-      },
+      progress,
       stars: 0,
       achievements: '',
       remarks: '',

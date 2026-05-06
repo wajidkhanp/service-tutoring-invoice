@@ -59,6 +59,11 @@ export const updateReportCard = (id, payload) => api.put(`/reportcards/${id}`, p
 export const deleteReportCard = (id) => api.delete(`/reportcards/${id}`);
 export const downloadReportCardPdf = (id) => api.get(`/reportcards/${id}/pdf`, { responseType: 'blob' });
 export const emailReportCard = (id) => api.post(`/reportcards/${id}/email`);
+export const getDailyProgress = (date, studentId) => api.get('/daily-progress', { params: { date, studentId } });
+export const saveDailyProgress = (date, studentId, progress) => api.post('/daily-progress', { date, studentId, progress });
+export const clearDailyProgress = (date, studentId) => api.delete(`/daily-progress/${date}/${studentId}`);
+export const getDailyProgressSummary = (year, month, studentId) => api.get('/daily-progress/summary', { params: { year, month, studentId } });
+export const getStudentYearProgress = (studentId, year) => api.get('/daily-progress/year', { params: { studentId, year } });
 export const getAuditRecent = () => api.get('/audit/recent');
 export const getAuditAll = () => api.get('/audit/all');
 export const getSettings = () => api.get('/settings');

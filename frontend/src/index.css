@@ -1835,3 +1835,254 @@ body {
 
 /* page wrapper */
 .page { padding-bottom: 2rem; }
+
+/* ── Progress Log Panel ───────────────────────────────────────── */
+.prog-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 200;
+  display: flex;
+  align-items: flex-end;        /* bottom sheet on mobile */
+  justify-content: center;
+}
+@media (min-width: 640px) {
+  .prog-backdrop { align-items: center; }
+}
+
+.prog-panel {
+  background: #fff;
+  width: 100%;
+  max-width: 520px;
+  max-height: 92vh;
+  border-radius: 16px 16px 0 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 -4px 24px rgba(0,0,0,0.15);
+}
+@media (min-width: 640px) {
+  .prog-panel {
+    border-radius: 12px;
+    max-height: 88vh;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  }
+}
+
+.prog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1rem 1.25rem 0.75rem;
+  border-bottom: 1px solid var(--gray-100);
+  flex-shrink: 0;
+}
+.prog-header-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--gray-900);
+}
+.prog-header-date {
+  font-size: 0.8rem;
+  color: var(--gray-500);
+  margin-top: 2px;
+}
+.prog-close {
+  font-size: 1.4rem;
+  line-height: 1;
+  background: none;
+  border: none;
+  color: var(--gray-400);
+  cursor: pointer;
+  padding: 0 0 0 0.5rem;
+  flex-shrink: 0;
+}
+.prog-close:hover { color: var(--gray-700); }
+
+.prog-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.75rem 1.25rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.prog-section {
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--gray-100);
+}
+.prog-section:last-child { border-bottom: none; }
+
+.prog-section-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--teal-700, #0d9488);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 2px;
+}
+.prog-section-desc {
+  font-size: 0.78rem;
+  color: var(--gray-500);
+  margin-bottom: 0.65rem;
+}
+
+.prog-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  flex: 1;
+}
+.prog-field label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gray-600);
+}
+.prog-field select,
+.prog-field input {
+  padding: 0.42rem 0.6rem;
+  border: 1px solid var(--gray-300);
+  border-radius: 6px;
+  font-size: 0.88rem;
+  color: var(--gray-800);
+  background: #fff;
+  width: 100%;
+}
+.prog-field select:focus,
+.prog-field input:focus {
+  outline: none;
+  border-color: #0d9488;
+  box-shadow: 0 0 0 2px rgba(13,148,136,0.15);
+}
+
+.prog-field-row {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+}
+.prog-field-row .prog-field { min-width: 0; }
+
+/* Yes / No toggles */
+.prog-yn-row {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+.prog-yn-btn {
+  flex: 1;
+  padding: 0.5rem;
+  border: 2px solid var(--gray-200);
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  background: #fff;
+  color: var(--gray-500);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.prog-yn-yes.prog-yn-active {
+  background: #dcfce7;
+  border-color: #16a34a;
+  color: #15803d;
+}
+.prog-yn-no.prog-yn-active {
+  background: #fee2e2;
+  border-color: #dc2626;
+  color: #dc2626;
+}
+.prog-yn-btn:not(.prog-yn-active):hover {
+  border-color: var(--gray-300);
+  background: var(--gray-50);
+}
+
+.prog-footer {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.85rem 1.25rem;
+  border-top: 1px solid var(--gray-100);
+  flex-shrink: 0;
+}
+.prog-footer .btn-secondary { flex: 1; }
+.prog-footer .btn-primary   { flex: 2; }
+
+/* ── Attendance page: log button ──────────────────────────────── */
+.att-name-row {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.att-log-btn {
+  background: none;
+  border: none;
+  font-size: 0.85rem;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s;
+  padding: 2px 4px;
+  border-radius: 4px;
+  line-height: 1;
+}
+.att-table tr:hover .att-log-btn { opacity: 1; }
+.att-log-btn:hover { background: var(--gray-100); opacity: 1; }
+
+/* Mobile log button in P/A/T row */
+.mob-att-log {
+  background: var(--gray-100);
+  border: 1px solid var(--gray-200) !important;
+  color: var(--gray-700);
+  font-size: 0.85rem;
+}
+.mob-att-log:hover { background: var(--gray-200); }
+
+/* ── Student Progress graphs page ────────────────────────────── */
+.prog-stats-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.prog-stat-card {
+  flex: 1;
+  background: #fff;
+  border: 1px solid var(--gray-200);
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+}
+.prog-stat-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--gray-800);
+  line-height: 1.1;
+}
+.prog-stat-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--gray-500);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 4px;
+}
+.prog-stat-sub {
+  font-size: 0.7rem;
+  color: var(--gray-400);
+  margin-top: 2px;
+}
+@media (max-width: 480px) {
+  .prog-stats-row { gap: 0.5rem; }
+  .prog-stat-card { padding: 0.65rem 0.5rem; }
+  .prog-stat-value { font-size: 1.2rem; }
+}
+
+.prog-chart-panel {
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.25rem;
+}
+.prog-chart-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--gray-700);
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}

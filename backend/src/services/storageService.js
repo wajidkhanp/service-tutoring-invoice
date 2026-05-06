@@ -21,6 +21,7 @@ const DEFAULTS = {
   'students.json':     [],
   'audit.json':        [],
   'attendance.json':   {},
+  'daily_progress.json': {},
   'reportcards.json':  [],
   'config.json': {
     nextInvoiceNumber: 1000,

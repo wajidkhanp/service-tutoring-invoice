@@ -6,7 +6,10 @@ import {
   saveAttendance,
   confirmAllPresent,
   clearAttendanceEntry,
+  getDailyProgress,
+  saveDailyProgress,
 } from '../services/api';
+import ProgressLogPanel from '../components/ProgressLogPanel';
 
 const MONTH_NAMES = [
   'January','February','March','April','May','June',
@@ -89,7 +92,7 @@ function AttCell({ status, lockReason, isSaving, onClick }) {
 }
 
 // ── Mobile: P/A/T toggle row ──────────────────────────────────
-function MobileStudentRow({ student, dateStr, status, lockReason, onCycle }) {
+function MobileStudentRow({ student, dateStr, status, lockReason, onCycle, onLogProgress }) {
   if (lockReason === 'future' || lockReason === 'pre-enrollment') {
     return (
       <div className="mob-student-row mob-student-locked">
@@ -112,6 +115,14 @@ function MobileStudentRow({ student, dateStr, status, lockReason, onCycle }) {
             {s}
           </button>
         ))}
+        <button
+          type="button"
+          className="mob-att-btn mob-att-log"
+          onClick={() => onLogProgress(student, dateStr)}
+          title="Log progress"
+        >
+          📚
+        </button>
       </div>
     </div>
   );
@@ -132,6 +143,21 @@ export default function Attendance() {
   const [error, setError] = useState('');
   const [savingCells, setSavingCells] = useState(new Set());
   const [expandedDays, setExpandedDays] = useState(new Set());
+  const [progressPanel, setProgressPanel] = useState(null); // { student, dateStr, initialProgress }
+
+  const openProgressPanel = useCallback(async (student, dateStr) => {
+    let initialProgress = null;
+    try {
+      const res = await getDailyProgress(dateStr, student.id);
+      initialProgress = res.data.progress;
+    } catch { /* start fresh */ }
+    setProgressPanel({ student, dateStr, initialProgress });
+  }, []);
+
+  const handleSaveProgress = useCallback(async (data) => {
+    if (!progressPanel) return;
+    await saveDailyProgress(progressPanel.dateStr, progressPanel.student.id, data);
+  }, [progressPanel]);
 
   const todayEnd = useMemo(() => {
     const d = new Date();
@@ -264,9 +290,19 @@ export default function Attendance() {
     return studentList.map((student) => (
       <tr key={student.id}>
         <td className="att-name-col">
-          <Link to={`/attendance/student/${student.id}`} className="att-student-link">
-            {student.name}
-          </Link>
+          <div className="att-name-row">
+            <Link to={`/attendance/student/${student.id}`} className="att-student-link">
+              {student.name}
+            </Link>
+            <button
+              type="button"
+              className="att-log-btn"
+              onClick={() => openProgressPanel(student, todayStr)}
+              title={`Log progress for ${student.name} today`}
+            >
+              📚
+            </button>
+          </div>
         </td>
         {weeks.map((week) =>
           week.days.map(({ dateStr }) => {
@@ -490,6 +526,7 @@ export default function Attendance() {
                               status={getCellStatus(attendance, dateStr, student.id)}
                               lockReason={getLockReason(dateStr, student, todayEnd)}
                               onCycle={cycleStatus}
+                              onLogProgress={openProgressPanel}
                             />
                           ))}
                           {genderFilter === 'all' && girls.length > 0 && (
@@ -503,6 +540,7 @@ export default function Attendance() {
                               status={getCellStatus(attendance, dateStr, student.id)}
                               lockReason={getLockReason(dateStr, student, todayEnd)}
                               onCycle={cycleStatus}
+                              onLogProgress={openProgressPanel}
                             />
                           ))}
                           {genderFilter === 'all' && ungrouped.length > 0 && (
@@ -516,6 +554,7 @@ export default function Attendance() {
                               status={getCellStatus(attendance, dateStr, student.id)}
                               lockReason={getLockReason(dateStr, student, todayEnd)}
                               onCycle={cycleStatus}
+                              onLogProgress={openProgressPanel}
                             />
                           ))}
                         </div>
@@ -527,6 +566,17 @@ export default function Attendance() {
             ))}
           </div>
         </>
+      )}
+
+      {/* Progress Log Panel */}
+      {progressPanel && (
+        <ProgressLogPanel
+          student={progressPanel.student}
+          dateStr={progressPanel.dateStr}
+          initialProgress={progressPanel.initialProgress}
+          onSave={handleSaveProgress}
+          onClose={() => setProgressPanel(null)}
+        />
       )}
 
       {/* Legend */}

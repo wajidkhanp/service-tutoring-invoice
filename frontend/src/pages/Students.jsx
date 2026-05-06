@@ -217,6 +217,13 @@ export default function Students() {
                         >
                           Attendance
                         </Link>
+                        <Link
+                          to={`/students/${student.id}/progress`}
+                          className="btn-view-details"
+                          style={{ textDecoration: 'none' }}
+                        >
+                          Progress
+                        </Link>
                         <button className="btn-view-details" onClick={() => handleReportCard(student)}>
                           Report Card
                         </button>

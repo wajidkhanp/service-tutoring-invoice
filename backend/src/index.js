@@ -11,6 +11,7 @@ const auditRoutes = require('./routes/audit');
 const settingsRoutes = require('./routes/settings');
 const attendanceRoutes = require('./routes/attendance');
 const reportCardRoutes = require('./routes/reportcards');
+const dailyProgressRoutes = require('./routes/dailyProgress');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -50,6 +51,7 @@ app.use('/api/audit', auditRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/reportcards', reportCardRoutes);
+app.use('/api/daily-progress', dailyProgressRoutes);
 
 app.get('/health', (req, res) => {
   const dataDir = path.join(__dirname, 'data');

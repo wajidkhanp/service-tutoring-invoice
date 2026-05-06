@@ -12,6 +12,7 @@ import Attendance from './pages/Attendance';
 import StudentAttendance from './pages/StudentAttendance';
 import ReportCards from './pages/ReportCards';
 import ReportCardEdit from './pages/ReportCardEdit';
+import StudentProgress from './pages/StudentProgress';
 
 function Layout({ children }) {
   return (
@@ -107,6 +108,14 @@ export default function App() {
           element={
             <ProtectedRoute>
               <Layout><ReportCardEdit /></Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/students/:studentId/progress"
+          element={
+            <ProtectedRoute>
+              <Layout><StudentProgress /></Layout>
             </ProtectedRoute>
           }
         />
