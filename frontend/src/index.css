@@ -732,11 +732,13 @@ body {
 
 .td-action { width: 120px; text-align: right; }
 
-/* Gender column — hidden on mobile (badge shown inline in name cell instead) */
+/* Gender + Joined columns — hidden on mobile (badge inline in name; date in Details overlay) */
 .student-gender-inline { display: none; }
 @media (max-width: 640px) {
   .student-gender-col,
-  .student-table th:nth-child(3) { display: none; }
+  .student-table th:nth-child(3),
+  .student-joined-col,
+  .student-table th:nth-child(4) { display: none; }
   .student-gender-inline { display: inline; }
 }
 

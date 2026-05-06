@@ -236,7 +236,7 @@ export default function Students() {
                         </td>
                         <td style={{ color: 'var(--gray-600)' }}>{student.grade || '—'}</td>
                         <td className="student-gender-col"><GenderBadge gender={student.gender} /></td>
-                        <td style={{ color: 'var(--gray-600)', fontSize: '0.85rem' }}>{formatDate(student.joinDate)}</td>
+                        <td className="student-joined-col" style={{ color: 'var(--gray-600)', fontSize: '0.85rem' }}>{formatDate(student.joinDate)}</td>
                         <td className="td-action student-desktop-actions">
                           <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end' }}>
                             {actionBtns}
