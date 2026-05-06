@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { getStudents, getInvoices } from '../services/api';
 import AuditFeed from '../components/AuditFeed';
+import { Users, Receipt, CalendarCheck, ClipboardList, PlusCircle, History, GraduationCap, TrendingUp } from 'lucide-react';
 
 export default function Dashboard() {
   const [studentCount, setStudentCount] = useState(null);
@@ -36,14 +37,14 @@ export default function Dashboard() {
 
       <div className="stats-row stats-row-two">
         <div className="stat-card">
-          <div className="stat-icon">👥</div>
+          <div className="stat-icon stat-icon-svg"><Users size={28} strokeWidth={1.5}/></div>
           <div className="stat-body">
             <div className="stat-value">{studentCount === null ? '—' : studentCount}</div>
             <div className="stat-label">Active Students</div>
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon">📄</div>
+          <div className="stat-icon stat-icon-svg"><Receipt size={28} strokeWidth={1.5}/></div>
           <div className="stat-body">
             <div className="stat-value">{invoiceCount === null ? '—' : invoiceCount}</div>
             <div className="stat-label">Invoices — {today.toLocaleString('en-US', { month: 'long' })} {today.getFullYear()}</div>
@@ -57,11 +58,11 @@ export default function Dashboard() {
             <h3>Quick Actions</h3>
           </div>
           <div className="panel-body dashboard-actions">
-            <Link to="/attendance" className="btn-primary">Mark Attendance</Link>
-            <Link to="/report-cards" className="btn-primary">Report Cards</Link>
-            <Link to="/invoices" className="btn-secondary">Generate Invoice</Link>
-            <Link to="/invoices?tab=history" className="btn-secondary">Invoice History</Link>
-            <Link to="/students" className="btn-secondary">Manage Students</Link>
+            <Link to="/attendance" className="btn-primary dash-action-btn"><CalendarCheck size={15}/>Mark Attendance</Link>
+            <Link to="/report-cards" className="btn-primary dash-action-btn"><ClipboardList size={15}/>Report Cards</Link>
+            <Link to="/invoices" className="btn-secondary dash-action-btn"><PlusCircle size={15}/>Generate Invoice</Link>
+            <Link to="/invoices?tab=history" className="btn-secondary dash-action-btn"><History size={15}/>Invoice History</Link>
+            <Link to="/students" className="btn-secondary dash-action-btn"><GraduationCap size={15}/>Manage Students</Link>
           </div>
         </div>
 

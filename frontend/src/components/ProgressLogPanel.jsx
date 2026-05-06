@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { SURAHS, JUZZ_LIST, getSurah, getSurahsForJuzz, surahLabel, surahShortLabel } from '../data/quranData';
+import { BookOpen, RotateCcw, Book } from 'lucide-react';
 
 const DOW = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -102,7 +103,7 @@ export default function ProgressLogPanel({ student, dateStr, initialProgress, on
 
           {/* ── NEW LESSON ─────────────────────────────── */}
           <div className="prog-section">
-            <div className="prog-section-title">New Lesson</div>
+            <div className="prog-section-title"><BookOpen size={14}/>New Lesson</div>
             <div className="prog-section-desc">Which Surah did the student memorise today?</div>
 
             <div className="prog-field">
@@ -135,7 +136,7 @@ export default function ProgressLogPanel({ student, dateStr, initialProgress, on
 
           {/* ── SABQI ──────────────────────────────────── */}
           <div className="prog-section">
-            <div className="prog-section-title">Sabqi</div>
+            <div className="prog-section-title"><RotateCcw size={14}/>Sabqi</div>
             <div className="prog-section-desc">Did the student recite their recent memorisation today?</div>
             <div className="prog-yn-row">
               <button
@@ -157,7 +158,7 @@ export default function ProgressLogPanel({ student, dateStr, initialProgress, on
 
           {/* ── MANZIL ─────────────────────────────────── */}
           <div className="prog-section">
-            <div className="prog-section-title">Manzil</div>
+            <div className="prog-section-title"><Book size={14}/>Manzil</div>
             <div className="prog-section-desc">Did the student recite a previously memorised Juzz today?</div>
             <div className="prog-yn-row">
               <button

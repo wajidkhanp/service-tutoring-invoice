@@ -4,6 +4,7 @@ import {
   BarChart, Bar, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell,
 } from 'recharts';
+import { TrendingUp, BookOpen, RotateCcw, Book } from 'lucide-react';
 import { getStudents, getStudentYearProgress } from '../services/api';
 
 const MONTH_NAMES = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -11,9 +12,10 @@ const ACCENT = '#0d9488';
 const BLUE   = '#3b82f6';
 const AMBER  = '#f59e0b';
 
-function StatCard({ label, value, sub, color }) {
+function StatCard({ label, value, sub, color, icon }) {
   return (
     <div className="prog-stat-card">
+      {icon && <div className="prog-stat-icon">{icon}</div>}
       <div className="prog-stat-value" style={color ? { color } : {}}>{value}</div>
       <div className="prog-stat-label">{label}</div>
       {sub && <div className="prog-stat-sub">{sub}</div>}
@@ -120,9 +122,9 @@ export default function StudentProgress() {
         <>
           {/* Summary stats */}
           <div className="prog-stats-row">
-            <StatCard label="Lines Memorised" value={totals.lines} sub={`in ${year}`} color={ACCENT} />
-            <StatCard label="Avg Sabqi Rate"  value={totals.avgSabqi !== null ? `${totals.avgSabqi}%` : '—'} sub="days recited" />
-            <StatCard label="Manzil Days"     value={totals.manzilDays} sub="total revisions" color={BLUE} />
+            <StatCard label="Lines Memorised" value={totals.lines} sub={`in ${year}`} color={ACCENT} icon={<BookOpen size={18} color={ACCENT}/>} />
+            <StatCard label="Avg Sabqi Rate"  value={totals.avgSabqi !== null ? `${totals.avgSabqi}%` : '—'} sub="days recited" icon={<RotateCcw size={18} color="#f59e0b"/>} />
+            <StatCard label="Manzil Days"     value={totals.manzilDays} sub="total revisions" color={BLUE} icon={<Book size={18} color={BLUE}/>} />
           </div>
 
           {/* Lines memorised bar chart */}

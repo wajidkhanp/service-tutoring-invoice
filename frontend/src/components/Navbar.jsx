@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { getMe, logout } from '../services/api';
+import {
+  LayoutDashboard, Users, CalendarCheck, ClipboardList,
+  Receipt, Settings, HelpCircle, LogOut,
+} from 'lucide-react';
 
 export default function Navbar() {
   const [user, setUser] = useState(null);
@@ -19,14 +23,15 @@ export default function Navbar() {
 
   const closeMenu = () => setMenuOpen(false);
 
-  const navLink = (to, label, end = false) => (
+  const navLink = (to, icon, label, end = false) => (
     <NavLink
       to={to}
       end={end}
       className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}
       onClick={closeMenu}
     >
-      {label}
+      {icon}
+      <span className="nav-label">{label}</span>
     </NavLink>
   );
 
@@ -39,16 +44,16 @@ export default function Navbar() {
 
       {/* Desktop nav links — becomes absolute dropdown on mobile */}
       <div className={`navbar-links${menuOpen ? ' open' : ''}`}>
-        {navLink('/', 'Dashboard', true)}
-        {navLink('/students', 'Students')}
-        {navLink('/attendance', 'Attendance')}
-        {navLink('/report-cards', 'Reports')}
-        {navLink('/invoices', 'Invoices')}
-        {navLink('/settings', 'Settings')}
-        {navLink('/help', 'Help')}
+        {navLink('/', <LayoutDashboard size={15}/>, 'Dashboard', true)}
+        {navLink('/students', <Users size={15}/>, 'Students')}
+        {navLink('/attendance', <CalendarCheck size={15}/>, 'Attendance')}
+        {navLink('/report-cards', <ClipboardList size={15}/>, 'Reports')}
+        {navLink('/invoices', <Receipt size={15}/>, 'Invoices')}
+        {navLink('/settings', <Settings size={15}/>, 'Settings')}
+        {navLink('/help', <HelpCircle size={15}/>, 'Help')}
       </div>
 
-      {/* Right side: user info + logout + hamburger (with divider between logout and ☰) */}
+      {/* Right side: user info + logout + hamburger */}
       <div className="navbar-right">
         {user && (
           <div className="navbar-user">
@@ -56,7 +61,10 @@ export default function Navbar() {
               <span className="user-name">{user.name}</span>
               <span className="user-last-login">{user.role}</span>
             </div>
-            <button className="btn-logout" onClick={handleLogout}>Logout</button>
+            <button className="btn-logout" onClick={handleLogout}>
+              <LogOut size={14} style={{ marginRight: '0.3rem', verticalAlign: 'middle' }}/>
+              Logout
+            </button>
           </div>
         )}
         <button className="hamburger" onClick={() => setMenuOpen(o => !o)} aria-label="Toggle menu">

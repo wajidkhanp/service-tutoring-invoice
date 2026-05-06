@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createStudent, deleteStudent, getStudents, updateStudent, createReportCard } from '../services/api';
+import { CalendarDays, TrendingUp, FileText, Info, UserPlus } from 'lucide-react';
 
 function formatDate(iso) {
   if (!iso) return '—';
@@ -177,7 +178,7 @@ export default function Students() {
           <h2>Students</h2>
           <p className="page-subtitle">Manage your tutoring roster and student details.</p>
         </div>
-        <button className="btn-primary btn-auto" onClick={() => setShowAdd(true)}>+ Add Student</button>
+        <button className="btn-primary btn-auto" onClick={() => setShowAdd(true)} style={{ display:'flex', alignItems:'center', gap:'0.35rem' }}><UserPlus size={15}/>Add Student</button>
       </div>
 
       {error && <div className="alert alert-error">{error}</div>}
@@ -210,25 +211,17 @@ export default function Students() {
                   const renderRow = (student) => {
                     const actionBtns = (
                       <>
-                        <Link
-                          to={`/attendance/student/${student.id}`}
-                          className="btn-view-details"
-                          style={{ textDecoration: 'none' }}
-                        >
-                          Attendance
+                        <Link to={`/attendance/student/${student.id}`} className="btn-view-details icon-btn" style={{ textDecoration:'none' }}>
+                          <CalendarDays size={13}/>Attendance
                         </Link>
-                        <Link
-                          to={`/students/${student.id}/progress`}
-                          className="btn-view-details"
-                          style={{ textDecoration: 'none' }}
-                        >
-                          Progress
+                        <Link to={`/students/${student.id}/progress`} className="btn-view-details icon-btn" style={{ textDecoration:'none' }}>
+                          <TrendingUp size={13}/>Progress
                         </Link>
-                        <button className="btn-view-details" onClick={() => handleReportCard(student)}>
-                          Report Card
+                        <button className="btn-view-details icon-btn" onClick={() => handleReportCard(student)}>
+                          <FileText size={13}/>Report Card
                         </button>
-                        <button className="btn-view-details" onClick={() => setSelected(student)}>
-                          Details
+                        <button className="btn-view-details icon-btn" onClick={() => setSelected(student)}>
+                          <Info size={13}/>Details
                         </button>
                       </>
                     );

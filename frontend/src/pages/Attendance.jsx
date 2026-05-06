@@ -10,6 +10,7 @@ import {
   saveDailyProgress,
 } from '../services/api';
 import ProgressLogPanel from '../components/ProgressLogPanel';
+import { CalendarDays, XCircle, Clock } from 'lucide-react';
 
 const MONTH_NAMES = [
   'January','February','March','April','May','June',
@@ -383,16 +384,19 @@ export default function Attendance() {
       {/* Summary bar */}
       <div className="att-summary-bar">
         <div className="att-summary-item">
+          <CalendarDays size={16} className="att-summary-icon"/>
           <span className="att-summary-num">{summary.recorded}</span>
           <span className="att-summary-lbl">Recorded Days</span>
         </div>
         <div className="att-summary-divider" />
         <div className="att-summary-item">
+          <XCircle size={16} className="att-summary-icon att-icon-absent"/>
           <span className="att-summary-num att-num-absent">{summary.absences}</span>
           <span className="att-summary-lbl">Absences</span>
         </div>
         <div className="att-summary-divider" />
         <div className="att-summary-item">
+          <Clock size={16} className="att-summary-icon att-icon-tardy"/>
           <span className="att-summary-num att-num-tardy">{summary.tardies}</span>
           <span className="att-summary-lbl">Tardies</span>
         </div>

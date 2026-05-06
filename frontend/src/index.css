@@ -1836,6 +1836,57 @@ body {
 /* page wrapper */
 .page { padding-bottom: 2rem; }
 
+/* ── Icon button utility (inline-flex + gap for icon+label pairs) ── */
+.icon-btn {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.3rem;
+}
+a.icon-btn { text-decoration: none; }
+
+/* ── Nav links with icons ─────────────────────────────────────── */
+.nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+/* ── Dashboard quick-action buttons with icons ───────────────── */
+.dash-action-btn {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.4rem;
+  text-decoration: none;
+}
+
+/* ── Stat card SVG icon ──────────────────────────────────────── */
+.stat-icon-svg {
+  color: var(--teal-600, #0d9488);
+  display: flex;
+  align-items: center;
+}
+
+/* ── Attendance summary bar icons ────────────────────────────── */
+.att-summary-item { display: flex; align-items: center; gap: 0.35rem; }
+.att-summary-icon { opacity: 0.65; flex-shrink: 0; }
+.att-icon-absent  { color: #dc2626; }
+.att-icon-tardy   { color: #d97706; }
+
+/* ── Student progress stat card icon ─────────────────────────── */
+.prog-stat-icon {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 4px;
+  opacity: 0.9;
+}
+
+/* ── Progress panel section title with icon ──────────────────── */
+.prog-section-title {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
 /* ── Progress Log Panel ───────────────────────────────────────── */
 .prog-backdrop {
   position: fixed;

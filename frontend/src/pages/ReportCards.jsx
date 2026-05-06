@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import {
   getStudents, getReportCards, createReportCard, bulkCreateReportCards, deleteReportCard, downloadReportCardPdf, emailReportCard,
 } from '../services/api';
+import { Pencil, Plus, Download, Send, Trash2, Sparkles } from 'lucide-react';
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
@@ -175,8 +176,8 @@ export default function ReportCards() {
           <h2>Report Cards</h2>
           <p className="page-subtitle">Generate, fill, and send monthly Quran class report cards.</p>
         </div>
-        <button className="btn-primary btn-auto" onClick={handleBulkGenerate} disabled={bulkLoading}>
-          {bulkLoading ? 'Generating…' : `Generate All — ${month} ${year}`}
+        <button className="btn-primary btn-auto icon-btn" onClick={handleBulkGenerate} disabled={bulkLoading}>
+          <Sparkles size={15}/>{bulkLoading ? 'Generating…' : `Generate All — ${month} ${year}`}
         </button>
       </div>
 
@@ -251,33 +252,36 @@ export default function ReportCards() {
                         {student.grade && <div style={{ fontSize: '0.78rem', color: 'var(--gray-500)' }}>{student.grade}</div>}
                         <div className="rc-row-actions">
                           <button
-                            className="btn-view-details"
+                            className="btn-view-details icon-btn"
                             onClick={() => handleOpenCard(student)}
                             disabled={actionId === student.id}
                           >
-                            {actionId === student.id ? '…' : card ? 'Edit' : 'Start'}
+                            {actionId === student.id ? '…' : card ? <><Pencil size={13}/>Edit</> : <><Plus size={13}/>Start</>}
                           </button>
                           {card && (
                             <>
                               <button
-                                className="btn-view-details"
+                                className="btn-view-details icon-btn"
                                 onClick={() => handleDownloadPdf(card)}
                                 disabled={actionId === card.id + '-pdf'}
+                                title="Download PDF"
                               >
-                                {actionId === card.id + '-pdf' ? '…' : 'PDF'}
+                                {actionId === card.id + '-pdf' ? '…' : <><Download size={13}/>PDF</>}
                               </button>
                               <button
-                                className="btn-view-details rc-btn-email"
+                                className="btn-view-details rc-btn-email icon-btn"
                                 onClick={() => handleEmail(card)}
                                 disabled={actionId === card.id + '-email'}
+                                title="Email report card"
                               >
-                                {actionId === card.id + '-email' ? 'Sending…' : card.status === 'sent' ? 'Re-send' : 'Send'}
+                                {actionId === card.id + '-email' ? 'Sending…' : <><Send size={13}/>{card.status === 'sent' ? 'Re-send' : 'Send'}</>}
                               </button>
                               <button
-                                className="btn-view-details rc-btn-delete"
+                                className="btn-view-details rc-btn-delete icon-btn"
                                 onClick={() => handleDelete(card)}
+                                title="Delete"
                               >
-                                Del
+                                <Trash2 size={13}/>
                               </button>
                             </>
                           )}

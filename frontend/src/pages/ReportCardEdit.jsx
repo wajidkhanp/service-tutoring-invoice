@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { getReportCard, updateReportCard, downloadReportCardPdf, emailReportCard, deleteReportCard } from '../services/api';
+import { BookOpen, RotateCcw, Book, Heart, Download, Send, Trash2, ChevronLeft, Save } from 'lucide-react';
+
+const CAT_ICONS = { newLesson: BookOpen, sabqi: RotateCcw, manzil: Book, akhlaq: Heart };
 
 const CATS = [
   {
@@ -198,7 +201,7 @@ export default function ReportCardEdit() {
 
   return (
     <div className="page">
-      <Link to="/report-cards" className="sa-back-link">← Back to Report Cards</Link>
+      <Link to="/report-cards" className="sa-back-link icon-btn"><ChevronLeft size={14}/>Back to Report Cards</Link>
 
       {/* Header */}
       <div className="rc-edit-header">
@@ -215,17 +218,17 @@ export default function ReportCardEdit() {
           </div>
         </div>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <button className="btn-secondary btn-auto" onClick={() => handleSave('draft')} disabled={saving}>
-            {saving ? 'Saving…' : 'Save Draft'}
+          <button className="btn-secondary btn-auto icon-btn" onClick={() => handleSave('draft')} disabled={saving}>
+            <Save size={14}/>{saving ? 'Saving…' : 'Save Draft'}
           </button>
-          <button className="btn-secondary btn-auto" onClick={() => handleSave('complete')} disabled={saving}>
-            Mark Complete
+          <button className="btn-secondary btn-auto icon-btn" onClick={() => handleSave('complete')} disabled={saving}>
+            <Save size={14}/>Mark Complete
           </button>
-          <button className="btn-primary btn-auto" onClick={handleDownloadPdf} disabled={pdfLoading}>
-            {pdfLoading ? 'Generating…' : 'Download PDF'}
+          <button className="btn-primary btn-auto icon-btn" onClick={handleDownloadPdf} disabled={pdfLoading}>
+            <Download size={14}/>{pdfLoading ? 'Generating…' : 'PDF'}
           </button>
-          <button className="btn-email btn-auto" onClick={handleSendEmail} disabled={emailLoading}>
-            {emailLoading ? 'Sending…' : card.status === 'sent' ? 'Re-send Email' : 'Send to Parent'}
+          <button className="btn-email btn-auto icon-btn" onClick={handleSendEmail} disabled={emailLoading}>
+            <Send size={14}/>{emailLoading ? 'Sending…' : card.status === 'sent' ? 'Re-send' : 'Send'}
           </button>
         </div>
       </div>
@@ -294,7 +297,10 @@ export default function ReportCardEdit() {
             return (
               <div key={cat.key} className="rc-cat-card">
                 <div className="rc-cat-card-header">
-                  <span className="rc-cat-card-title">{cat.label}</span>
+                  <span className="rc-cat-card-title">
+                    {CAT_ICONS[cat.key] && (() => { const Icon = CAT_ICONS[cat.key]; return <Icon size={15} style={{ marginRight:'0.35rem', verticalAlign:'middle', opacity:0.8 }}/>; })()}
+                    {cat.label}
+                  </span>
                   <span className="rc-cat-card-desc">{cat.desc}</span>
                 </div>
                 <div className="rc-cat-card-body">
@@ -395,19 +401,19 @@ export default function ReportCardEdit() {
 
       {/* Bottom action bar */}
       <div className="rc-edit-footer">
-        <button type="button" className="btn-danger btn-auto" onClick={handleDelete}>Delete</button>
+        <button type="button" className="btn-danger btn-auto icon-btn" onClick={handleDelete}><Trash2 size={14}/>Delete</button>
         <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-          <button className="btn-secondary btn-auto" onClick={() => handleSave('draft')} disabled={saving}>
-            {saving ? 'Saving…' : 'Save Draft'}
+          <button className="btn-secondary btn-auto icon-btn" onClick={() => handleSave('draft')} disabled={saving}>
+            <Save size={14}/>{saving ? 'Saving…' : 'Save Draft'}
           </button>
-          <button className="btn-secondary btn-auto" onClick={() => handleSave('complete')} disabled={saving}>
-            Mark Complete
+          <button className="btn-secondary btn-auto icon-btn" onClick={() => handleSave('complete')} disabled={saving}>
+            <Save size={14}/>Mark Complete
           </button>
-          <button className="btn-primary btn-auto" onClick={handleDownloadPdf} disabled={pdfLoading}>
-            {pdfLoading ? 'Generating…' : 'Download PDF'}
+          <button className="btn-primary btn-auto icon-btn" onClick={handleDownloadPdf} disabled={pdfLoading}>
+            <Download size={14}/>{pdfLoading ? 'Generating…' : 'PDF'}
           </button>
-          <button className="btn-email btn-auto" onClick={handleSendEmail} disabled={emailLoading}>
-            {emailLoading ? 'Sending…' : card.status === 'sent' ? 'Re-send Email' : 'Send to Parent'}
+          <button className="btn-email btn-auto icon-btn" onClick={handleSendEmail} disabled={emailLoading}>
+            <Send size={14}/>{emailLoading ? 'Sending…' : card.status === 'sent' ? 'Re-send' : 'Send'}
           </button>
         </div>
       </div>
