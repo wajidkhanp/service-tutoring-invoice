@@ -162,5 +162,5 @@ export const getSurahsForJuzz = (juzzNum) =>
   (JUZZ_SURAHS[juzzNum] || []).map((n) => getSurah(n)).filter(Boolean);
 
 // Dropdown label format
-export const surahLabel = (s) => `${s.number}. ${s.name} — ${s.english} (${s.ayahs} ayahs)`;
-export const surahShortLabel = (s) => `${s.number}. ${s.name}`;
+export const surahLabel = (s) => `${s.number}. ${s.name} (${s.ayahs})`;
+export const surahShortLabel = (s) => `${s.number}. ${s.name} (${s.ayahs})`;
