@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { getMe, logout } from '../services/api';
 import {
-  LayoutDashboard, Users, CalendarCheck, ClipboardList,
+  LayoutDashboard, Sun, Users, ClipboardList,
   Receipt, Settings, HelpCircle, LogOut,
 } from 'lucide-react';
 
@@ -45,8 +45,8 @@ export default function Navbar() {
       {/* Desktop nav links — becomes absolute dropdown on mobile */}
       <div className={`navbar-links${menuOpen ? ' open' : ''}`}>
         {navLink('/', <LayoutDashboard size={15}/>, 'Dashboard', true)}
+        {navLink('/daily', <Sun size={15}/>, 'Daily')}
         {navLink('/students', <Users size={15}/>, 'Students')}
-        {navLink('/attendance', <CalendarCheck size={15}/>, 'Attendance')}
         {navLink('/report-cards', <ClipboardList size={15}/>, 'Reports')}
         {navLink('/invoices', <Receipt size={15}/>, 'Invoices')}
         {navLink('/settings', <Settings size={15}/>, 'Settings')}

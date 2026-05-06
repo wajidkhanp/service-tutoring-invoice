@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createStudent, deleteStudent, getStudents, updateStudent, createReportCard } from '../services/api';
-import { CalendarDays, TrendingUp, FileText, Info, UserPlus } from 'lucide-react';
+import { CalendarDays, TrendingUp, FileText, UserPlus } from 'lucide-react';
 
 function formatDate(iso) {
   if (!iso) return '—';
@@ -220,16 +220,15 @@ export default function Students() {
                         <button className="btn-view-details icon-btn" onClick={() => handleReportCard(student)}>
                           <FileText size={13}/>Report Card
                         </button>
-                        <button className="btn-view-details icon-btn" onClick={() => setSelected(student)}>
-                          <Info size={13}/>Details
-                        </button>
                       </>
                     );
                     return (
                       <tr key={student.id}>
                         <td style={{ fontWeight: 500 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                            {student.name}
+                            <Link to={`/students/${student.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                              {student.name}
+                            </Link>
                             <span className="student-gender-inline"><GenderBadge gender={student.gender} /></span>
                           </div>
                           <div className="student-mobile-actions">{actionBtns}</div>

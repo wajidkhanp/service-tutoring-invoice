@@ -2137,3 +2137,279 @@ a.icon-btn { text-decoration: none; }
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
+
+/* ── Daily Class page ─────────────────────────────────────────── */
+
+/* Date navigation bar */
+.daily-date-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.daily-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--gray-200);
+  border-radius: 6px;
+  background: #fff;
+  color: var(--gray-700);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+.daily-nav-btn:hover:not(:disabled) { background: var(--gray-100); }
+.daily-nav-btn:disabled { opacity: 0.35; cursor: default; }
+.daily-date-display {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  white-space: nowrap;
+}
+.daily-date-display svg { color: var(--teal); flex-shrink: 0; }
+.daily-today-btn { padding: 0.3rem 0.75rem; font-size: 0.8rem; }
+
+/* Status bar */
+.daily-status-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 0.5rem 0.75rem;
+  background: #fff;
+  border: 1px solid var(--gray-200);
+  border-radius: 8px;
+  margin-bottom: 1.25rem;
+}
+.daily-status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.daily-status-dot.green  { background: #16a34a; }
+.daily-status-dot.gray   { background: var(--gray-400); }
+.daily-status-sep { width: 1px; height: 14px; background: var(--gray-200); }
+.daily-status-present { color: #15803d; }
+.daily-status-absent  { color: #dc2626; }
+.daily-status-tardy   { color: #d97706; }
+.daily-status-dim     { color: var(--gray-500); }
+.daily-status-future  { color: var(--gray-500); font-style: italic; }
+
+/* Group headers */
+.daily-group-header {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--gray-500);
+  padding: 0.4rem 0;
+  margin-bottom: 0.75rem;
+}
+.daily-group-border { margin-top: 1.5rem; }
+
+/* Responsive card grid */
+.daily-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+@media (max-width: 900px) { .daily-cards-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .daily-cards-grid { grid-template-columns: 1fr; } }
+
+/* Individual student card */
+.daily-card {
+  background: #fff;
+  border: 2px solid var(--gray-200);
+  border-radius: 10px;
+  padding: 0.85rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  transition: border-color 0.15s, background 0.15s;
+}
+.daily-card-p { border-color: var(--gray-200); background: #fff; }
+.daily-card-a { border-color: #fca5a5; background: #fff8f8; }
+.daily-card-t { border-color: #fcd34d; background: #fffdf0; }
+
+.daily-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+.daily-card-name {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--gray-800);
+  flex: 1;
+  min-width: 0;
+}
+.daily-card-grade {
+  font-size: 0.72rem;
+  color: var(--gray-500);
+  background: var(--gray-100);
+  border-radius: 4px;
+  padding: 2px 6px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* P / A / T attendance buttons */
+.daily-att-row {
+  display: flex;
+  gap: 0.35rem;
+}
+.daily-att-btn {
+  flex: 1;
+  padding: 0.3rem 0;
+  font-size: 0.78rem;
+  font-weight: 600;
+  border-radius: 6px;
+  border: 1.5px solid var(--gray-200);
+  background: var(--gray-50);
+  color: var(--gray-600);
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s, color 0.12s;
+}
+.daily-att-btn:disabled { opacity: 0.4; cursor: default; }
+.daily-att-btn:not(:disabled):hover { background: var(--gray-100); }
+
+.daily-att-P.active        { background: #dcfce7; border-color: #4ade80; color: #15803d; }
+.daily-att-A.active        { background: #fee2e2; border-color: #f87171; color: #dc2626; }
+.daily-att-T.active        { background: #fef3c7; border-color: #fbbf24; color: #b45309; }
+
+.daily-att-P:not(:disabled):not(.active):hover { background: #f0fdf4; border-color: #bbf7d0; }
+.daily-att-A:not(:disabled):not(.active):hover { background: #fef2f2; border-color: #fca5a5; }
+.daily-att-T:not(:disabled):not(.active):hover { background: #fffbeb; border-color: #fde68a; }
+
+/* Log Progress button */
+.daily-progress-btn {
+  width: 100%;
+  padding: 0.42rem 0;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border-radius: 7px;
+  border: 1.5px dashed var(--teal);
+  background: transparent;
+  color: var(--teal);
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.daily-progress-btn:hover { background: var(--teal-light); }
+.daily-progress-btn.logged {
+  border-style: solid;
+  border-color: #4ade80;
+  background: #f0fdf4;
+  color: #15803d;
+}
+.daily-progress-btn.logged:hover { background: #dcfce7; }
+
+/* ── Student Profile page ─────────────────────────────────────── */
+.sp-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-size: 0.85rem;
+  color: var(--gray-500);
+  text-decoration: none;
+  margin-bottom: 1.1rem;
+}
+.sp-back-link:hover { color: var(--gray-800); }
+
+.sp-hero {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+.sp-avatar {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: var(--teal);
+  color: #fff;
+  font-size: 1.5rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.sp-hero-info { display: flex; flex-direction: column; gap: 0.2rem; }
+.sp-name {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  margin: 0;
+}
+.sp-grade  { font-size: 0.82rem; color: var(--gray-500); }
+.sp-joined { font-size: 0.78rem; color: var(--gray-400); }
+
+/* Quick-action grid */
+.sp-actions-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.85rem;
+  margin-bottom: 1.5rem;
+}
+@media (max-width: 768px) { .sp-actions-grid { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 420px) { .sp-actions-grid { grid-template-columns: 1fr 1fr; } }
+
+.sp-action-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 1.1rem 0.75rem;
+  border-radius: 10px;
+  border: 1.5px solid var(--gray-200);
+  background: #fff;
+  text-decoration: none;
+  cursor: pointer;
+  text-align: center;
+  transition: transform 0.1s, box-shadow 0.1s, border-color 0.1s;
+}
+.sp-action-card:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0,0,0,.09);
+}
+.sp-action-card:disabled { opacity: 0.65; cursor: default; }
+
+.sp-action-daily      svg { color: #f59e0b; }
+.sp-action-attendance svg { color: var(--teal); }
+.sp-action-progress   svg { color: #3b82f6; }
+.sp-action-report     svg { color: #8b5cf6; }
+
+.sp-action-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--gray-800);
+  line-height: 1.2;
+}
+.sp-action-sub {
+  font-size: 0.71rem;
+  color: var(--gray-500);
+}
+
+.sp-details-panel { margin-bottom: 1.5rem; }
+.sp-contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  text-decoration: none;
+  color: var(--teal-dark);
+}
+.sp-contact-link:hover { text-decoration: underline; }

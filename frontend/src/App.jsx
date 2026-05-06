@@ -4,7 +4,9 @@ import ScrollToTop from './components/ScrollToTop';
 import ProtectedRoute from './components/ProtectedRoute';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Daily from './pages/Daily';
 import Students from './pages/Students';
+import StudentProfile from './pages/StudentProfile';
 import Invoices from './pages/Invoices';
 import Settings from './pages/Settings';
 import Help from './pages/Help';
@@ -38,12 +40,28 @@ export default function App() {
           }
         />
         <Route
+          path="/daily"
+          element={
+            <ProtectedRoute>
+              <Layout><Daily /></Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
           path="/students"
           element={
             <ProtectedRoute>
               <Layout>
                 <Students />
               </Layout>
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/students/:studentId"
+          element={
+            <ProtectedRoute>
+              <Layout><StudentProfile /></Layout>
             </ProtectedRoute>
           }
         />
