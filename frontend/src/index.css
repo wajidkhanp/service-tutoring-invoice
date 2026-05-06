@@ -701,6 +701,35 @@ body {
 .student-table tbody tr:last-child td { border-bottom: none; }
 .student-table tbody tr:hover td { background: var(--gray-50); }
 
+.student-group-header td {
+  padding: 0.45rem 1.25rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--gray-500);
+  background: var(--gray-50);
+  border-bottom: 1px solid var(--gray-200);
+  pointer-events: none;
+}
+.student-group-header:hover td { background: var(--gray-50) !important; }
+.student-group-border td { border-top: 2px solid var(--gray-200); }
+.student-group-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 16px;
+  padding: 0 5px;
+  margin-left: 6px;
+  border-radius: 8px;
+  background: var(--gray-200);
+  color: var(--gray-600);
+  font-size: 0.68rem;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
 .td-action { width: 120px; text-align: right; }
 
 /* ── View Details button ──────────────────────────────────── */

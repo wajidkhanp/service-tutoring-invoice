@@ -202,41 +202,74 @@ export default function Students() {
                 </tr>
               </thead>
               <tbody>
-                {students.map((student) => {
-                  const actionBtns = (
-                    <>
-                      <Link
-                        to={`/attendance/student/${student.id}`}
-                        className="btn-view-details"
-                        style={{ textDecoration: 'none' }}
-                      >
-                        Attendance
-                      </Link>
-                      <button className="btn-view-details" onClick={() => handleReportCard(student)}>
-                        Report Card
-                      </button>
-                      <button className="btn-view-details" onClick={() => setSelected(student)}>
-                        Details
-                      </button>
-                    </>
-                  );
-                  return (
-                    <tr key={student.id}>
-                      <td style={{ fontWeight: 500 }}>
-                        {student.name}
-                        <div className="student-mobile-actions">{actionBtns}</div>
-                      </td>
-                      <td style={{ color: 'var(--gray-600)' }}>{student.grade || '—'}</td>
-                      <td><GenderBadge gender={student.gender} /></td>
-                      <td style={{ color: 'var(--gray-600)', fontSize: '0.85rem' }}>{formatDate(student.joinDate)}</td>
-                      <td className="td-action student-desktop-actions">
-                        <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end' }}>
-                          {actionBtns}
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
+                {(() => {
+                  const boys  = students.filter((s) => s.gender === 'male').sort((a, b) => a.name.localeCompare(b.name));
+                  const girls = students.filter((s) => s.gender === 'female').sort((a, b) => a.name.localeCompare(b.name));
+                  const other = students.filter((s) => !s.gender).sort((a, b) => a.name.localeCompare(b.name));
+
+                  const renderRow = (student) => {
+                    const actionBtns = (
+                      <>
+                        <Link
+                          to={`/attendance/student/${student.id}`}
+                          className="btn-view-details"
+                          style={{ textDecoration: 'none' }}
+                        >
+                          Attendance
+                        </Link>
+                        <button className="btn-view-details" onClick={() => handleReportCard(student)}>
+                          Report Card
+                        </button>
+                        <button className="btn-view-details" onClick={() => setSelected(student)}>
+                          Details
+                        </button>
+                      </>
+                    );
+                    return (
+                      <tr key={student.id}>
+                        <td style={{ fontWeight: 500 }}>
+                          {student.name}
+                          <div className="student-mobile-actions">{actionBtns}</div>
+                        </td>
+                        <td style={{ color: 'var(--gray-600)' }}>{student.grade || '—'}</td>
+                        <td><GenderBadge gender={student.gender} /></td>
+                        <td style={{ color: 'var(--gray-600)', fontSize: '0.85rem' }}>{formatDate(student.joinDate)}</td>
+                        <td className="td-action student-desktop-actions">
+                          <div style={{ display: 'flex', gap: '0.4rem', justifyContent: 'flex-end' }}>
+                            {actionBtns}
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  };
+
+                  const rows = [];
+                  if (boys.length > 0) {
+                    rows.push(
+                      <tr key="group-boys" className="student-group-header">
+                        <td colSpan={5}>Boys <span className="student-group-count">{boys.length}</span></td>
+                      </tr>
+                    );
+                    boys.forEach((s) => rows.push(renderRow(s)));
+                  }
+                  if (girls.length > 0) {
+                    rows.push(
+                      <tr key="group-girls" className={`student-group-header${boys.length > 0 ? ' student-group-border' : ''}`}>
+                        <td colSpan={5}>Girls <span className="student-group-count">{girls.length}</span></td>
+                      </tr>
+                    );
+                    girls.forEach((s) => rows.push(renderRow(s)));
+                  }
+                  if (other.length > 0) {
+                    rows.push(
+                      <tr key="group-other" className={`student-group-header${(boys.length + girls.length) > 0 ? ' student-group-border' : ''}`}>
+                        <td colSpan={5}>Other <span className="student-group-count">{other.length}</span></td>
+                      </tr>
+                    );
+                    other.forEach((s) => rows.push(renderRow(s)));
+                  }
+                  return rows;
+                })()}
               </tbody>
             </table>
           )}
