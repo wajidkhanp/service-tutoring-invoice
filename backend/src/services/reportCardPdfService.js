@@ -19,41 +19,54 @@ function hline(doc, y) {
 function sectionBar(doc, label, y) {
   doc.rect(M, y, CW, 20).fill(ACCENT);
   doc.font('Helvetica-Bold').fontSize(8).fillColor(WHITE).text(label, M + 8, y + 6);
+  return y + 20;
 }
 
 function ratingBadge(doc, rating, x, y, availW) {
   if (!rating) {
-    doc.font('Helvetica').fontSize(8).fillColor(MED).text('—', x, y, { width: availW });
+    doc.font('Helvetica').fontSize(8).fillColor(MED).text('—', x, y + 2, { width: availW });
     return;
   }
   const colors = { 'Excellent': '#15803d', 'Good': ACCENT, 'Needs Improvement': '#d97706' };
   const labels = { 'Excellent': 'Excellent', 'Good': 'Good', 'Needs Improvement': 'Needs Impr.' };
   const bg  = colors[rating] || MED;
   const lbl = labels[rating] || rating;
-  const bw  = Math.min(availW - 4, 76);
-  doc.rect(x, y - 1, bw, 13).fill(bg);
-  doc.font('Helvetica-Bold').fontSize(7.5).fillColor(WHITE).text(lbl, x, y + 2, { width: bw, align: 'center' });
+  const bw  = Math.min(availW - 4, 78);
+  doc.rect(x, y, bw, 14).fill(bg);
+  doc.font('Helvetica-Bold').fontSize(7.5).fillColor(WHITE).text(lbl, x, y + 3, { width: bw, align: 'center' });
 }
 
 function targetMetBadge(doc, val, x, y) {
   if (val === null || val === undefined) {
-    doc.font('Helvetica').fontSize(8).fillColor(MED).text('—', x, y, { width: 50 });
+    doc.font('Helvetica').fontSize(8).fillColor(MED).text('—', x, y + 2, { width: 40 });
     return;
   }
   const bg  = val ? '#15803d' : '#dc2626';
   const lbl = val ? 'Yes' : 'No';
-  doc.rect(x, y - 1, 36, 13).fill(bg);
-  doc.font('Helvetica-Bold').fontSize(7.5).fillColor(WHITE).text(lbl, x, y + 2, { width: 36, align: 'center' });
+  doc.rect(x, y, 36, 14).fill(bg);
+  doc.font('Helvetica-Bold').fontSize(7.5).fillColor(WHITE).text(lbl, x, y + 3, { width: 36, align: 'center' });
 }
 
+// Two-line labeled field (label on top, bold value below)
 function labelVal(doc, label, value, x, y, w) {
   doc.font('Helvetica').fontSize(7).fillColor(MED).text(label, x, y, { width: w });
-  doc.font('Helvetica-Bold').fontSize(9).fillColor(DARK).text(value || '—', x, y + 9, { width: w });
+  doc.font('Helvetica-Bold').fontSize(9.5).fillColor(DARK).text(value || '—', x, y + 9, { width: w });
 }
 
-function sectionRow(doc, label, value, x, y, labelW, valW) {
-  doc.font('Helvetica').fontSize(7.5).fillColor(MED).text(label + ':', x, y, { width: labelW });
-  doc.font('Helvetica').fontSize(8.5).fillColor(DARK).text(value || '—', x + labelW + 4, y, { width: valW });
+// Inline row: [label (7pt)] then [badge/value] at (labelX, badgeX, rowY)
+// Used for the "Target Met | Rating | Notes" compact row
+function inlineRow(doc, items, y) {
+  // items = [{ label, type, value, x, w }]
+  // type: 'targetmet' | 'rating' | 'text'
+  items.forEach(({ label, type, value, x, w }) => {
+    doc.font('Helvetica').fontSize(7).fillColor(MED).text(label + ':', x, y, { width: w });
+    const vy = y + 10;
+    if (type === 'targetmet') targetMetBadge(doc, value ?? null, x, vy);
+    else if (type === 'rating') ratingBadge(doc, value || '', x, vy, w);
+    else {
+      doc.font('Helvetica').fontSize(8).fillColor(DARK).text(value || '—', x, vy + 1, { width: w });
+    }
+  });
 }
 
 // ── Main builder ─────────────────────────────────────────────
@@ -73,18 +86,15 @@ function buildReportCardPdf(reportCard, config) {
     const tardy     = att.tardy     || 0;
     const rate      = totalDays > 0 ? ((present / totalDays) * 100).toFixed(1) + '%' : 'N/A';
 
-    const progress  = reportCard.progress || {};
-    const nlData    = progress.newLesson || {};
-    const sbData    = progress.sabqi     || {};
-    const mzData    = progress.manzil    || {};
-    const akData    = progress.akhlaq    || {};
+    const progress = reportCard.progress || {};
+    const nlData   = progress.newLesson || {};
+    const sbData   = progress.sabqi     || {};
+    const mzData   = progress.manzil    || {};
+    const akData   = progress.akhlaq    || {};
 
     // ── HEADER ────────────────────────────────────────────────
-    doc.rect(0, 0, 595, 78).fill(ACCENT);
-
-    doc.font('Helvetica-Bold').fontSize(16).fillColor(WHITE)
-      .text('Monthly Report Card', M, 16);
-
+    doc.rect(0, 0, 595, 76).fill(ACCENT);
+    doc.font('Helvetica-Bold').fontSize(16).fillColor(WHITE).text('Monthly Report Card', M, 16);
     doc.font('Helvetica-Bold').fontSize(10).fillColor(WHITE)
       .text(config.organizationName || 'Al Noor Hifz Academy', M, 22, { width: CW, align: 'right' });
     doc.font('Helvetica').fontSize(7).fillColor('#ccfbf1')
@@ -92,31 +102,30 @@ function buildReportCardPdf(reportCard, config) {
       .text([config.phone, config.orgEmail].filter(Boolean).join('  ·  '), M, 46, { width: CW, align: 'right' });
 
     // ── STUDENT INFO ──────────────────────────────────────────
-    const INFO_Y = 88;
-    doc.rect(M, INFO_Y, CW, 60).fillAndStroke(LIGHT, BORDER);
+    let y = 86;
+    const INFO_H = 62;
+    doc.rect(M, y, CW, INFO_H).fillAndStroke(LIGHT, BORDER);
 
-    const C1 = M + 12;
-    const C2 = M + CW / 2 + 12;
-
+    const C1 = M + 14;
+    const C2 = M + CW / 2 + 14;
     doc.font('Helvetica').fontSize(7.5).fillColor(MED)
-      .text('STUDENT NAME', C1, INFO_Y + 8)
-      .text('MONTH & YEAR',  C2, INFO_Y + 8);
+      .text('STUDENT NAME', C1, y + 8)
+      .text('MONTH & YEAR', C2, y + 8);
     doc.font('Helvetica-Bold').fontSize(11).fillColor(DARK)
-      .text(reportCard.studentName || '—', C1, INFO_Y + 20)
-      .text(`${reportCard.month} ${reportCard.year}`, C2, INFO_Y + 20);
+      .text(reportCard.studentName || '—', C1, y + 20)
+      .text(`${reportCard.month} ${reportCard.year}`, C2, y + 20);
     doc.font('Helvetica').fontSize(7.5).fillColor(MED)
-      .text('TEACHER',     C1, INFO_Y + 40)
-      .text('CLASS LEVEL', C2, INFO_Y + 40);
+      .text('TEACHER',     C1, y + 42)
+      .text('CLASS LEVEL', C2, y + 42);
     doc.font('Helvetica-Bold').fontSize(9.5).fillColor(DARK)
-      .text(reportCard.teacherName || '—', C1, INFO_Y + 52)
-      .text(reportCard.classLevel  || '—', C2, INFO_Y + 52);
+      .text(reportCard.teacherName || '—', C1, y + 53)
+      .text(reportCard.classLevel  || '—', C2, y + 53);
+    y += INFO_H + 10;
 
     // ── ATTENDANCE ────────────────────────────────────────────
-    const ATT_Y = 160;
-    sectionBar(doc, 'ATTENDANCE', ATT_Y);
-
-    const ATT_BOX_Y = ATT_Y + 20;
-    doc.rect(M, ATT_BOX_Y, CW, 36).fillAndStroke(WHITE, BORDER);
+    y = sectionBar(doc, 'ATTENDANCE', y);
+    const ATT_H = 38;
+    doc.rect(M, y, CW, ATT_H).fillAndStroke(WHITE, BORDER);
 
     const attItems = [
       { label: 'Class Days', value: String(totalDays) },
@@ -125,79 +134,69 @@ function buildReportCardPdf(reportCard, config) {
       { label: 'Tardy',      value: String(tardy)     },
       { label: 'Att. Rate',  value: rate              },
     ];
-    const colW = CW / attItems.length;
+    const attColW = CW / attItems.length;
     attItems.forEach((item, i) => {
-      const cx = M + i * colW;
-      if (i > 0) {
-        doc.moveTo(cx, ATT_BOX_Y).lineTo(cx, ATT_BOX_Y + 36).strokeColor(BORDER).lineWidth(0.5).stroke();
-      }
+      const cx = M + i * attColW;
+      if (i > 0) doc.moveTo(cx, y).lineTo(cx, y + ATT_H).strokeColor(BORDER).lineWidth(0.5).stroke();
       doc.font('Helvetica').fontSize(7).fillColor(MED)
-        .text(item.label, cx + 2, ATT_BOX_Y + 5, { width: colW - 4, align: 'center' });
+        .text(item.label, cx + 2, y + 6, { width: attColW - 4, align: 'center' });
       const isLow = i === 4 && totalDays > 0 && present / totalDays < 0.9;
       doc.font('Helvetica-Bold').fontSize(14).fillColor(isLow ? '#dc2626' : DARK)
-        .text(item.value, cx + 2, ATT_BOX_Y + 16, { width: colW - 4, align: 'center' });
+        .text(item.value, cx + 2, y + 18, { width: attColW - 4, align: 'center' });
     });
+    y += ATT_H + 10;
 
     // ── NEW LESSON ────────────────────────────────────────────
-    const NL_Y = 228;
-    sectionBar(doc, 'NEW LESSON', NL_Y);
-
-    const NL_BOX_Y = NL_Y + 20;
-    doc.rect(M, NL_BOX_Y, CW, 70).fillAndStroke(WHITE, BORDER);
+    y = sectionBar(doc, 'NEW LESSON', y);
+    const NL_H = 62;
+    doc.rect(M, y, CW, NL_H).fillAndStroke(WHITE, BORDER);
 
     // Row 1: 3 numeric fields
     const nlColW = CW / 3;
-    labelVal(doc, 'Target Lines',       nlData.targetLines       || '', M + 8,              NL_BOX_Y + 6, nlColW - 16);
-    labelVal(doc, 'Lines Completed',    nlData.linesCompleted    || '', M + nlColW + 8,      NL_BOX_Y + 6, nlColW - 16);
-    labelVal(doc, 'Days Without Lesson', nlData.daysWithoutLesson || '', M + nlColW * 2 + 8, NL_BOX_Y + 6, nlColW - 16);
+    labelVal(doc, 'Target Lines',        nlData.targetLines        || '', M + 8,              y + 6, nlColW - 16);
+    labelVal(doc, 'Lines Completed',     nlData.linesCompleted     || '', M + nlColW + 8,      y + 6, nlColW - 16);
+    labelVal(doc, 'Days Without Lesson', nlData.daysWithoutLesson  || '', M + nlColW * 2 + 8, y + 6, nlColW - 16);
 
-    // Row 2: Target Met + Rating
-    doc.font('Helvetica').fontSize(7).fillColor(MED).text('Target Met:', M + 8, NL_BOX_Y + 34);
-    targetMetBadge(doc, nlData.targetMet ?? null, M + 8, NL_BOX_Y + 44);
-    doc.font('Helvetica').fontSize(7).fillColor(MED).text('Rating:', M + 70, NL_BOX_Y + 34);
-    ratingBadge(doc, nlData.rating || '', M + 70, NL_BOX_Y + 44, 100);
-
-    // Row 3: Notes
-    doc.font('Helvetica').fontSize(7).fillColor(MED).text('Notes:', M + 8, NL_BOX_Y + 58);
-    doc.font('Helvetica').fontSize(8).fillColor(DARK).text(nlData.notes || '—', M + 40, NL_BOX_Y + 58, { width: CW - 50 });
+    // Row 2: Target Met | Rating | Notes  (all inline)
+    inlineRow(doc, [
+      { label: 'Target Met', type: 'targetmet', value: nlData.targetMet ?? null, x: M + 8,   w: 42  },
+      { label: 'Rating',     type: 'rating',    value: nlData.rating   || '',    x: M + 58,  w: 90  },
+      { label: 'Notes',      type: 'text',      value: nlData.notes    || '',    x: M + 158, w: CW - 170 },
+    ], y + 36);
+    y += NL_H + 10;
 
     // ── SABQI ─────────────────────────────────────────────────
-    const SB_Y = 330;
-    sectionBar(doc, 'SABQI', SB_Y);
-
-    const SB_BOX_Y = SB_Y + 20;
-    doc.rect(M, SB_BOX_Y, CW, 58).fillAndStroke(WHITE, BORDER);
+    y = sectionBar(doc, 'SABQI', y);
+    const SB_H = 58;
+    doc.rect(M, y, CW, SB_H).fillAndStroke(WHITE, BORDER);
 
     // Row 1: 2 fields
     const sbColW = CW / 2;
-    labelVal(doc, 'Recited Days',     sbData.recitedDays     || '', M + 8,           SB_BOX_Y + 6, sbColW - 16);
-    labelVal(doc, 'Not Recited Days', sbData.notRecitedDays  || '', M + sbColW + 8,  SB_BOX_Y + 6, sbColW - 16);
+    labelVal(doc, 'Recited Days',     sbData.recitedDays    || '', M + 8,          y + 6, sbColW - 16);
+    labelVal(doc, 'Not Recited Days', sbData.notRecitedDays || '', M + sbColW + 8, y + 6, sbColW - 16);
 
-    // Row 2: Target Met + Rating
-    doc.font('Helvetica').fontSize(7).fillColor(MED).text('Target Met:', M + 8, SB_BOX_Y + 32);
-    targetMetBadge(doc, sbData.targetMet ?? null, M + 8, SB_BOX_Y + 42);
-    doc.font('Helvetica').fontSize(7).fillColor(MED).text('Rating:', M + 70, SB_BOX_Y + 32);
-    ratingBadge(doc, sbData.rating || '', M + 70, SB_BOX_Y + 42, 100);
-
-    // Row 3: Notes
-    doc.font('Helvetica').fontSize(7).fillColor(MED).text('Notes:', M + 8, SB_BOX_Y + 47);
-    doc.font('Helvetica').fontSize(8).fillColor(DARK).text(sbData.notes || '—', M + 40, SB_BOX_Y + 47, { width: CW - 50 });
+    // Row 2: Target Met | Rating | Notes
+    inlineRow(doc, [
+      { label: 'Target Met', type: 'targetmet', value: sbData.targetMet ?? null, x: M + 8,   w: 42  },
+      { label: 'Rating',     type: 'rating',    value: sbData.rating   || '',    x: M + 58,  w: 90  },
+      { label: 'Notes',      type: 'text',      value: sbData.notes    || '',    x: M + 158, w: CW - 170 },
+    ], y + 32);
+    y += SB_H + 10;
 
     // ── MANZIL ────────────────────────────────────────────────
-    const MZ_Y = 420;
-    sectionBar(doc, 'MANZIL', MZ_Y);
-
-    const MZ_BOX_Y = MZ_Y + 20;
-    doc.rect(M, MZ_BOX_Y, CW, 78).fillAndStroke(WHITE, BORDER);
+    y = sectionBar(doc, 'MANZIL', y);
+    const MZ_H = 88;
+    doc.rect(M, y, CW, MZ_H).fillAndStroke(WHITE, BORDER);
 
     // Row 1: Target Ajza + Target Met
-    doc.font('Helvetica').fontSize(7).fillColor(MED).text('Target Ajza / Week:', M + 8, MZ_BOX_Y + 6);
-    doc.font('Helvetica-Bold').fontSize(9).fillColor(DARK).text(mzData.targetAjza || '—', M + 8, MZ_BOX_Y + 15, { width: 140 });
-    doc.font('Helvetica').fontSize(7).fillColor(MED).text('Target Met:', M + 160, MZ_BOX_Y + 6);
-    targetMetBadge(doc, mzData.targetMet ?? null, M + 160, MZ_BOX_Y + 15);
+    labelVal(doc, 'Target Ajza / Week', mzData.targetAjza || '', M + 8, y + 6, 140);
+    doc.font('Helvetica').fontSize(7).fillColor(MED).text('Target Met:', M + 160, y + 6, { width: 80 });
+    targetMetBadge(doc, mzData.targetMet ?? null, M + 160, y + 16);
 
-    // Row 2: Week grid
+    // Row 2: 4-column week grid
+    const wkY = y + 34;
     const wkColW = CW / 4;
+    hline(doc, wkY - 2);
     [
       { label: 'Week 1', val: mzData.week1 },
       { label: 'Week 2', val: mzData.week2 },
@@ -205,76 +204,69 @@ function buildReportCardPdf(reportCard, config) {
       { label: 'Week 4', val: mzData.week4 },
     ].forEach((wk, i) => {
       const wx = M + i * wkColW;
-      if (i > 0) {
-        doc.moveTo(wx, MZ_BOX_Y + 30).lineTo(wx, MZ_BOX_Y + 55).strokeColor(BORDER).lineWidth(0.5).stroke();
-      }
-      doc.font('Helvetica').fontSize(7).fillColor(MED).text(wk.label, wx + 6, MZ_BOX_Y + 32, { width: wkColW - 12 });
-      doc.font('Helvetica-Bold').fontSize(9).fillColor(DARK).text(wk.val || '—', wx + 6, MZ_BOX_Y + 42, { width: wkColW - 12 });
+      if (i > 0) doc.moveTo(wx, wkY - 2).lineTo(wx, wkY + 26).strokeColor(BORDER).lineWidth(0.5).stroke();
+      doc.font('Helvetica').fontSize(7).fillColor(MED).text(wk.label, wx + 6, wkY + 2, { width: wkColW - 12 });
+      doc.font('Helvetica-Bold').fontSize(9.5).fillColor(DARK).text(wk.val || '—', wx + 6, wkY + 12, { width: wkColW - 12 });
     });
+    hline(doc, wkY + 28);
 
-    // Row 3: Rating + Notes
-    doc.font('Helvetica').fontSize(7).fillColor(MED).text('Rating:', M + 8, MZ_BOX_Y + 60);
-    ratingBadge(doc, mzData.rating || '', M + 8, MZ_BOX_Y + 68, 100);
-    doc.font('Helvetica').fontSize(7).fillColor(MED).text('Notes:', M + 120, MZ_BOX_Y + 60);
-    doc.font('Helvetica').fontSize(8).fillColor(DARK).text(mzData.notes || '—', M + 152, MZ_BOX_Y + 60, { width: CW - 162 });
+    // Row 3: Rating | Notes
+    inlineRow(doc, [
+      { label: 'Rating', type: 'rating', value: mzData.rating || '', x: M + 8,   w: 90  },
+      { label: 'Notes',  type: 'text',   value: mzData.notes  || '', x: M + 108, w: CW - 120 },
+    ], y + 64);
+    y += MZ_H + 10;
 
     // ── AKHLAQ ────────────────────────────────────────────────
-    const AK_Y = 510;
-    sectionBar(doc, 'AKHLAQ (CHARACTER & BEHAVIOR)', AK_Y);
+    y = sectionBar(doc, 'AKHLAQ (CHARACTER & BEHAVIOR)', y);
+    const AK_H = 38;
+    doc.rect(M, y, CW, AK_H).fillAndStroke(WHITE, BORDER);
 
-    const AK_BOX_Y = AK_Y + 20;
-    doc.rect(M, AK_BOX_Y, CW, 36).fillAndStroke(WHITE, BORDER);
-
-    doc.font('Helvetica').fontSize(7).fillColor(MED).text('Rating:', M + 8, AK_BOX_Y + 6);
-    ratingBadge(doc, akData.rating || '', M + 8, AK_BOX_Y + 16, 100);
-    doc.font('Helvetica').fontSize(7).fillColor(MED).text('Notes:', M + 120, AK_BOX_Y + 6);
-    doc.font('Helvetica').fontSize(8).fillColor(DARK).text(akData.notes || '—', M + 152, AK_BOX_Y + 6, { width: CW - 162 });
+    inlineRow(doc, [
+      { label: 'Rating', type: 'rating', value: akData.rating || '', x: M + 8,   w: 90  },
+      { label: 'Notes',  type: 'text',   value: akData.notes  || '', x: M + 108, w: CW - 120 },
+    ], y + 10);
+    y += AK_H + 8;
 
     // ── STARS & ACHIEVEMENTS ──────────────────────────────────
-    const ST_Y = 558;
-    sectionBar(doc, 'STARS & ACHIEVEMENTS', ST_Y);
-
-    const ST_BOX_Y = ST_Y + 20;
-    doc.rect(M, ST_BOX_Y, CW, 30).fillAndStroke(WHITE, BORDER);
+    y = sectionBar(doc, 'STARS & ACHIEVEMENTS', y);
+    const ST_H = 32;
+    doc.rect(M, y, CW, ST_H).fillAndStroke(WHITE, BORDER);
 
     const stars = Math.max(0, Math.min(reportCard.stars || 0, 20));
-    doc.font('Helvetica').fontSize(7.5).fillColor(MED).text('Stars Earned:', M + 10, ST_BOX_Y + 10);
-    doc.font('Helvetica-Bold').fontSize(13).fillColor('#f59e0b').text(String(stars), M + 90, ST_BOX_Y + 7);
-    doc.font('Helvetica').fontSize(8).fillColor(MED).text('/ 20', M + 104, ST_BOX_Y + 11);
-
-    doc.font('Helvetica-Bold').fontSize(7.5).fillColor(MED).text('Special Achievements:', M + 145, ST_BOX_Y + 10);
+    doc.font('Helvetica').fontSize(7.5).fillColor(MED).text('Stars Earned:', M + 10, y + 9);
+    doc.font('Helvetica-Bold').fontSize(14).fillColor('#f59e0b').text(String(stars), M + 88, y + 6);
+    doc.font('Helvetica').fontSize(8).fillColor(MED).text('/ 20', M + 103, y + 10);
+    doc.font('Helvetica-Bold').fontSize(7.5).fillColor(MED).text('Special Achievements:', M + 148, y + 9);
     doc.font('Helvetica').fontSize(8.5).fillColor(DARK)
-      .text(reportCard.achievements || '—', M + 265, ST_BOX_Y + 10, { width: CW - 275 });
+      .text(reportCard.achievements || '—', M + 268, y + 9, { width: CW - 278 });
+    y += ST_H + 8;
 
     // ── TEACHER REMARKS ───────────────────────────────────────
-    const RM_Y = 620;
-    sectionBar(doc, 'TEACHER REMARKS', RM_Y);
-
-    const RM_BOX_Y = RM_Y + 20;
-    doc.rect(M, RM_BOX_Y, CW, 55).fillAndStroke(WHITE, BORDER);
+    y = sectionBar(doc, 'TEACHER REMARKS', y);
+    const RM_H = 56;
+    doc.rect(M, y, CW, RM_H).fillAndStroke(WHITE, BORDER);
     doc.font('Helvetica').fontSize(9).fillColor(DARK)
-      .text(reportCard.remarks || '', M + 10, RM_BOX_Y + 10, { width: CW - 20, height: 44, lineGap: 3 });
+      .text(reportCard.remarks || '', M + 10, y + 10, { width: CW - 20, height: RM_H - 18, lineGap: 3 });
+    y += RM_H + 8;
 
     // ── PARENT ACKNOWLEDGEMENT ────────────────────────────────
-    const PA_Y = 707;
-    sectionBar(doc, 'PARENT ACKNOWLEDGEMENT', PA_Y);
-
-    const PA_BOX_Y = PA_Y + 20;
-    doc.rect(M, PA_BOX_Y, CW, 36).fillAndStroke(WHITE, BORDER);
-
-    const sigY = PA_BOX_Y + 26;
+    y = sectionBar(doc, 'PARENT ACKNOWLEDGEMENT', y);
+    const PA_H = 38;
+    doc.rect(M, y, CW, PA_H).fillAndStroke(WHITE, BORDER);
+    const sigY = y + 28;
     doc.moveTo(M + 16, sigY).lineTo(M + 200, sigY).strokeColor(MED).lineWidth(0.5).stroke();
     doc.font('Helvetica').fontSize(7).fillColor(MED).text('Parent Signature', M + 16, sigY + 3);
-    doc.moveTo(M + 270, sigY).lineTo(M + 420, sigY).strokeColor(MED).lineWidth(0.5).stroke();
-    doc.font('Helvetica').fontSize(7).fillColor(MED).text('Date', M + 270, sigY + 3);
+    doc.moveTo(M + 280, sigY).lineTo(M + 430, sigY).strokeColor(MED).lineWidth(0.5).stroke();
+    doc.font('Helvetica').fontSize(7).fillColor(MED).text('Date', M + 280, sigY + 3);
+    y += PA_H + 8;
 
     // ── FOOTER ────────────────────────────────────────────────
-    const FT_Y = 775;
-    hline(doc, FT_Y);
+    hline(doc, y);
     const now = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
     doc.font('Helvetica').fontSize(7.5).fillColor(MED)
-      .text(`${config.organizationName || 'Al Noor Hifz Academy'} · ${reportCard.month} ${reportCard.year} Report Card`, M, FT_Y + 6)
-      .text(`Generated on ${now}`, M, FT_Y + 6, { width: CW, align: 'right' });
+      .text(`${config.organizationName || 'Al Noor Hifz Academy'} · ${reportCard.month} ${reportCard.year} Report Card`, M, y + 6)
+      .text(`Generated on ${now}`, M, y + 6, { width: CW, align: 'right' });
 
     doc.end();
   });
