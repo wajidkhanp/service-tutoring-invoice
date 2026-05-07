@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   CalendarDays, TrendingUp, FileText, Sun,
-  Phone, Mail, ChevronLeft,
+  Phone, Mail,
 } from 'lucide-react';
 import { getStudents, createReportCard } from '../services/api';
 
@@ -71,10 +71,11 @@ export default function StudentProfile() {
 
   return (
     <div className="page">
-      {/* Back link */}
-      <Link to="/students" className="sp-back-link">
-        <ChevronLeft size={15} />Students
-      </Link>
+      <nav className="page-breadcrumb">
+        <Link to="/students">Students</Link>
+        <span className="bc-sep">›</span>
+        <span className="bc-current">{student.name}</span>
+      </nav>
 
       {/* Student header */}
       <div className="sp-hero">

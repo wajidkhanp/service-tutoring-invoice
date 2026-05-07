@@ -119,15 +119,25 @@ export default function StudentAttendance() {
   if (!student) {
     return (
       <div className="page">
-        <Link to="/attendance" className="sa-back-link">← Back to Attendance</Link>
-        <div className="alert alert-error" style={{ marginTop: '1rem' }}>Student not found.</div>
+        <nav className="page-breadcrumb">
+          <Link to="/students">Students</Link>
+          <span className="bc-sep">›</span>
+          <span className="bc-current">Attendance</span>
+        </nav>
+        <div className="alert alert-error">Student not found.</div>
       </div>
     );
   }
 
   return (
     <div className="page">
-      <Link to="/attendance" className="sa-back-link">← Back to Attendance</Link>
+      <nav className="page-breadcrumb">
+        <Link to="/students">Students</Link>
+        <span className="bc-sep">›</span>
+        <Link to={`/students/${studentId}`}>{student.name}</Link>
+        <span className="bc-sep">›</span>
+        <span className="bc-current">Attendance</span>
+      </nav>
 
       <div className="sa-student-header">
         <div>

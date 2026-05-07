@@ -226,8 +226,9 @@ export default function Students() {
                       <tr key={student.id}>
                         <td style={{ fontWeight: 500 }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                            <Link to={`/students/${student.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
+                            <Link to={`/students/${student.id}`} className="student-name-link">
                               {student.name}
+                              <span className="snl-arrow">›</span>
                             </Link>
                             <span className="student-gender-inline"><GenderBadge gender={student.gender} /></span>
                           </div>

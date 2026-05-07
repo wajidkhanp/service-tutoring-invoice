@@ -102,6 +102,44 @@ body {
 }
 .btn-logout:hover { background: rgba(255,255,255,.2); color: var(--white); }
 
+/* ── Breadcrumb navigation ────────────────────────────────────── */
+.page-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.8rem;
+  color: var(--gray-400);
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.page-breadcrumb a {
+  color: var(--gray-500);
+  text-decoration: none;
+}
+.page-breadcrumb a:hover { color: var(--teal-dark); text-decoration: underline; }
+.page-breadcrumb .bc-sep { color: var(--gray-300); font-size: 0.75rem; }
+.page-breadcrumb .bc-current { color: var(--gray-700); font-weight: 600; }
+
+/* ── Student name link in roster ─────────────────────────────── */
+.student-name-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: var(--teal-dark);
+  text-decoration: none;
+  font-weight: 600;
+}
+.student-name-link:hover { text-decoration: underline; }
+.student-name-link .snl-arrow {
+  font-size: 0.7rem;
+  color: var(--gray-400);
+  transition: color 0.12s, transform 0.12s;
+}
+tr:hover .student-name-link .snl-arrow {
+  color: var(--teal);
+  transform: translateX(2px);
+}
+
 /* Mobile menu logout section — hidden on desktop, shown inside dropdown */
 .nav-menu-logout {
   display: none;
@@ -2367,17 +2405,6 @@ a.icon-btn { text-decoration: none; }
 .daily-progress-btn.logged:hover { background: #dcfce7; }
 
 /* ── Student Profile page ─────────────────────────────────────── */
-.sp-back-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.2rem;
-  font-size: 0.85rem;
-  color: var(--gray-500);
-  text-decoration: none;
-  margin-bottom: 1.1rem;
-}
-.sp-back-link:hover { color: var(--gray-800); }
-
 .sp-hero {
   display: flex;
   align-items: center;

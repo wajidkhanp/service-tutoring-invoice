@@ -87,13 +87,26 @@ export default function StudentProgress() {
   if (!student && !loading) {
     return (
       <div className="page">
-        <div className="info-block">Student not found. <Link to="/students">Back to Students</Link></div>
+        <nav className="page-breadcrumb">
+          <Link to="/students">Students</Link>
+          <span className="bc-sep">›</span>
+          <span className="bc-current">Progress</span>
+        </nav>
+        <div className="info-block">Student not found.</div>
       </div>
     );
   }
 
   return (
     <div className="page">
+      <nav className="page-breadcrumb">
+        <Link to="/students">Students</Link>
+        <span className="bc-sep">›</span>
+        <Link to={`/students/${studentId}`}>{student?.name || '…'}</Link>
+        <span className="bc-sep">›</span>
+        <span className="bc-current">Progress</span>
+      </nav>
+
       {/* Header */}
       <div className="page-header students-page-header">
         <div>
