@@ -2482,6 +2482,53 @@ a.icon-btn { text-decoration: none; }
 }
 
 .sp-details-panel { margin-bottom: 1.5rem; }
+
+.sp-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--gray-100);
+}
+.sp-panel-title {
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--gray-500);
+}
+.sp-panel-actions { display: flex; gap: 0.4rem; align-items: center; }
+
+.sp-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 6px;
+  border: 1px solid var(--gray-200);
+  background: #fff;
+  cursor: pointer;
+  transition: background 0.12s, border-color 0.12s;
+}
+.sp-edit-btn  { color: var(--gray-600); }
+.sp-edit-btn:hover  { background: var(--gray-100); }
+.sp-trash-btn { color: #dc2626; border-color: #fca5a5; }
+.sp-trash-btn:hover:not(:disabled) { background: #fef2f2; }
+.sp-trash-btn:disabled { opacity: 0.4; cursor: default; }
+
+.sp-edit-footer {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.85rem 1.25rem;
+  border-top: 1px solid var(--gray-100);
+}
+.sp-edit-footer .btn-secondary,
+.sp-edit-footer .btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
 .sp-contact-link {
   display: inline-flex;
   align-items: center;
@@ -2491,25 +2538,3 @@ a.icon-btn { text-decoration: none; }
 }
 .sp-contact-link:hover { text-decoration: underline; }
 
-.sp-danger-zone {
-  border-top: 1px solid var(--gray-100);
-  padding: 0.85rem 1.25rem;
-  display: flex;
-  justify-content: flex-end;
-}
-.sp-delete-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  background: none;
-  border: 1px solid #fca5a5;
-  color: #dc2626;
-  font-size: 0.82rem;
-  font-weight: 600;
-  padding: 0.4rem 0.9rem;
-  border-radius: 7px;
-  cursor: pointer;
-  transition: background 0.12s;
-}
-.sp-delete-btn:hover:not(:disabled) { background: #fef2f2; }
-.sp-delete-btn:disabled { opacity: 0.5; cursor: default; }
