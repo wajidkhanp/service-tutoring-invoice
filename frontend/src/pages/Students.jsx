@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { createStudent, deleteStudent, getStudents, updateStudent, createReportCard } from '../services/api';
 import { CalendarDays, TrendingUp, FileText, UserPlus } from 'lucide-react';
+import GenderBadge from '../components/GenderBadge';
 
 function formatDate(iso) {
   if (!iso) return '—';
@@ -13,15 +14,6 @@ const EMPTY_FORM = {
   name: '', email: '', joinDate: '', rate: '', grade: '', address: '', notes: '', gender: '',
   parentName: '', parentPhone: '', parentEmail: '',
 };
-
-function GenderBadge({ gender }) {
-  if (!gender) return null;
-  return (
-    <span className={`gender-badge gender-badge-${gender}`}>
-      {gender === 'male' ? 'M' : 'F'}
-    </span>
-  );
-}
 
 function GenderRadio({ value, onChange }) {
   return (

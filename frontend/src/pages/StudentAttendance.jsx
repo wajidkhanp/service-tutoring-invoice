@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { getStudents, getStudentAttendance } from '../services/api';
+import GenderBadge from '../components/GenderBadge';
 
 const MONTH_NAMES = [
   'January','February','March','April','May','June',
@@ -52,10 +53,6 @@ function buildWeekGrid(year, month, days) {
   return weeks;
 }
 
-function GenderBadge({ gender }) {
-  if (!gender) return null;
-  return <span className={`gender-badge gender-badge-${gender}`}>{gender === 'male' ? 'M' : 'F'}</span>;
-}
 
 function getValidYears() {
   const now = new Date();

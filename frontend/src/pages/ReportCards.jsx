@@ -4,6 +4,7 @@ import {
   getStudents, getReportCards, createReportCard, bulkCreateReportCards, deleteReportCard, downloadReportCardPdf, emailReportCard,
 } from '../services/api';
 import { Pencil, Plus, Download, Send, Trash2, Sparkles } from 'lucide-react';
+import GenderBadge from '../components/GenderBadge';
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
@@ -15,11 +16,6 @@ function getValidMonths() {
     list.push({ month: MONTHS[d.getMonth()], year: String(d.getFullYear()) });
   }
   return list;
-}
-
-function GenderBadge({ gender }) {
-  if (!gender) return null;
-  return <span className={`gender-badge gender-badge-${gender}`}>{gender === 'male' ? 'M' : 'F'}</span>;
 }
 
 function StatusBadge({ status }) {

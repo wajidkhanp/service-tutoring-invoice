@@ -6,6 +6,7 @@ import {
   getDailyProgress, saveDailyProgress,
 } from '../services/api';
 import ProgressLogPanel from '../components/ProgressLogPanel';
+import GenderBadge from '../components/GenderBadge';
 
 const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 const DOW_NAMES   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
@@ -29,11 +30,6 @@ function nextWeekday(date) {
 function hasAnyProgress(p) {
   if (!p) return false;
   return p.newLesson != null || p.sabqi != null || p.manzil != null;
-}
-
-function GenderBadge({ gender }) {
-  if (!gender) return null;
-  return <span className={`gender-badge gender-badge-${gender}`}>{gender === 'male' ? 'M' : 'F'}</span>;
 }
 
 function StudentCard({ student, status, hasProgress, isFuture, onStatusChange, onLogProgress }) {

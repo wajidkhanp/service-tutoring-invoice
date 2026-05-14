@@ -5,6 +5,7 @@ import {
   Phone, Mail, Trash2,
 } from 'lucide-react';
 import { getStudents, createReportCard, deleteStudent } from '../services/api';
+import GenderBadge from '../components/GenderBadge';
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
@@ -12,11 +13,6 @@ function formatDate(iso) {
   if (!iso) return '—';
   const d = /^\d{4}-\d{2}-\d{2}$/.test(iso) ? new Date(`${iso}T00:00:00`) : new Date(iso);
   return d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-}
-
-function GenderBadge({ gender }) {
-  if (!gender) return null;
-  return <span className={`gender-badge gender-badge-${gender}`}>{gender === 'male' ? 'Male' : 'Female'}</span>;
 }
 
 export default function StudentProfile() {
