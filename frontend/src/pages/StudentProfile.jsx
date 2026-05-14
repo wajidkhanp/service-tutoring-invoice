@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import {
   CalendarDays, TrendingUp, FileText, Sun,
-  Phone, Mail,
+  Phone, Mail, Trash2,
 } from 'lucide-react';
-import { getStudents, createReportCard } from '../services/api';
+import { getStudents, createReportCard, deleteStudent } from '../services/api';
 
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
@@ -23,10 +23,11 @@ export default function StudentProfile() {
   const { studentId } = useParams();
   const navigate = useNavigate();
 
-  const [student, setStudent] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState('');
+  const [student, setStudent]     = useState(null);
+  const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState('');
   const [rcLoading, setRcLoading] = useState(false);
+  const [deleting, setDeleting]   = useState(false);
 
   useEffect(() => {
     getStudents()
@@ -37,6 +38,18 @@ export default function StudentProfile() {
       .catch(() => setError('Unable to load student.'))
       .finally(() => setLoading(false));
   }, [studentId]);
+
+  const handleDelete = async () => {
+    if (!window.confirm(`Remove ${student.name}? This cannot be undone.`)) return;
+    setDeleting(true);
+    try {
+      await deleteStudent(studentId);
+      navigate('/students');
+    } catch {
+      setError('Unable to remove student. Please try again.');
+      setDeleting(false);
+    }
+  };
 
   const openReportCard = async () => {
     if (rcLoading) return;
@@ -183,6 +196,17 @@ export default function StudentProfile() {
               </>
             )}
           </dl>
+        </div>
+        <div className="sp-danger-zone">
+          <button
+            type="button"
+            className="sp-delete-btn"
+            onClick={handleDelete}
+            disabled={deleting}
+          >
+            <Trash2 size={14} />
+            {deleting ? 'Removing…' : 'Remove Student'}
+          </button>
         </div>
       </div>
     </div>

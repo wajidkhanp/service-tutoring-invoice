@@ -2492,3 +2492,26 @@ a.icon-btn { text-decoration: none; }
   color: var(--teal-dark);
 }
 .sp-contact-link:hover { text-decoration: underline; }
+
+.sp-danger-zone {
+  border-top: 1px solid var(--gray-100);
+  padding: 0.85rem 1.25rem;
+  display: flex;
+  justify-content: flex-end;
+}
+.sp-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: none;
+  border: 1px solid #fca5a5;
+  color: #dc2626;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.4rem 0.9rem;
+  border-radius: 7px;
+  cursor: pointer;
+  transition: background 0.12s;
+}
+.sp-delete-btn:hover:not(:disabled) { background: #fef2f2; }
+.sp-delete-btn:disabled { opacity: 0.5; cursor: default; }
