@@ -41,7 +41,7 @@ function groupDaysByWeek(year, month) {
   for (let d = 1; d <= daysInMonth; d++) {
     const date = new Date(year, month - 1, d);
     const dow = date.getDay();
-    if (dow === 0 || dow === 6) continue;
+    if (dow === 0) continue;
     if (dow === 1 && currentWeek.length > 0) { weeks.push(currentWeek); currentWeek = []; }
     currentWeek.push({ day: d, dow, dateStr: toDateStr(year, month, d) });
   }
@@ -210,7 +210,7 @@ export default function Attendance() {
         setAttendance(attRes.data.attendance || {});
         // auto-expand today if in current month
         const todayDow = new Date(todayStr + 'T12:00:00').getDay();
-        if (todayDow !== 0 && todayDow !== 6) setExpandedDays(new Set([todayStr]));
+        if (todayDow !== 0) setExpandedDays(new Set([todayStr]));
       })
       .catch(() => setError('Unable to load attendance data. Please try again.'))
       .finally(() => setLoading(false));

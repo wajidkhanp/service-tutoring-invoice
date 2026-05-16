@@ -1,0 +1,47 @@
+[
+  {
+    "id": "9eba3fe8-6616-4f0b-a26a-018e2d90d35a",
+    "studentId": "8ca15dc3-32c1-4ddf-bcae-2cfc1b7823df",
+    "studentName": "Mohammed Luqman",
+    "month": "May",
+    "year": "2026",
+    "teacherName": "Wajid Khan",
+    "classLevel": "Kinder",
+    "attendance": {
+      "totalDays": 2,
+      "present": 1,
+      "absent": 0,
+      "tardy": 1
+    },
+    "progress": {
+      "newLesson": {
+        "rating": "Good",
+        "notes": "Test1 Test1 Test1 Test1 Test1 Test1 Test1 Test1 Test1 "
+      },
+      "sabqi": {
+        "rating": "Excellent",
+        "notes": " Test2 Test2 Test2 Test2 Test2 Test2 Test2 Test2 Test2 Test2 "
+      },
+      "manzil": {
+        "rating": "Good",
+        "notes": "Test3 Test3 Test3 Test3 Test3 Test3 Test3 Test3 Test3 Test3 Test3 "
+      },
+      "akhlaq": {
+        "rating": "Good",
+        "notes": " Test4 Test4 Test4 Test4 Test4 Test4 Test4 Test4 Test4 Test4 Test4 "
+      },
+      "fluency": {
+        "rating": "",
+        "notes": ""
+      }
+    },
+    "stars": 1,
+    "achievements": "Memorized Sura Test4 Test4 Test4 ",
+    "remarks": "Memorized Sura Test4 Test4 Test4  work hard",
+    "status": "complete",
+    "createdAt": "2026-05-04T13:06:41.525Z",
+    "updatedAt": "2026-05-04T13:08:16.909Z",
+    "sentAt": null,
+    "sentTo": null
+  }
+]

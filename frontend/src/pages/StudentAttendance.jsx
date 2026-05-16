@@ -39,7 +39,7 @@ function buildWeekGrid(year, month, days) {
 
   for (let d = 1; d <= daysInMonth; d++) {
     const dow = new Date(year, month - 1, d).getDay();
-    if (dow === 0 || dow === 6) continue;
+    if (dow === 0) continue;
 
     if (dow === 1 || currentWeek === null) {
       if (currentWeek) weeks.push(currentWeek);
@@ -227,13 +227,14 @@ export default function StudentAttendance() {
                             <th className="sa-day-col">Wed</th>
                             <th className="sa-day-col">Thu</th>
                             <th className="sa-day-col">Fri</th>
+                            <th className="sa-day-col">Sat</th>
                           </tr>
                         </thead>
                         <tbody>
                           {weeks.map((week) => (
                             <tr key={week.weekNum}>
                               <td className="sa-wk-label">W{week.weekNum}</td>
-                              {[1, 2, 3, 4, 5].map((dow) => {
+                              {[1, 2, 3, 4, 5, 6].map((dow) => {
                                 const cell = week.cells[dow];
                                 if (!cell) return <td key={dow} className="sa-cell-blank"></td>;
                                 if (cell.status === undefined) {

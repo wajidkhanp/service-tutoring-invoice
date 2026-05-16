@@ -7,7 +7,13 @@
     "notes": "",
     "address": "8603 S 16th DR, Phoenix, AZ, 85041",
     "grade": "8th Grade",
-    "createdAt": "2026-04-27T13:02:28.924Z"
+    "createdAt": "2026-04-27T13:02:28.924Z",
+    "gender": "female",
+    "joinDate": "2025-09-15",
+    "updatedAt": "2026-05-04T07:15:29.520Z",
+    "parentName": "Wajid Patan",
+    "parentPhone": "4804382266",
+    "parentEmail": "wajid@live.ca"
   },
   {
     "id": "e75b7491-2a67-4efa-ac22-fdcca9ea4954",
@@ -17,7 +23,13 @@
     "notes": "",
     "address": "8603 S 16th DR, Phoenix, AZ, 85041",
     "grade": "7th Grade",
-    "createdAt": "2026-04-27T13:03:52.811Z"
+    "createdAt": "2026-04-27T13:03:52.811Z",
+    "gender": "female",
+    "joinDate": "2025-09-17",
+    "parentName": "Wajid Patan",
+    "parentPhone": "4804382266",
+    "parentEmail": "wajid@live.ca",
+    "updatedAt": "2026-05-04T07:16:01.361Z"
   },
   {
     "id": "43539197-9896-4ad7-b4af-1391ff37ea86",
@@ -27,7 +39,13 @@
     "notes": "",
     "address": "8603 S 16th DR, Phoenix, AZ, 85041",
     "grade": "5th Grade",
-    "createdAt": "2026-04-27T13:04:13.272Z"
+    "createdAt": "2026-04-27T13:04:13.272Z",
+    "gender": "male",
+    "joinDate": "2025-10-21",
+    "parentName": "Wajid Patan",
+    "parentPhone": "4804382266",
+    "parentEmail": "wajid@live.ca",
+    "updatedAt": "2026-05-04T07:16:23.619Z"
   },
   {
     "id": "8ca15dc3-32c1-4ddf-bcae-2cfc1b7823df",
@@ -37,6 +55,12 @@
     "notes": "",
     "address": "8603 S 16th DR, Phoenix, AZ, 85041",
     "grade": "Kinder",
-    "createdAt": "2026-04-27T14:28:07.890Z"
+    "createdAt": "2026-04-27T14:28:07.890Z",
+    "gender": "male",
+    "joinDate": "2026-02-10",
+    "parentName": "Wajid Patan",
+    "parentPhone": "4804382266",
+    "parentEmail": "wajid@live.ca",
+    "updatedAt": "2026-05-04T07:16:48.222Z"
   }
 ]
