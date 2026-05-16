@@ -13,7 +13,7 @@ const DOW_NAMES   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday'
 
 function pad(n) { return String(n).padStart(2, '0'); }
 function toDateStr(d) { return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
-function isWeekend(d) { const w = d.getDay(); return w === 0 || w === 6; }
+function isWeekend(d) { return d.getDay() === 0; }
 function addDays(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
 
 function prevWeekday(date) {
@@ -77,7 +77,7 @@ export default function Daily() {
 
   const [currentDate, setCurrentDate] = useState(() => {
     const d = new Date(); d.setHours(0, 0, 0, 0);
-    return isWeekend(d) ? prevWeekday(d) : d;
+    return d.getDay() === 0 ? prevWeekday(d) : d;
   });
 
   const [students, setStudents]       = useState([]);
