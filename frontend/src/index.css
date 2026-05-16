@@ -2325,6 +2325,8 @@ a.icon-btn { text-decoration: none; }
 .daily-card-p { border-color: var(--gray-200); background: #fff; }
 .daily-card-a { border-color: #fca5a5; background: #fff8f8; }
 .daily-card-t { border-color: #fcd34d; background: #fffdf0; }
+.daily-card-offday { border-color: var(--gray-200); background: var(--gray-50); opacity: 0.6; }
+.daily-offday-label { font-size: 0.8rem; color: var(--gray-400); margin-top: 0.4rem; font-style: italic; }
 
 .daily-card-header {
   display: flex;

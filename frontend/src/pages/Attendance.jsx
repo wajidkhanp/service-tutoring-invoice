@@ -65,6 +65,7 @@ function getLockReason(dateStr, student, todayEnd) {
     const join = new Date(student.joinDate + 'T00:00:00');
     if (cellDate < join) return 'pre-enrollment';
   }
+  if (student.gender === 'female' && cellDate.getDay() === 5) return 'no-class';
   return null;
 }
 
@@ -75,6 +76,9 @@ function AttCell({ status, lockReason, isSaving, onClick }) {
   }
   if (lockReason === 'pre-enrollment') {
     return <td className="att-cell att-cell-preenroll" title="Before enrollment">n/a</td>;
+  }
+  if (lockReason === 'no-class') {
+    return <td className="att-cell att-cell-future" title="No class scheduled">–</td>;
   }
   const cls = status === 'A' ? 'att-absent'
     : status === 'T' ? 'att-tardy'
@@ -94,11 +98,13 @@ function AttCell({ status, lockReason, isSaving, onClick }) {
 
 // ── Mobile: P/A/T toggle row ──────────────────────────────────
 function MobileStudentRow({ student, dateStr, status, lockReason, onCycle, onLogProgress }) {
-  if (lockReason === 'future' || lockReason === 'pre-enrollment') {
+  if (lockReason === 'future' || lockReason === 'pre-enrollment' || lockReason === 'no-class') {
     return (
       <div className="mob-student-row mob-student-locked">
         <span className="mob-student-name">{student.name}</span>
-        <span className="mob-locked-label">{lockReason === 'future' ? 'Future' : 'n/a'}</span>
+        <span className="mob-locked-label">
+          {lockReason === 'future' ? 'Future' : lockReason === 'no-class' ? 'No class' : 'n/a'}
+        </span>
       </div>
     );
   }

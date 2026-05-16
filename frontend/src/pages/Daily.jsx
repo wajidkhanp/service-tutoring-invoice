@@ -14,6 +14,9 @@ const DOW_NAMES   = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday'
 function pad(n) { return String(n).padStart(2, '0'); }
 function toDateStr(d) { return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
 function isWeekend(d) { return d.getDay() === 0; }
+function isStudentOffDay(student, d) {
+  return student.gender === 'female' && d.getDay() === 5;
+}
 function addDays(d, n) { const x = new Date(d); x.setDate(x.getDate() + n); return x; }
 
 function prevWeekday(date) {
@@ -32,7 +35,22 @@ function hasAnyProgress(p) {
   return p.newLesson != null || p.sabqi != null || p.manzil != null;
 }
 
-function StudentCard({ student, status, hasProgress, isFuture, onStatusChange, onLogProgress }) {
+function StudentCard({ student, status, hasProgress, isFuture, isOffDay, onStatusChange, onLogProgress }) {
+  if (isOffDay) {
+    return (
+      <div className="daily-card daily-card-offday">
+        <div className="daily-card-header">
+          <div className="daily-card-name">
+            {student.name}
+            <GenderBadge gender={student.gender} />
+          </div>
+          {student.grade && <div className="daily-card-grade">{student.grade}</div>}
+        </div>
+        <div className="daily-offday-label">No class today</div>
+      </div>
+    );
+  }
+
   return (
     <div className={`daily-card daily-card-${status.toLowerCase()}`}>
       <div className="daily-card-header">
@@ -304,6 +322,7 @@ export default function Daily() {
                   status={getStatus(student.id)}
                   hasProgress={progressMap[dateStr]?.[student.id] || false}
                   isFuture={isFuture}
+                  isOffDay={isStudentOffDay(student, currentDate)}
                   onStatusChange={handleStatusChange}
                   onLogProgress={openProgressPanel}
                 />

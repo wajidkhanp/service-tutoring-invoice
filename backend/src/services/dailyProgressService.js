@@ -60,10 +60,11 @@ function getMonthProgress(year, month, studentId, attendanceDays = []) {
   for (const { date, progress } of days) {
     const isPresent = attendanceDays.length === 0 || attendanceDays.includes(date);
 
-    if (progress.newLesson) {
+    if (progress.newLesson?.surahNumber) {
+      // only count actual surah lessons — not special statuses (missed, did_not_pass, juzz_completed)
       nlLines += Number(progress.newLesson.lines) || 0;
       nlDays++;
-      if (progress.newLesson.surahNumber && !nlSurahs.includes(progress.newLesson.surahNumber)) {
+      if (!nlSurahs.includes(progress.newLesson.surahNumber)) {
         nlSurahs.push(progress.newLesson.surahNumber);
       }
     }
