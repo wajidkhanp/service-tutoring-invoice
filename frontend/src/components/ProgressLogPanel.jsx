@@ -29,10 +29,21 @@ export default function ProgressLogPanel({ student, dateStr, initialProgress, on
   const [saving, setSaving] = useState(false);
   const [error,  setError]  = useState('');
 
+  const SPECIAL_STATUSES = {
+    missed:         '__missed__',
+    did_not_pass:   '__did_not_pass__',
+    juzz_completed: '__juzz_completed__',
+  };
+  const SPECIAL_VALUES = new Set(Object.values(SPECIAL_STATUSES));
+
   // Seed from existing data when panel opens
   useEffect(() => {
     const p = initialProgress || {};
-    setNlSurah(p.newLesson?.surahNumber ? String(p.newLesson.surahNumber) : '');
+    const statusMap = { missed: '__missed__', did_not_pass: '__did_not_pass__', juzz_completed: '__juzz_completed__' };
+    const seedSurah = p.newLesson?.status
+      ? (statusMap[p.newLesson.status] || '')
+      : (p.newLesson?.surahNumber ? String(p.newLesson.surahNumber) : '');
+    setNlSurah(seedSurah);
     setNlFrom(p.newLesson?.fromAyah    ? String(p.newLesson.fromAyah)    : '');
     setNlTo(p.newLesson?.toAyah        ? String(p.newLesson.toAyah)      : '');
     setNlLines(p.newLesson?.lines      ? String(p.newLesson.lines)       : '');
@@ -48,7 +59,13 @@ export default function ProgressLogPanel({ student, dateStr, initialProgress, on
     try {
       const data = {};
 
-      if (nlSurah) {
+      if (nlSurah === '__missed__') {
+        data.newLesson = { status: 'missed' };
+      } else if (nlSurah === '__did_not_pass__') {
+        data.newLesson = { status: 'did_not_pass' };
+      } else if (nlSurah === '__juzz_completed__') {
+        data.newLesson = { status: 'juzz_completed' };
+      } else if (nlSurah) {
         const s = getSurah(Number(nlSurah));
         data.newLesson = {
           surahNumber: Number(nlSurah),
@@ -110,13 +127,20 @@ export default function ProgressLogPanel({ student, dateStr, initialProgress, on
               <label>Surah</label>
               <select value={nlSurah} onChange={(e) => { setNlSurah(e.target.value); setNlFrom(''); setNlTo(''); setNlLines(''); }}>
                 <option value="">— No new lesson today —</option>
-                {SURAHS.map((s) => (
-                  <option key={s.number} value={s.number}>{surahLabel(s)}</option>
-                ))}
+                <optgroup label="──────────">
+                  <option value="__missed__">Missed</option>
+                  <option value="__did_not_pass__">Did not pass</option>
+                  <option value="__juzz_completed__">No lesson · Juzz completed</option>
+                </optgroup>
+                <optgroup label="──────────">
+                  {SURAHS.map((s) => (
+                    <option key={s.number} value={s.number}>{surahLabel(s)}</option>
+                  ))}
+                </optgroup>
               </select>
             </div>
 
-            {nlSurah && (
+            {nlSurah && !SPECIAL_VALUES.has(nlSurah) && (
               <div className="prog-field-row">
                 <div className="prog-field">
                   <label>From Ayah</label>
