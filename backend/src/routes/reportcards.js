@@ -51,6 +51,11 @@ function buildProgressFromDailyData(studentId, month, year) {
     const monthNum = MONTHS.indexOf(month) + 1;
     const presentDays = getPresentDaysForMonth(studentId, month, year);
     const { summary } = getMonthProgress(String(year), monthNum, studentId, presentDays);
+
+    // Map majority akhlaq to report card rating labels
+    const akhlaqRatingMap = { good: 'Good', needs_improvement: 'Needs Improvement' };
+    const akhlaqRating = akhlaqRatingMap[summary.akhlaq?.majority] || '';
+
     return {
       newLesson: {
         targetLines: '',
@@ -71,10 +76,26 @@ function buildProgressFromDailyData(studentId, month, year) {
         week4: summary.manzil.week4 || '',
         targetMet: null, rating: '', notes: '',
       },
-      akhlaq: { rating: '', notes: '' },
+      akhlaq: { rating: akhlaqRating, notes: '' },
     };
   } catch {
     return empty;
+  }
+}
+
+function buildStarsAndAchievementsFromDailyData(studentId, month, year) {
+  try {
+    const monthNum = MONTHS.indexOf(month) + 1;
+    const presentDays = getPresentDaysForMonth(studentId, month, year);
+    const { summary } = getMonthProgress(String(year), monthNum, studentId, presentDays);
+    return {
+      stars: summary.stars || 0,
+      achievements: summary.achievements && summary.achievements.length > 0
+        ? summary.achievements.join(' · ')
+        : '',
+    };
+  } catch {
+    return { stars: 0, achievements: '' };
   }
 }
 
@@ -130,6 +151,7 @@ router.post('/', (req, res) => {
 
   const attendance = getMonthAttendanceForStudent(studentId, month, Number(year));
   const progress = buildProgressFromDailyData(studentId, month, Number(year));
+  const { stars, achievements } = buildStarsAndAchievementsFromDailyData(studentId, month, Number(year));
 
   const card = {
     id: uuidv4(),
@@ -141,8 +163,8 @@ router.post('/', (req, res) => {
     classLevel: student.grade || '',
     attendance,
     progress,
-    stars: 0,
-    achievements: '',
+    stars,
+    achievements,
     remarks: '',
     status: 'draft',
     createdAt: new Date().toISOString(),
@@ -173,6 +195,7 @@ router.post('/bulk', (req, res) => {
 
     const attendance = getMonthAttendanceForStudent(student.id, month, Number(year));
     const progress = buildProgressFromDailyData(student.id, month, Number(year));
+    const { stars, achievements } = buildStarsAndAchievementsFromDailyData(student.id, month, Number(year));
     cards.push({
       id: uuidv4(),
       studentId: student.id,
@@ -183,8 +206,8 @@ router.post('/bulk', (req, res) => {
       classLevel: student.grade || '',
       attendance,
       progress,
-      stars: 0,
-      achievements: '',
+      stars,
+      achievements,
       remarks: '',
       status: 'draft',
       createdAt: new Date().toISOString(),

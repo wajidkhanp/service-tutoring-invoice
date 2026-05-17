@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { SURAHS, JUZZ_LIST, getSurah, getSurahsForJuzz, surahLabel, surahShortLabel } from '../data/quranData';
-import { BookOpen, RotateCcw, Book } from 'lucide-react';
+import { BookOpen, RotateCcw, Book, Star, Trophy, Heart } from 'lucide-react';
 
 const DOW = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -11,46 +11,48 @@ function formatDate(dateStr) {
   return `${DOW[date.getDay()]}, ${MON[m - 1]} ${d}, ${y}`;
 }
 
+const SPECIAL_VALUES = new Set(['__missed__', '__did_not_pass__', '__juzz_completed__']);
+const STATUS_TO_KEY = { missed: '__missed__', did_not_pass: '__did_not_pass__', juzz_completed: '__juzz_completed__' };
+
 export default function ProgressLogPanel({ student, dateStr, initialProgress, onSave, onClose }) {
   // New Lesson
-  const [nlSurah, setNlSurah]       = useState('');
-  const [nlFrom,  setNlFrom]        = useState('');
-  const [nlTo,    setNlTo]          = useState('');
-  const [nlLines, setNlLines]       = useState('');
+  const [nlSurah, setNlSurah] = useState('');
+  const [nlFrom,  setNlFrom]  = useState('');
+  const [nlTo,    setNlTo]    = useState('');
+  const [nlLines, setNlLines] = useState('');
 
   // Sabqi
-  const [sabqi, setSabqi] = useState(null); // true | false | null
+  const [sabqi, setSabqi] = useState(null);
 
   // Manzil
-  const [manzilRecited, setManzilRecited] = useState(null); // true | false | null
+  const [manzilRecited, setManzilRecited] = useState(null);
   const [manzilJuzz,    setManzilJuzz]    = useState('');
   const [manzilSurah,   setManzilSurah]   = useState('');
+
+  // Stars, Achievement, Akhlaq
+  const [stars,       setStars]       = useState(0);
+  const [achievement, setAchievement] = useState('');
+  const [akhlaq,      setAkhlaq]      = useState(null); // 'good' | 'needs_improvement' | null
 
   const [saving, setSaving] = useState(false);
   const [error,  setError]  = useState('');
 
-  const SPECIAL_STATUSES = {
-    missed:         '__missed__',
-    did_not_pass:   '__did_not_pass__',
-    juzz_completed: '__juzz_completed__',
-  };
-  const SPECIAL_VALUES = new Set(Object.values(SPECIAL_STATUSES));
-
-  // Seed from existing data when panel opens
   useEffect(() => {
     const p = initialProgress || {};
-    const statusMap = { missed: '__missed__', did_not_pass: '__did_not_pass__', juzz_completed: '__juzz_completed__' };
     const seedSurah = p.newLesson?.status
-      ? (statusMap[p.newLesson.status] || '')
+      ? (STATUS_TO_KEY[p.newLesson.status] || '')
       : (p.newLesson?.surahNumber ? String(p.newLesson.surahNumber) : '');
     setNlSurah(seedSurah);
-    setNlFrom(p.newLesson?.fromAyah    ? String(p.newLesson.fromAyah)    : '');
-    setNlTo(p.newLesson?.toAyah        ? String(p.newLesson.toAyah)      : '');
-    setNlLines(p.newLesson?.lines      ? String(p.newLesson.lines)       : '');
+    setNlFrom(p.newLesson?.fromAyah  ? String(p.newLesson.fromAyah)  : '');
+    setNlTo(p.newLesson?.toAyah      ? String(p.newLesson.toAyah)    : '');
+    setNlLines(p.newLesson?.lines    ? String(p.newLesson.lines)     : '');
     setSabqi(p.sabqi !== undefined ? p.sabqi : null);
     setManzilRecited(p.manzil?.recited !== undefined ? p.manzil.recited : null);
     setManzilJuzz(p.manzil?.juzzNumber  ? String(p.manzil.juzzNumber)  : '');
     setManzilSurah(p.manzil?.surahNumber ? String(p.manzil.surahNumber) : '');
+    setStars(p.stars ? Number(p.stars) : 0);
+    setAchievement(p.achievement || '');
+    setAkhlaq(p.akhlaq || null);
   }, [initialProgress]);
 
   const handleSave = async () => {
@@ -90,6 +92,10 @@ export default function ProgressLogPanel({ student, dateStr, initialProgress, on
       } else {
         data.manzil = null;
       }
+
+      data.stars       = stars > 0 ? stars : 0;
+      data.achievement = achievement.trim() || null;
+      data.akhlaq      = akhlaq;
 
       await onSave(data);
       onClose();
@@ -163,20 +169,8 @@ export default function ProgressLogPanel({ student, dateStr, initialProgress, on
             <div className="prog-section-title"><RotateCcw size={14}/>Sabqi</div>
             <div className="prog-section-desc">Did the student recite their recent memorisation today?</div>
             <div className="prog-yn-row">
-              <button
-                type="button"
-                className={`prog-yn-btn prog-yn-yes${sabqi === true ? ' prog-yn-active' : ''}`}
-                onClick={() => setSabqi(sabqi === true ? null : true)}
-              >
-                Yes
-              </button>
-              <button
-                type="button"
-                className={`prog-yn-btn prog-yn-no${sabqi === false ? ' prog-yn-active' : ''}`}
-                onClick={() => setSabqi(sabqi === false ? null : false)}
-              >
-                No
-              </button>
+              <button type="button" className={`prog-yn-btn prog-yn-yes${sabqi === true ? ' prog-yn-active' : ''}`} onClick={() => setSabqi(sabqi === true ? null : true)}>Yes</button>
+              <button type="button" className={`prog-yn-btn prog-yn-no${sabqi === false ? ' prog-yn-active' : ''}`} onClick={() => setSabqi(sabqi === false ? null : false)}>No</button>
             </div>
           </div>
 
@@ -185,20 +179,8 @@ export default function ProgressLogPanel({ student, dateStr, initialProgress, on
             <div className="prog-section-title"><Book size={14}/>Manzil</div>
             <div className="prog-section-desc">Did the student recite a previously memorised Juzz today?</div>
             <div className="prog-yn-row">
-              <button
-                type="button"
-                className={`prog-yn-btn prog-yn-yes${manzilRecited === true ? ' prog-yn-active' : ''}`}
-                onClick={() => setManzilRecited(manzilRecited === true ? null : true)}
-              >
-                Yes
-              </button>
-              <button
-                type="button"
-                className={`prog-yn-btn prog-yn-no${manzilRecited === false ? ' prog-yn-active' : ''}`}
-                onClick={() => setManzilRecited(manzilRecited === false ? null : false)}
-              >
-                No
-              </button>
+              <button type="button" className={`prog-yn-btn prog-yn-yes${manzilRecited === true ? ' prog-yn-active' : ''}`} onClick={() => setManzilRecited(manzilRecited === true ? null : true)}>Yes</button>
+              <button type="button" className={`prog-yn-btn prog-yn-no${manzilRecited === false ? ' prog-yn-active' : ''}`} onClick={() => setManzilRecited(manzilRecited === false ? null : false)}>No</button>
             </div>
 
             {manzilRecited === true && (
@@ -223,6 +205,62 @@ export default function ProgressLogPanel({ student, dateStr, initialProgress, on
                 )}
               </div>
             )}
+          </div>
+
+          {/* ── AKHLAQ ─────────────────────────────────── */}
+          <div className="prog-section">
+            <div className="prog-section-title"><Heart size={14}/>Akhlaq</div>
+            <div className="prog-section-desc">How was the student's character and behaviour today?</div>
+            <div className="prog-yn-row">
+              <button
+                type="button"
+                className={`prog-yn-btn prog-yn-yes${akhlaq === 'good' ? ' prog-yn-active' : ''}`}
+                onClick={() => setAkhlaq(akhlaq === 'good' ? null : 'good')}
+              >
+                Good
+              </button>
+              <button
+                type="button"
+                className={`prog-yn-btn prog-yn-no${akhlaq === 'needs_improvement' ? ' prog-yn-active' : ''}`}
+                onClick={() => setAkhlaq(akhlaq === 'needs_improvement' ? null : 'needs_improvement')}
+              >
+                Needs Improvement
+              </button>
+            </div>
+          </div>
+
+          {/* ── STARS ──────────────────────────────────── */}
+          <div className="prog-section">
+            <div className="prog-section-title"><Star size={14}/>Stars</div>
+            <div className="prog-section-desc">How many stars did the student earn today?</div>
+            <div className="prog-stars-row">
+              <button type="button" className="prog-star-adj" onClick={() => setStars((s) => Math.max(0, s - 1))}>−</button>
+              <div className="prog-stars-display">
+                {[1,2,3,4,5].map((n) => (
+                  <Star
+                    key={n}
+                    size={22}
+                    className={`prog-star-icon${n <= stars ? ' prog-star-filled' : ''}`}
+                    onClick={() => setStars(stars === n ? 0 : n)}
+                  />
+                ))}
+              </div>
+              <button type="button" className="prog-star-adj" onClick={() => setStars((s) => Math.min(5, s + 1))}>+</button>
+            </div>
+          </div>
+
+          {/* ── ACHIEVEMENT ────────────────────────────── */}
+          <div className="prog-section">
+            <div className="prog-section-title"><Trophy size={14}/>Achievement</div>
+            <div className="prog-section-desc">Note any special achievement from today's class.</div>
+            <div className="prog-field">
+              <input
+                type="text"
+                placeholder="e.g. Memorized full Surah Al-Ikhlas"
+                value={achievement}
+                onChange={(e) => setAchievement(e.target.value)}
+              />
+            </div>
           </div>
         </div>
 

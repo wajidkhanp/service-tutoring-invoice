@@ -56,6 +56,10 @@ function getMonthProgress(year, month, studentId, attendanceDays = []) {
   let sabqiDays = 0;
   let sabqiMissed = 0;
   const manzilDays = [];
+  let totalStars = 0;
+  const achievements = [];
+  let akhlaqGood = 0;
+  let akhlaqNeedsImprovement = 0;
 
   for (const { date, progress } of days) {
     const isPresent = attendanceDays.length === 0 || attendanceDays.includes(date);
@@ -75,10 +79,23 @@ function getMonthProgress(year, month, studentId, attendanceDays = []) {
     if (progress.manzil?.recited) {
       manzilDays.push({ date, juzzNumber: progress.manzil.juzzNumber, surahNumber: progress.manzil.surahNumber, surahName: progress.manzil.surahName });
     }
+
+    if (progress.stars) totalStars += Number(progress.stars) || 0;
+    if (progress.achievement && typeof progress.achievement === 'string' && progress.achievement.trim()) {
+      achievements.push(progress.achievement.trim());
+    }
+    if (progress.akhlaq === 'good') akhlaqGood++;
+    else if (progress.akhlaq === 'needs_improvement') akhlaqNeedsImprovement++;
   }
 
   // Days without new lesson = present days minus days with a lesson
   const daysWithoutLesson = Math.max(0, attendanceDays.length - nlDays);
+
+  // Majority akhlaq: tie goes to 'good'
+  let akhlaqMajority = null;
+  if (akhlaqGood > 0 || akhlaqNeedsImprovement > 0) {
+    akhlaqMajority = akhlaqNeedsImprovement > akhlaqGood ? 'needs_improvement' : 'good';
+  }
 
   // Group manzil by week (week 1 = days 1-7, week 2 = 8-14, etc.)
   const manzilByWeek = { week1: [], week2: [], week3: [], week4: [] };
@@ -108,6 +125,9 @@ function getMonthProgress(year, month, studentId, attendanceDays = []) {
         week4: manzilByWeek.week4.join(', '),
         daysRecited: manzilDays.length,
       },
+      stars: totalStars,
+      achievements,
+      akhlaq: { majority: akhlaqMajority, goodDays: akhlaqGood, needsImprovementDays: akhlaqNeedsImprovement },
     },
   };
 }
