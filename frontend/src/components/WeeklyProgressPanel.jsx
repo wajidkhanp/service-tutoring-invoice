@@ -61,7 +61,7 @@ function newLessonCell(p) {
   if (!p?.newLesson) return '—';
   if (p.newLesson.status === 'missed') return <span className="wpb-badge wpb-missed">Missed</span>;
   if (p.newLesson.status === 'did_not_pass') return <span className="wpb-badge wpb-missed">Did not pass</span>;
-  if (p.newLesson.status === 'juzz_completed') return <span className="wpb-badge wpb-special">Juzz ✓</span>;
+  if (p.newLesson.status === 'juzz_completed') return <span className="wpb-badge wpb-special">No lesson · Juzz ✓</span>;
   if (p.newLesson.surahName) {
     return (
       <span className="wpb-cell-text">
