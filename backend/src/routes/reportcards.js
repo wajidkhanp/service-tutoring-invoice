@@ -18,12 +18,22 @@ function save(data) { writeJson(RC_FILE, data); }
 function getStudents() { return readJson('students.json'); }
 function getConfig() { return readJson('config.json'); }
 
+function pad(n) { return String(n).padStart(2, '0'); }
+
+function getHolidaySetForMonth(month, year) {
+  const all = readJson('holidays.json');
+  const prefix = `${year}-${pad(MONTHS.indexOf(month) + 1)}`;
+  return new Set(all.filter((d) => d.startsWith(prefix)));
+}
+
 function getMonthAttendanceForStudent(studentId, month, year) {
   const { attendance } = getStudentAttendance(studentId, year);
-  const prefix = `${year}-${String(MONTHS.indexOf(month) + 1).padStart(2, '0')}`;
+  const prefix = `${year}-${pad(MONTHS.indexOf(month) + 1)}`;
+  const holidays = getHolidaySetForMonth(month, year);
   let present = 0, absent = 0, tardy = 0;
   for (const [date, status] of Object.entries(attendance)) {
     if (!date.startsWith(prefix)) continue;
+    if (holidays.has(date)) continue;
     if (status === 'A') absent++;
     else if (status === 'T') tardy++;
     else present++;
@@ -34,9 +44,10 @@ function getMonthAttendanceForStudent(studentId, month, year) {
 
 function getPresentDaysForMonth(studentId, month, year) {
   const { attendance } = getStudentAttendance(studentId, year);
-  const prefix = `${year}-${String(MONTHS.indexOf(month) + 1).padStart(2, '0')}`;
+  const prefix = `${year}-${pad(MONTHS.indexOf(month) + 1)}`;
+  const holidays = getHolidaySetForMonth(month, year);
   return Object.entries(attendance)
-    .filter(([d, s]) => d.startsWith(prefix) && s !== 'A')
+    .filter(([d, s]) => d.startsWith(prefix) && s !== 'A' && !holidays.has(d))
     .map(([d]) => d);
 }
 

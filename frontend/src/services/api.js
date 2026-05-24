@@ -64,6 +64,8 @@ export const saveDailyProgress = (date, studentId, progress) => api.post('/daily
 export const clearDailyProgress = (date, studentId) => api.delete(`/daily-progress/${date}/${studentId}`);
 export const getDailyProgressSummary = (year, month, studentId) => api.get('/daily-progress/summary', { params: { year, month, studentId } });
 export const getStudentYearProgress = (studentId, year) => api.get('/daily-progress/year', { params: { studentId, year } });
+export const getMonthHolidays = (year, month) => api.get('/holidays', { params: { year, month } });
+export const toggleHoliday = (date) => api.post('/holidays', { date });
 export const getAuditRecent = () => api.get('/audit/recent');
 export const getAuditAll = () => api.get('/audit/all');
 export const getSettings = () => api.get('/settings');

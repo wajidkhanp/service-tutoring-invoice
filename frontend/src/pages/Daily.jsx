@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronLeft, ChevronRight, CalendarCheck } from 'lucide-react';
+import { ChevronLeft, ChevronRight, CalendarCheck, CalendarOff } from 'lucide-react';
 import {
   getStudents, getMonthAttendance, saveAttendance, confirmAllPresent, clearAttendanceEntry,
-  getDailyProgress, saveDailyProgress,
+  getDailyProgress, saveDailyProgress, getMonthHolidays, toggleHoliday,
 } from '../services/api';
 import ProgressLogPanel from '../components/ProgressLogPanel';
 import GenderBadge from '../components/GenderBadge';
@@ -110,8 +110,11 @@ export default function Daily() {
   const [progressMap, setProgressMap]   = useState({});
   const [progressPanel, setProgressPanel] = useState(null);
 
-  const loadedMonthsRef   = useRef(new Set());
-  const loadedProgressRef = useRef(new Set());
+  const loadedMonthsRef    = useRef(new Set());
+  const loadedProgressRef  = useRef(new Set());
+  const loadedHolidayMonthsRef = useRef(new Set());
+
+  const [holidaySet, setHolidaySet] = useState(new Set());
 
   const dateStr  = toDateStr(currentDate);
   const isToday  = dateStr === toDateStr(todayMidnight);
@@ -148,6 +151,21 @@ export default function Daily() {
         });
       })
       .catch(() => { loadedMonthsRef.current.delete(key); });
+  }, [currentDate]);
+
+  // Load holidays per month (cached)
+  useEffect(() => {
+    const year  = currentDate.getFullYear();
+    const month = currentDate.getMonth() + 1;
+    const key   = `${year}-${pad(month)}`;
+    if (loadedHolidayMonthsRef.current.has(key)) return;
+    loadedHolidayMonthsRef.current.add(key);
+    getMonthHolidays(year, month)
+      .then((res) => {
+        const dates = res.data.holidays || [];
+        setHolidaySet((prev) => { const s = new Set(prev); dates.forEach((d) => s.add(d)); return s; });
+      })
+      .catch(() => { loadedHolidayMonthsRef.current.delete(key); });
   }, [currentDate]);
 
   // Load daily progress (cached per date, requires students to be loaded first)
@@ -242,6 +260,15 @@ export default function Daily() {
     return { absent, tardy, present: students.length - absent - tardy, total: students.length };
   }, [attMap, dateStr, students]);
 
+  const isHoliday = holidaySet.has(dateStr);
+
+  const handleToggleHoliday = useCallback(async () => {
+    const was = holidaySet.has(dateStr);
+    setHolidaySet((prev) => { const s = new Set(prev); was ? s.delete(dateStr) : s.add(dateStr); return s; });
+    try { await toggleHoliday(dateStr); }
+    catch { setHolidaySet((prev) => { const s = new Set(prev); was ? s.add(dateStr) : s.delete(dateStr); return s; }); }
+  }, [holidaySet, dateStr]);
+
   const displayDate = `${DOW_NAMES[currentDate.getDay()]}, ${MONTH_NAMES[currentDate.getMonth()]} ${currentDate.getDate()}, ${currentDate.getFullYear()}`;
 
   return (
@@ -273,13 +300,26 @@ export default function Daily() {
               Today
             </button>
           )}
+          {!isFuture && (
+            <button
+              type="button"
+              className={`daily-holiday-btn${isHoliday ? ' active' : ''}`}
+              onClick={handleToggleHoliday}
+              title={isHoliday ? 'Remove holiday' : 'Mark as holiday'}
+            >
+              <CalendarOff size={14} />
+              {isHoliday ? 'Remove Holiday' : 'Holiday'}
+            </button>
+          )}
         </div>
       </div>
 
       {/* Status bar */}
       {studentsLoaded && students.length > 0 && (
         <div className="daily-status-bar">
-          {isFuture ? (
+          {isHoliday ? (
+            <span className="daily-status-future">🎌 Holiday — no class scheduled</span>
+          ) : isFuture ? (
             <span className="daily-status-future">Future date — read only</span>
           ) : recordedSet.has(dateStr) ? (
             <>
@@ -304,6 +344,15 @@ export default function Daily() {
       {/* Card groups */}
       {!studentsLoaded ? (
         <div className="loading-screen"><div className="spinner" /></div>
+      ) : isHoliday ? (
+        <div className="daily-holiday-banner">
+          <CalendarOff size={36} className="daily-holiday-icon" />
+          <div className="daily-holiday-title">Holiday</div>
+          <div className="daily-holiday-sub">No class is scheduled for this day.</div>
+          <button type="button" className="btn-secondary" onClick={handleToggleHoliday}>
+            Remove Holiday
+          </button>
+        </div>
       ) : students.length === 0 ? (
         <div className="info-block">
           No students yet. <Link to="/students">Add students</Link> to get started.

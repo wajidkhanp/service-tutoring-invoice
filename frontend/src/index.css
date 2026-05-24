@@ -1205,6 +1205,8 @@ tr:hover .student-name-link .snl-arrow {
 .att-day-th:last-child { border-right: none; }
 .att-day-today { background: var(--teal-light) !important; }
 .att-day-future { opacity: 0.5; }
+.att-day-holiday { background: #fef3c7 !important; }
+.att-cell-holiday { background: #fef9ee; color: #d97706; cursor: default; font-size: 0.65rem; }
 .att-day-dow { display: block; font-size: 0.65rem; color: var(--gray-500); font-weight: 600; text-transform: uppercase; }
 .att-day-num { display: block; font-size: 0.85rem; font-weight: 700; color: var(--gray-800); line-height: 1.3; }
 
@@ -1225,6 +1227,26 @@ tr:hover .student-name-link .snl-arrow {
 }
 .att-confirm-btn:hover { background: var(--teal-light); color: var(--teal-dark); border-color: var(--teal); }
 .att-confirm-done { background: #dcfce7 !important; color: #15803d !important; border-color: #bbf7d0 !important; cursor: default; }
+.att-day-actions { display: flex; gap: 2px; justify-content: center; margin-top: 0.15rem; }
+.att-holiday-btn {
+  background: none; border: 1px solid var(--gray-200); color: var(--gray-300);
+  border-radius: 4px; padding: 1px 3px; cursor: pointer; display: flex; align-items: center;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.att-holiday-btn:hover { background: #fef3c7; color: #d97706; border-color: #fcd34d; }
+.att-holiday-btn.att-holiday-active { background: #fef3c7; color: #d97706; border-color: #fcd34d; }
+.att-holiday-label { display: block; font-size: 0.55rem; color: #d97706; font-weight: 700; text-transform: uppercase; margin-top: 1px; }
+.mob-day-holiday { background: #fffbeb !important; border-color: #fcd34d !important; }
+.mob-holiday-badge { background: #fef3c7; color: #d97706; border-radius: 4px; font-size: 0.65rem; font-weight: 600; padding: 1px 5px; margin-left: 0.4rem; }
+.mob-holiday-badge-sm { color: #d97706; font-size: 0.78rem; font-weight: 600; }
+.mob-holiday-toggle-btn {
+  display: flex; align-items: center; gap: 0.35rem;
+  width: 100%; padding: 0.4rem 0.6rem; margin-bottom: 0.4rem;
+  border: 1px solid var(--gray-200); border-radius: 6px;
+  background: var(--gray-50); color: var(--gray-500); font-size: 0.8rem; cursor: pointer;
+}
+.mob-holiday-toggle-btn:hover { background: #fef3c7; color: #d97706; border-color: #fcd34d; }
+.mob-holiday-toggle-btn.active { background: #fef3c7; color: #d97706; border-color: #fcd34d; font-weight: 600; }
 
 /* Name col td */
 .att-table td.att-name-col {
@@ -2348,6 +2370,22 @@ a.icon-btn { text-decoration: none; }
 .daily-card-t { border-color: #fcd34d; background: #fffdf0; }
 .daily-card-offday { border-color: var(--gray-200); background: var(--gray-50); opacity: 0.6; }
 .daily-offday-label { font-size: 0.8rem; color: var(--gray-400); margin-top: 0.4rem; font-style: italic; }
+.daily-holiday-btn {
+  display: flex; align-items: center; gap: 0.35rem;
+  padding: 0.35rem 0.75rem; border-radius: 6px; font-size: 0.8rem; cursor: pointer;
+  border: 1px solid var(--gray-200); background: var(--gray-50); color: var(--gray-500);
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.daily-holiday-btn:hover { background: #fef3c7; color: #d97706; border-color: #fcd34d; }
+.daily-holiday-btn.active { background: #fef3c7; color: #d97706; border-color: #fcd34d; font-weight: 600; }
+.daily-holiday-banner {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 0.75rem; padding: 3rem 1.5rem; text-align: center;
+  background: #fffbeb; border: 1px solid #fcd34d; border-radius: 12px; margin-top: 1.5rem;
+}
+.daily-holiday-icon { color: #d97706; }
+.daily-holiday-title { font-size: 1.4rem; font-weight: 700; color: #92400e; }
+.daily-holiday-sub { font-size: 0.9rem; color: #b45309; margin-bottom: 0.5rem; }
 
 .daily-card-header {
   display: flex;

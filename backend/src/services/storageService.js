@@ -23,6 +23,7 @@ const DEFAULTS = {
   'attendance.json':   {},
   'daily_progress.json': {},
   'reportcards.json':  [],
+  'holidays.json':   [],
   'config.json': {
     nextInvoiceNumber: 1000,
     organizationName: 'Noor Tutoring',

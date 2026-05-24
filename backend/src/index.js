@@ -12,6 +12,7 @@ const settingsRoutes = require('./routes/settings');
 const attendanceRoutes = require('./routes/attendance');
 const reportCardRoutes = require('./routes/reportcards');
 const dailyProgressRoutes = require('./routes/dailyProgress');
+const holidayRoutes = require('./routes/holidays');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -52,6 +53,7 @@ app.use('/api/settings', settingsRoutes);
 app.use('/api/attendance', attendanceRoutes);
 app.use('/api/reportcards', reportCardRoutes);
 app.use('/api/daily-progress', dailyProgressRoutes);
+app.use('/api/holidays', holidayRoutes);
 
 app.get('/health', (req, res) => {
   const dataDir = path.join(__dirname, 'data');

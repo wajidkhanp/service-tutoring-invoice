@@ -8,9 +8,11 @@ import {
   clearAttendanceEntry,
   getDailyProgress,
   saveDailyProgress,
+  getMonthHolidays,
+  toggleHoliday,
 } from '../services/api';
 import ProgressLogPanel from '../components/ProgressLogPanel';
-import { CalendarDays, XCircle, Clock } from 'lucide-react';
+import { CalendarDays, XCircle, Clock, CalendarOff } from 'lucide-react';
 
 const MONTH_NAMES = [
   'January','February','March','April','May','June',
@@ -58,7 +60,8 @@ function getCellStatus(attendance, dateStr, studentId) {
   return 'P'; // recorded day, no stored exception = Present
 }
 
-function getLockReason(dateStr, student, todayEnd) {
+function getLockReason(dateStr, student, todayEnd, holidays) {
+  if (holidays.has(dateStr)) return 'holiday';
   const cellDate = new Date(dateStr + 'T12:00:00');
   if (cellDate > todayEnd) return 'future';
   if (student.joinDate) {
@@ -71,6 +74,9 @@ function getLockReason(dateStr, student, todayEnd) {
 
 // ── Desktop: single cell ──────────────────────────────────────
 function AttCell({ status, lockReason, isSaving, onClick }) {
+  if (lockReason === 'holiday') {
+    return <td className="att-cell att-cell-holiday" title="Holiday">–</td>;
+  }
   if (lockReason === 'future') {
     return <td className="att-cell att-cell-future" title="Future date">–</td>;
   }
@@ -98,12 +104,12 @@ function AttCell({ status, lockReason, isSaving, onClick }) {
 
 // ── Mobile: P/A/T toggle row ──────────────────────────────────
 function MobileStudentRow({ student, dateStr, status, lockReason, onCycle, onLogProgress }) {
-  if (lockReason === 'future' || lockReason === 'pre-enrollment' || lockReason === 'no-class') {
+  if (lockReason === 'holiday' || lockReason === 'future' || lockReason === 'pre-enrollment' || lockReason === 'no-class') {
     return (
       <div className="mob-student-row mob-student-locked">
         <span className="mob-student-name">{student.name}</span>
         <span className="mob-locked-label">
-          {lockReason === 'future' ? 'Future' : lockReason === 'no-class' ? 'No class' : 'n/a'}
+          {lockReason === 'holiday' ? 'Holiday' : lockReason === 'future' ? 'Future' : lockReason === 'no-class' ? 'No class' : 'n/a'}
         </span>
       </div>
     );
@@ -146,6 +152,7 @@ export default function Attendance() {
 
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState({});
+  const [holidays, setHolidays] = useState(new Set());
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [savingCells, setSavingCells] = useState(new Set());
@@ -198,6 +205,7 @@ export default function Attendance() {
     const prefix = `${selectedYear}-${pad(selectedMonth)}`;
     for (const [date, records] of Object.entries(attendance)) {
       if (!date.startsWith(prefix)) continue;
+      if (holidays.has(date)) continue;
       recorded++;
       for (const student of filteredStudents) {
         if (records[student.id] === 'A') absences++;
@@ -205,15 +213,20 @@ export default function Attendance() {
       }
     }
     return { recorded, absences, tardies };
-  }, [attendance, filteredStudents, selectedYear, selectedMonth]);
+  }, [attendance, holidays, filteredStudents, selectedYear, selectedMonth]);
 
   useEffect(() => {
     setLoading(true);
     setError('');
-    Promise.all([getStudents(), getMonthAttendance(selectedYear, selectedMonth)])
-      .then(([studRes, attRes]) => {
+    Promise.all([
+      getStudents(),
+      getMonthAttendance(selectedYear, selectedMonth),
+      getMonthHolidays(selectedYear, selectedMonth),
+    ])
+      .then(([studRes, attRes, holRes]) => {
         setStudents(studRes.data.students || []);
         setAttendance(attRes.data.attendance || {});
+        setHolidays(new Set(holRes.data.holidays || []));
         // auto-expand today if in current month
         const todayDow = new Date(todayStr + 'T12:00:00').getDay();
         if (todayDow !== 0) setExpandedDays(new Set([todayStr]));
@@ -280,6 +293,17 @@ export default function Attendance() {
     }
   }, [attendance]);
 
+  const handleToggleHoliday = useCallback(async (dateStr) => {
+    const wasHoliday = holidays.has(dateStr);
+    setHolidays((prev) => { const s = new Set(prev); wasHoliday ? s.delete(dateStr) : s.add(dateStr); return s; });
+    try {
+      await toggleHoliday(dateStr);
+    } catch {
+      setHolidays((prev) => { const s = new Set(prev); wasHoliday ? s.add(dateStr) : s.delete(dateStr); return s; });
+      setError('Failed to update holiday. Please try again.');
+    }
+  }, [holidays]);
+
   const toggleDay = (dateStr) => {
     setExpandedDays((prev) => {
       const s = new Set(prev);
@@ -313,7 +337,7 @@ export default function Attendance() {
         </td>
         {weeks.map((week) =>
           week.days.map(({ dateStr }) => {
-            const lockReason = getLockReason(dateStr, student, todayEnd);
+            const lockReason = getLockReason(dateStr, student, todayEnd, holidays);
             const status = getCellStatus(attendance, dateStr, student.id);
             const cellKey = `${dateStr}:${student.id}`;
             return (
@@ -432,23 +456,33 @@ export default function Attendance() {
                       const isToday = dateStr === todayStr;
                       const isFuture = new Date(dateStr + 'T12:00:00') > todayEnd;
                       const isDayRecorded = attendance[dateStr] !== undefined;
+                      const isHoliday = holidays.has(dateStr);
                       return (
                         <th
                           key={dateStr}
-                          className={`att-day-th${isToday ? ' att-day-today' : ''}${isFuture ? ' att-day-future' : ''}`}
+                          className={`att-day-th${isToday ? ' att-day-today' : ''}${isFuture ? ' att-day-future' : ''}${isHoliday ? ' att-day-holiday' : ''}`}
                         >
                           <span className="att-day-dow">{DOW_SHORT[dow]}</span>
                           <span className="att-day-num">{day}</span>
                           {!isFuture && (
-                            <button
-                              type="button"
-                              className={`att-confirm-btn${isDayRecorded ? ' att-confirm-done' : ''}`}
-                              onClick={() => handleConfirmDay(dateStr)}
-                              title={isDayRecorded ? 'Day recorded' : 'Mark all present for this day'}
-                            >
-                              ✓
-                            </button>
+                            <div className="att-day-actions">
+                              {!isHoliday && (
+                                <button
+                                  type="button"
+                                  className={`att-confirm-btn${isDayRecorded ? ' att-confirm-done' : ''}`}
+                                  onClick={() => handleConfirmDay(dateStr)}
+                                  title={isDayRecorded ? 'Day recorded' : 'Mark all present'}
+                                >✓</button>
+                              )}
+                              <button
+                                type="button"
+                                className={`att-holiday-btn${isHoliday ? ' att-holiday-active' : ''}`}
+                                onClick={() => handleToggleHoliday(dateStr)}
+                                title={isHoliday ? 'Remove holiday' : 'Mark as holiday'}
+                              ><CalendarOff size={10} /></button>
+                            </div>
                           )}
+                          {isHoliday && <span className="att-holiday-label">Holiday</span>}
                         </th>
                       );
                     })
@@ -489,9 +523,10 @@ export default function Attendance() {
                   const isToday = dateStr === todayStr;
                   const isDayRecorded = attendance[dateStr] !== undefined;
                   const isExpanded = expandedDays.has(dateStr);
+                  const isHoliday = holidays.has(dateStr);
 
                   return (
-                    <div key={dateStr} className={`mob-day-block${isToday ? ' mob-day-today' : ''}`}>
+                    <div key={dateStr} className={`mob-day-block${isToday ? ' mob-day-today' : ''}${isHoliday ? ' mob-day-holiday' : ''}`}>
                       <button
                         type="button"
                         className="mob-day-header"
@@ -501,10 +536,13 @@ export default function Attendance() {
                         <span className="mob-day-title">
                           {DOW_SHORT[dow]}, {MONTH_NAMES[selectedMonth - 1].slice(0, 3)} {day}
                           {isToday && <span className="mob-today-badge">Today</span>}
+                          {isHoliday && <span className="mob-holiday-badge">Holiday</span>}
                         </span>
                         <span className="mob-day-right">
                           {isFuture ? (
                             <span className="mob-future-label">Future</span>
+                          ) : isHoliday ? (
+                            <span className="mob-holiday-badge-sm">🎌 Holiday</span>
                           ) : isDayRecorded ? (
                             <span className="mob-recorded-badge">✓ Recorded</span>
                           ) : (
@@ -516,7 +554,15 @@ export default function Attendance() {
 
                       {isExpanded && !isFuture && (
                         <div className="mob-day-body">
-                          {!isDayRecorded && (
+                          <button
+                            type="button"
+                            className={`mob-holiday-toggle-btn${isHoliday ? ' active' : ''}`}
+                            onClick={() => handleToggleHoliday(dateStr)}
+                          >
+                            <CalendarOff size={13} />
+                            {isHoliday ? 'Remove Holiday' : 'Mark as Holiday'}
+                          </button>
+                          {!isHoliday && !isDayRecorded && (
                             <button
                               type="button"
                               className="mob-confirm-all-btn"
@@ -525,48 +571,52 @@ export default function Attendance() {
                               ✓ All Present
                             </button>
                           )}
-                          {genderFilter === 'all' && boys.length > 0 && (
-                            <div className="mob-group-label">Boys</div>
+                          {!isHoliday && (
+                            <>
+                              {genderFilter === 'all' && boys.length > 0 && (
+                                <div className="mob-group-label">Boys</div>
+                              )}
+                              {(genderFilter === 'all' ? boys : genderFilter === 'male' ? filteredStudents : []).map((student) => (
+                                <MobileStudentRow
+                                  key={student.id}
+                                  student={student}
+                                  dateStr={dateStr}
+                                  status={getCellStatus(attendance, dateStr, student.id)}
+                                  lockReason={getLockReason(dateStr, student, todayEnd, holidays)}
+                                  onCycle={cycleStatus}
+                                  onLogProgress={openProgressPanel}
+                                />
+                              ))}
+                              {genderFilter === 'all' && girls.length > 0 && (
+                                <div className="mob-group-label">Girls</div>
+                              )}
+                              {(genderFilter === 'all' ? girls : genderFilter === 'female' ? filteredStudents : []).map((student) => (
+                                <MobileStudentRow
+                                  key={student.id}
+                                  student={student}
+                                  dateStr={dateStr}
+                                  status={getCellStatus(attendance, dateStr, student.id)}
+                                  lockReason={getLockReason(dateStr, student, todayEnd, holidays)}
+                                  onCycle={cycleStatus}
+                                  onLogProgress={openProgressPanel}
+                                />
+                              ))}
+                              {genderFilter === 'all' && ungrouped.length > 0 && (
+                                <div className="mob-group-label">Other</div>
+                              )}
+                              {(genderFilter === 'all' ? ungrouped : []).map((student) => (
+                                <MobileStudentRow
+                                  key={student.id}
+                                  student={student}
+                                  dateStr={dateStr}
+                                  status={getCellStatus(attendance, dateStr, student.id)}
+                                  lockReason={getLockReason(dateStr, student, todayEnd, holidays)}
+                                  onCycle={cycleStatus}
+                                  onLogProgress={openProgressPanel}
+                                />
+                              ))}
+                            </>
                           )}
-                          {(genderFilter === 'all' ? boys : genderFilter === 'male' ? filteredStudents : []).map((student) => (
-                            <MobileStudentRow
-                              key={student.id}
-                              student={student}
-                              dateStr={dateStr}
-                              status={getCellStatus(attendance, dateStr, student.id)}
-                              lockReason={getLockReason(dateStr, student, todayEnd)}
-                              onCycle={cycleStatus}
-                              onLogProgress={openProgressPanel}
-                            />
-                          ))}
-                          {genderFilter === 'all' && girls.length > 0 && (
-                            <div className="mob-group-label">Girls</div>
-                          )}
-                          {(genderFilter === 'all' ? girls : genderFilter === 'female' ? filteredStudents : []).map((student) => (
-                            <MobileStudentRow
-                              key={student.id}
-                              student={student}
-                              dateStr={dateStr}
-                              status={getCellStatus(attendance, dateStr, student.id)}
-                              lockReason={getLockReason(dateStr, student, todayEnd)}
-                              onCycle={cycleStatus}
-                              onLogProgress={openProgressPanel}
-                            />
-                          ))}
-                          {genderFilter === 'all' && ungrouped.length > 0 && (
-                            <div className="mob-group-label">Other</div>
-                          )}
-                          {(genderFilter === 'all' ? ungrouped : []).map((student) => (
-                            <MobileStudentRow
-                              key={student.id}
-                              student={student}
-                              dateStr={dateStr}
-                              status={getCellStatus(attendance, dateStr, student.id)}
-                              lockReason={getLockReason(dateStr, student, todayEnd)}
-                              onCycle={cycleStatus}
-                              onLogProgress={openProgressPanel}
-                            />
-                          ))}
                         </div>
                       )}
                     </div>
