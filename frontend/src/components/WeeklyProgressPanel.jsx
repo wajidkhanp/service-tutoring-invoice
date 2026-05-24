@@ -226,6 +226,14 @@ export default function WeeklyProgressPanel({ student, initialDate, onClose }) {
   const [loading, setLoading] = useState(true);
   const [editingDay, setEditingDay] = useState(null);
   const [holidays, setHolidays] = useState(new Set());
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 820);
+
+  // JS-based breakpoint — bypasses iOS Safari CSS media query issues
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 820);
+    window.addEventListener('resize', handler);
+    return () => window.removeEventListener('resize', handler);
+  }, []);
 
   // Current week's Monday for disabling forward nav
   const todayWeekStart = getWeekStart(new Date());
@@ -318,9 +326,17 @@ export default function WeeklyProgressPanel({ student, initialDate, onClose }) {
     );
   }
 
+  const backdropStyle = isMobile
+    ? { position:'fixed', inset:0, background:'rgba(0,0,0,0.5)', zIndex:1000, display:'flex', alignItems:'flex-end', justifyContent:'center' }
+    : { position:'fixed', inset:0, background:'rgba(0,0,0,0.5)', zIndex:1000, display:'flex', alignItems:'center', justifyContent:'center', padding:'1.5rem' };
+
+  const panelStyle = isMobile
+    ? { background:'#fff', borderRadius:'20px 20px 0 0', width:'100%', maxHeight:'94vh', display:'flex', flexDirection:'column', overflow:'hidden', boxShadow:'0 -8px 40px rgba(0,0,0,0.18)' }
+    : { background:'#fff', borderRadius:'16px', width:'100%', maxWidth:'1060px', maxHeight:'88vh', display:'flex', flexDirection:'column', overflow:'hidden', boxShadow:'0 24px 80px rgba(0,0,0,0.22)' };
+
   return (
-    <div className="wpb-backdrop" onClick={onClose}>
-      <div className="wpb-panel" onClick={(e) => e.stopPropagation()}>
+    <div style={backdropStyle} onClick={onClose}>
+      <div style={panelStyle} onClick={(e) => e.stopPropagation()}>
 
         {/* Header */}
         <div className="wpb-header">
@@ -367,8 +383,13 @@ export default function WeeklyProgressPanel({ student, initialDate, onClose }) {
         {loading ? (
           <div className="loading-screen"><div className="spinner" /></div>
         ) : (
-          <>
-            {/* Desktop: table */}
+          isMobile ? (
+            /* Mobile: day cards (JS-controlled, not CSS media query) */
+            <div style={{display:'flex', flexDirection:'column', gap:'0.6rem', overflowY:'auto', flex:1, padding:'0.75rem'}}>
+              {weekDays.map((date) => renderCard(date, student, holidays, progressByDate, setEditingDay))}
+            </div>
+          ) : (
+            /* Desktop: table */
             <div className="wpb-table-wrap">
               <table className="wpb-table">
                 <thead>
@@ -387,11 +408,7 @@ export default function WeeklyProgressPanel({ student, initialDate, onClose }) {
                 </tbody>
               </table>
             </div>
-            {/* Mobile: day cards */}
-            <div className="wpb-cards">
-              {weekDays.map((date) => renderCard(date, student, holidays, progressByDate, setEditingDay))}
-            </div>
-          </>
+          )
         )}
 
         {/* Day edit overlay */}
