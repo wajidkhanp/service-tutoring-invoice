@@ -2677,10 +2677,10 @@ a.icon-btn { text-decoration: none; }
   .wpb-panel { max-width: 98vw; }
 }
 
-/* ── Mobile — bottom sheet + day cards ── */
-@media (max-width: 680px) {
+/* ── Mobile (≤ 820px) — bottom sheet + 2-col day cards ── */
+@media (max-width: 820px) {
   .wpb-backdrop { padding: 0; align-items: flex-end; }
-  .wpb-panel { max-width: 100%; max-height: 93vh; border-radius: 18px 18px 0 0; }
+  .wpb-panel { max-width: 100%; max-height: 94vh; border-radius: 20px 20px 0 0; }
   .wpb-header { padding: 1rem 1.1rem 0.8rem; }
   .wpb-student-name { font-size: 1.1rem; }
   .wpb-nav { padding: 0.65rem 1rem; }
@@ -2689,36 +2689,55 @@ a.icon-btn { text-decoration: none; }
 
   /* Hide table, show cards */
   .wpb-table-wrap { display: none; }
-  .wpb-cards { display: flex; flex-direction: column; gap: 0.55rem; overflow-y: auto; flex: 1; padding: 0.75rem; }
+  .wpb-cards { display: flex; flex-direction: column; gap: 0.6rem; overflow-y: auto; flex: 1; padding: 0.75rem; }
 
+  /* Day card shell */
   .wpb-card { border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden; background: #fff; }
   .wpb-card-clickable { cursor: pointer; }
-  .wpb-card-clickable:active { background: var(--teal-light, #f0fdf9); }
+  .wpb-card-clickable:active .wpb-card-head { background: var(--teal-light, #f0fdf9); }
 
+  /* Card header */
   .wpb-card-head {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0.65rem 1rem; background: var(--gray-50);
+    padding: 0.7rem 1rem; background: var(--gray-50);
     border-bottom: 1px solid var(--gray-200);
   }
-  .wpb-card-head-day { font-weight: 700; font-size: 0.97rem; color: var(--gray-800); }
+  .wpb-card-head-day { font-weight: 700; font-size: 1rem; color: var(--gray-800); }
   .wpb-card-head-today { color: var(--teal-dark, #0d9488) !important; }
   .wpb-card-edit-hint { font-size: 0.72rem; color: var(--gray-400); }
 
-  .wpb-card-body { padding: 0.25rem 1rem 0.4rem; }
+  /* 2-column grid — all 6 fields always visible */
+  .wpb-card-body { display: grid; grid-template-columns: 1fr 1fr; }
   .wpb-card-field {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0.38rem 0; min-height: 32px;
+    display: flex; flex-direction: column; gap: 5px;
+    padding: 0.65rem 0.9rem;
     border-bottom: 1px solid var(--gray-100);
+    border-right: 1px solid var(--gray-100);
   }
-  .wpb-card-field:last-child { border-bottom: none; }
-  .wpb-card-label { font-size: 0.71rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--gray-400); min-width: 90px; }
-  .wpb-card-future-label { padding: 0.55rem 0; font-size: 0.8rem; color: var(--gray-300); font-style: italic; }
+  .wpb-card-field:nth-child(even) { border-right: none; }
+  .wpb-card-field:nth-last-child(-n+2) { border-bottom: none; }
 
+  .wpb-card-label {
+    font-size: 0.64rem; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.05em; color: var(--gray-400);
+  }
+  .wpb-card-value {
+    font-size: 0.9rem; color: var(--gray-800);
+    min-height: 22px; display: flex; align-items: center; flex-wrap: wrap; gap: 3px;
+  }
+
+  /* Future / no-data spans full width */
+  .wpb-card-future-label {
+    grid-column: 1 / -1;
+    padding: 0.7rem 0.9rem; font-size: 0.82rem; color: var(--gray-300); font-style: italic;
+  }
+
+  /* No-class / holiday single-line cards */
   .wpb-card-simple {
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0.65rem 1rem;
+    padding: 0.7rem 1rem;
   }
-  .wpb-card-simple-day { font-weight: 700; font-size: 0.97rem; color: var(--gray-800); }
+  .wpb-card-simple-day { font-weight: 700; font-size: 1rem; color: var(--gray-800); }
   .wpb-card-noclass { background: var(--gray-50); }
   .wpb-card-holiday { background: #fffbeb; }
   .wpb-card-noclass-text { font-size: 0.82rem; color: var(--gray-400); font-style: italic; }

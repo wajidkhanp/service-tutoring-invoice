@@ -176,12 +176,30 @@ function renderCard(date, student, holidays, progressByDate, setEditingDay) {
           <div className="wpb-card-future-label">Future — not yet recorded</div>
         ) : (
           <>
-            <div className="wpb-card-field"><span className="wpb-card-label">New Lesson</span><span>{newLessonCell(p)}</span></div>
-            <div className="wpb-card-field"><span className="wpb-card-label">Sabqi</span><span>{sabqiCell(p)}</span></div>
-            <div className="wpb-card-field"><span className="wpb-card-label">Manzil</span><span>{manzilCell(p)}</span></div>
-            <div className="wpb-card-field"><span className="wpb-card-label">Akhlaq</span><span>{akhlaqCell(p)}</span></div>
-            <div className="wpb-card-field"><span className="wpb-card-label">Stars</span><span>{starsCell(p)}</span></div>
-            <div className="wpb-card-field"><span className="wpb-card-label">Remarks</span><span>{remarksCell(p)}</span></div>
+            <div className="wpb-card-field">
+              <span className="wpb-card-label">New Lesson</span>
+              <span className="wpb-card-value">{newLessonCell(p)}</span>
+            </div>
+            <div className="wpb-card-field">
+              <span className="wpb-card-label">Sabqi</span>
+              <span className="wpb-card-value">{sabqiCell(p)}</span>
+            </div>
+            <div className="wpb-card-field">
+              <span className="wpb-card-label">Manzil</span>
+              <span className="wpb-card-value">{manzilCell(p)}</span>
+            </div>
+            <div className="wpb-card-field">
+              <span className="wpb-card-label">Akhlaq</span>
+              <span className="wpb-card-value">{akhlaqCell(p)}</span>
+            </div>
+            <div className="wpb-card-field">
+              <span className="wpb-card-label">Stars</span>
+              <span className="wpb-card-value">{starsCell(p)}</span>
+            </div>
+            <div className="wpb-card-field">
+              <span className="wpb-card-label">Remarks</span>
+              <span className="wpb-card-value">{remarksCell(p)}</span>
+            </div>
           </>
         )}
       </div>
