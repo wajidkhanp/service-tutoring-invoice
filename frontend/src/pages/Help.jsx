@@ -15,11 +15,69 @@ const SECTIONS = [
     ],
   },
   {
+    title: 'Daily Class',
+    faqs: [
+      {
+        q: 'What is the Daily Class page?',
+        a: 'The Daily Class page is your primary tool for each class session. It shows all students for today (or a selected past date) with Present / Absent / Tardy buttons, plus a Log Progress button to record each student\'s Quran progress for that day. Use the date navigation arrows to review or update any past school day.',
+      },
+      {
+        q: 'How do I mark attendance on the Daily page?',
+        a: 'Each student card shows three buttons: Present, Absent, and Tardy. The first tap on any button records the day and sets that student\'s status. All students default to Present — you only need to tap Absent or Tardy for exceptions. Changes save to the server instantly.',
+      },
+      {
+        q: 'How does the schedule work for boys and girls?',
+        a: 'Sundays are off for all students. Fridays are additionally off for female students. On the Daily page, female students automatically show a "No class today" card on Fridays instead of attendance buttons. The date navigator skips Sundays automatically when you press the back/forward arrows.',
+      },
+      {
+        q: 'How do I mark a day as a Holiday?',
+        a: 'On the Daily page, tap the Holiday button in the top-right area of the header. The day is immediately marked as a holiday and a banner replaces the student cards. Tap Remove Holiday to undo. Holidays are shared across the whole system — attendance and report card calculations both exclude holiday dates.',
+      },
+      {
+        q: 'Can I record attendance for a past date?',
+        a: 'Yes. Use the left arrow (◀) in the date navigator to go back to any past weekday. The page loads that day\'s data and lets you add or correct attendance and progress entries. Future dates are locked (read-only).',
+      },
+    ],
+  },
+  {
+    title: 'Progress Logging',
+    faqs: [
+      {
+        q: 'How do I log a student\'s Quran progress?',
+        a: 'On the Daily Class page, tap Log Progress (or + Log Progress) on any student card. This opens the Progress Log panel for that student and date. You can record New Lesson, Sabqi, Manzil, Akhlaq, Stars earned, and any special Achievement. Tap Save Progress when done.',
+      },
+      {
+        q: 'What is New Lesson and how do I record it?',
+        a: 'New Lesson tracks which Surah the student memorised that day. Select the Surah from the dropdown, then enter the From Ayah, To Ayah, and number of Lines. If no new lesson was given, leave the dropdown at "No new lesson today". Special statuses are also available: Missed (student missed their lesson), Did Not Pass (student could not pass their previous lesson), and No lesson · Juzz Completed (a milestone — student finished a full Juzz).',
+      },
+      {
+        q: 'What is Sabqi?',
+        a: 'Sabqi is the daily revision of recently memorised portions. Tap Yes if the student recited Sabqi today, or No if they did not. When you tap Yes, a sub-rating appears — choose Good or Needs Improvement to record the quality of the recitation.',
+      },
+      {
+        q: 'What is Manzil?',
+        a: 'Manzil is revision of previously memorised Juzz. Tap Yes if the student recited Manzil today. Then select the Juzz number, optionally select a specific Surah within that Juzz, and enter free-text details (e.g. "Juzz 3 from Al-Baqarah"). After you type 5 or more characters in the details field, a Good / Needs Improvement rating appears so you can rate the recitation quality.',
+      },
+      {
+        q: 'What are Stars, Akhlaq, and Achievement?',
+        a: 'Stars (1–5) are awarded for the student\'s overall performance that day — tap the star icons or use the +/− buttons. Akhlaq records the student\'s character and behaviour: choose Good or Needs Improvement. Achievement is a free-text field for any special note (e.g. "Memorised full Surah Al-Ikhlas"). All three are optional and feed into the monthly report card.',
+      },
+      {
+        q: 'How do I view and edit progress for a whole week?',
+        a: 'Tap Log Progress on any student card to open the Weekly Progress Panel. This shows a full Mon–Sat table (or scrollable day cards on mobile) for that student\'s week. Each row displays New Lesson, Sabqi, Manzil, Akhlaq, Stars, and Remarks at a glance. Tap any past or current day row (or the Edit button on mobile) to open the Progress Log panel for that specific day. Use the week navigation arrows to move between weeks.',
+      },
+      {
+        q: 'Are future days editable in the weekly view?',
+        a: 'No. Future dates are locked — they display dashes and have no tap/edit action. Only today and past school days can be edited. Days that are off (Sunday for all, Friday for girls) and holidays are shown as grayed-out "No class" or "Holiday" rows.',
+      },
+    ],
+  },
+  {
     title: 'Attendance',
     faqs: [
       {
-        q: 'How do I mark attendance for the day?',
-        a: 'Go to the Attendance page (or tap Mark Attendance on the Dashboard). The weekly grid shows all students grouped by boys and girls. Every student defaults to Present — you only need to tap a cell to mark it Absent (A) or Tardy (T). Tap again to cycle: Present → Absent → Tardy → Present. Changes save instantly.',
+        q: 'How do I view the full attendance grid?',
+        a: 'Go to the Attendance page. The weekly grid shows all students grouped by Boys and Girls across a Mon–Sat week. Every student defaults to Present — tap a cell to cycle through Present → Absent → Tardy → Present. Changes save instantly.',
       },
       {
         q: 'How are students organized in the grid?',
@@ -31,11 +89,19 @@ const SECTIONS = [
       },
       {
         q: 'Why are some cells grayed out?',
-        a: 'Future dates are locked and cannot be edited — you can only record attendance for today or past school days. Cells before a student\'s join date are also locked (shown as n/a) since the student was not yet enrolled.',
+        a: 'Future dates are locked and cannot be edited. Cells before a student\'s join date are locked (shown as n/a) since the student was not yet enrolled. Holiday dates are also locked — they are excluded from all attendance calculations.',
+      },
+      {
+        q: 'How does the schedule work for boys and girls?',
+        a: 'All students have Sundays off. Female students additionally have Fridays off — their Friday cells show "Off" and are not counted in attendance totals. The school week runs Monday through Saturday.',
+      },
+      {
+        q: 'How do I mark a day as a Holiday in the attendance grid?',
+        a: 'Holiday marking is done from the Daily Class page — navigate to the date and tap the Holiday button. The holiday flag applies system-wide: the attendance grid, daily page, weekly progress view, and report card calculations all recognise and exclude it.',
       },
       {
         q: 'How does the monthly filter work?',
-        a: 'The month selector above the grid only shows past and current months — no future months are listed. Select a month to view or edit attendance for that period. Weeks are grouped as Week 1, Week 2, etc. with Monday–Friday columns.',
+        a: 'The month selector above the grid only shows past and current months. Select a month to view or edit attendance for that period. Weeks are grouped as Week 1, Week 2, etc. with Monday–Saturday columns.',
       },
       {
         q: 'How do I view a student\'s full attendance history?',
@@ -43,11 +109,44 @@ const SECTIONS = [
       },
       {
         q: 'What is the attendance rate and how is it calculated?',
-        a: 'Attendance rate = (Present days ÷ Total school days) × 100. A school day is any date that has been recorded in the system (either confirmed all-present or has at least one absence/tardy entry). Weekends and school holidays are never counted.',
+        a: 'Attendance rate = (Present days ÷ Total school days) × 100. A school day is any date recorded in the system (confirmed all-present or has at least one absence/tardy entry). Weekends, off-schedule days (Friday for girls), and holidays are never counted.',
+      },
+    ],
+  },
+  {
+    title: 'Report Cards',
+    faqs: [
+      {
+        q: 'What are Report Cards?',
+        a: 'Report Cards are monthly summaries for each student covering Attendance, New Lesson progress, Sabqi, Manzil, Akhlaq, Stars earned, and Teacher Remarks. They can be generated as PDFs and emailed directly to parents.',
       },
       {
-        q: 'How does the mobile attendance view work?',
-        a: 'On phones (screen width ≤ 640 px) the weekly grid switches to a day-stack view. Each school day is listed as an expandable section. Tap a day to expand it and see all students with large P / A / T buttons for each.',
+        q: 'How do I create report cards for a month?',
+        a: 'Go to the Report Cards page and select the month and year. Tap Generate All to create draft report cards for all students in one click. Existing cards for that month are skipped. You can also create a single card by tapping New Report Card and selecting the student.',
+      },
+      {
+        q: 'Are report cards auto-filled from daily progress data?',
+        a: 'Yes. When a report card is created, the system automatically fills attendance totals from the attendance records and populates progress fields from the daily progress logs: lines completed (New Lesson), days recited vs. missed (Sabqi), weekly Manzil coverage, overall Sabqi and Manzil ratings (based on majority Good/Needs Improvement), total Stars earned, achievements noted, and Akhlaq majority rating. You can review and edit any field before finalising.',
+      },
+      {
+        q: 'How do Sabqi and Manzil ratings work in report cards?',
+        a: 'Each daily progress entry records a Good or Needs Improvement rating for Sabqi and Manzil. The report card uses the majority rating across the month — if more days were rated Good than Needs Improvement, the report card shows Good, and vice versa.',
+      },
+      {
+        q: 'How do I edit a report card?',
+        a: 'Open the report card and tap Edit. All fields are editable: attendance counts, progress details (target lines, target Ajza, ratings, notes), stars, achievements, remarks, and teacher name. Tap Save when finished. The card stays in Draft status until you mark it final.',
+      },
+      {
+        q: 'How do I download a report card as a PDF?',
+        a: 'Open any report card and tap Download PDF. The server generates a formatted PDF on the fly and downloads it to your device. The PDF includes the organization header, student details, attendance summary, progress sections, stars, and signature.',
+      },
+      {
+        q: 'How do I email a report card to parents?',
+        a: 'Open the report card and tap Send Email. The system generates the PDF, attaches it, and sends it to the parent email address on file for that student. The card is automatically marked as Sent with a timestamp. If no parent email is on file, add one in the student\'s profile first.',
+      },
+      {
+        q: 'What is the difference between Draft and Sent status?',
+        a: 'Draft means the report card has been created but not yet emailed to the parent. Sent means the email was successfully delivered — the sent timestamp is recorded. You can still edit and re-send a card that has already been sent.',
       },
     ],
   },
@@ -56,7 +155,11 @@ const SECTIONS = [
     faqs: [
       {
         q: 'How do I add a student?',
-        a: 'Go to the Students page and tap Add Student. Fill in the student\'s name, student email, gender, join date, grade, address, hourly rate, and parent contact info (name, phone, email). The parent email is used when sending invoice emails. Tap Add Student to save.',
+        a: 'Go to the Students page and tap Add Student. Fill in the student\'s name, student email, gender, join date, grade, address, hourly rate, and parent contact info (name, phone, email). The parent email is used when sending invoice and report card emails. Tap Add Student to save.',
+      },
+      {
+        q: 'How does gender affect the class schedule?',
+        a: 'Gender determines which days a student has class. Male students attend Monday–Saturday (Sundays off). Female students attend Monday–Thursday and Saturday (Sundays and Fridays off). The Daily page, weekly progress view, and attendance grid all automatically respect this schedule — female students show "No class" on Fridays.',
       },
       {
         q: 'How do I view or edit a student\'s details?',
@@ -64,11 +167,11 @@ const SECTIONS = [
       },
       {
         q: 'Why does join date matter?',
-        a: 'A student\'s join date locks attendance cells for any date before they enrolled — you cannot accidentally record attendance for a period the student wasn\'t attending. It also ensures attendance history only shows relevant school days.',
+        a: 'A student\'s join date locks attendance cells for any date before they enrolled — you cannot accidentally record attendance for a period the student wasn\'t attending. It also ensures attendance history and report card calculations only include relevant school days.',
       },
       {
         q: 'How do I remove a student?',
-        a: 'Open the student\'s detail overlay via Details, then tap Remove. This permanently deletes the student record. Existing invoices are not affected, but their attendance entries remain in the data file.',
+        a: 'Open the student\'s detail overlay via Details, then tap Remove. This permanently deletes the student record. Existing invoices and report cards are not affected, but their attendance and progress entries remain in the data file.',
       },
     ],
   },
@@ -77,15 +180,15 @@ const SECTIONS = [
     faqs: [
       {
         q: 'How do I set up my organization information?',
-        a: 'Go to Settings in the navbar. The Organization Information panel shows your current details — name, address, phone, email, EIN, and representative name. Tap Edit to update any field, then Save Changes. These details appear in the header of every generated PDF invoice.',
+        a: 'Go to Settings in the navbar. The Organization Information panel shows your current details — name, address, phone, email, EIN, and representative name. Tap Edit to update any field, then Save Changes. These details appear in the header of every generated PDF invoice and report card.',
       },
       {
         q: 'How do I upload a signature?',
-        a: 'On the Settings page, find the Invoice Signature panel. Tap Choose File and select a PNG or JPEG image of your signature (recommended size: 300 × 100 px). A preview will appear — tap Upload Signature to save it. The signature will appear on all PDFs going forward.',
+        a: 'On the Settings page, find the Invoice Signature panel. Tap Choose File and select a PNG or JPEG image of your signature (recommended size: 300 × 100 px). A preview will appear — tap Upload Signature to save it. The signature will appear on all invoices and report card PDFs going forward.',
       },
       {
         q: 'What happens if I don\'t upload a signature?',
-        a: 'If no signature image is on file, the PDF will show a simple signature line in its place. The invoice is still fully valid — the signature image is optional.',
+        a: 'If no signature image is on file, the PDF will show a simple signature line in its place. The document is still fully valid — the signature image is optional.',
       },
     ],
   },
@@ -102,7 +205,7 @@ const SECTIONS = [
       },
       {
         q: 'Why can\'t I select a future month for invoices?',
-        a: 'Invoice generation is restricted to past and current months only. This prevents accidentally generating invoices for billing periods that haven\'t happened yet. If you need to generate for the current month, make sure the correct month is selected.',
+        a: 'Invoice generation is restricted to past and current months only. This prevents accidentally generating invoices for billing periods that haven\'t happened yet.',
       },
       {
         q: 'How are PDFs downloaded?',
