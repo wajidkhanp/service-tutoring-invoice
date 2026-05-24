@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Pencil } from 'lucide-react';
 import { getDailyProgress, saveDailyProgress, getMonthHolidays } from '../services/api';
 import ProgressLogPanel from './ProgressLogPanel';
 
@@ -7,6 +8,7 @@ const DOW_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
 function pad(n) { return String(n).padStart(2, '0'); }
 function toDateStr(d) { return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; }
+function ordinal(n) { const s = ['th','st','nd','rd']; const v = n % 100; return n + (s[(v-20)%10] || s[v] || s[0]); }
 
 function getWeekStart(date) {
   const d = new Date(date);
@@ -142,7 +144,7 @@ function renderCard(date, student, holidays, progressByDate, setEditingDay) {
   const isClickable = !noClass && !holiday && !future;
   const p = progressByDate[dateStr];
 
-  const dayLabel = `${DOW_SHORT[date.getDay()]} ${date.getDate()}`;
+  const dayLabel = `${DOW_SHORT[date.getDay()]} ${MON[date.getMonth()]} ${ordinal(date.getDate())}`;
 
   if (noClass) {
     return (
@@ -180,7 +182,11 @@ function renderCard(date, student, holidays, progressByDate, setEditingDay) {
         <span style={{fontWeight: 700, fontSize: '1rem', color: today ? '#0d9488' : '#1f2937'}}>
           {dayLabel}
         </span>
-        {isClickable && <span style={{fontSize: '0.72rem', color: '#9ca3af'}}>Tap to edit →</span>}
+        {isClickable && (
+          <span style={{display:'flex', alignItems:'center', gap:'4px', fontSize:'0.78rem', fontWeight:600, color:'#0d9488'}}>
+            <Pencil size={13} />Edit
+          </span>
+        )}
       </div>
       <div style={{display:'grid', gridTemplateColumns:'1fr 1fr'}}>
         {future ? (
@@ -205,7 +211,7 @@ function renderCard(date, student, holidays, progressByDate, setEditingDay) {
                 borderRight: i % 2 === 0 ? '1px solid #f3f4f6' : 'none',
               }}
             >
-              <span style={{fontSize:'0.63rem', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.05em', color:'#9ca3af'}}>
+              <span style={{fontSize:'0.63rem', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.05em', color:'#0d9488'}}>
                 {label}
               </span>
               <span style={{fontSize:'0.88rem', minHeight:'20px', display:'flex', alignItems:'center'}}>
