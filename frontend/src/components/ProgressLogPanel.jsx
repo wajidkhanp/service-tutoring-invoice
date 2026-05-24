@@ -23,11 +23,14 @@ export default function ProgressLogPanel({ student, dateStr, initialProgress, on
 
   // Sabqi
   const [sabqi, setSabqi] = useState(null);
+  const [sabqiRating, setSabqiRating] = useState(null); // 'good' | 'needs_improvement' | null
 
   // Manzil
   const [manzilRecited, setManzilRecited] = useState(null);
   const [manzilJuzz,    setManzilJuzz]    = useState('');
   const [manzilSurah,   setManzilSurah]   = useState('');
+  const [manzilDetails, setManzilDetails] = useState('');  // free-text details
+  const [manzilRating,  setManzilRating]  = useState(null); // 'good' | 'needs_improvement' | null
 
   // Stars, Achievement, Akhlaq
   const [stars,       setStars]       = useState(0);
@@ -47,9 +50,12 @@ export default function ProgressLogPanel({ student, dateStr, initialProgress, on
     setNlTo(p.newLesson?.toAyah      ? String(p.newLesson.toAyah)    : '');
     setNlLines(p.newLesson?.lines    ? String(p.newLesson.lines)     : '');
     setSabqi(p.sabqi !== undefined ? p.sabqi : null);
+    setSabqiRating(p.sabqiRating || null);
     setManzilRecited(p.manzil?.recited !== undefined ? p.manzil.recited : null);
     setManzilJuzz(p.manzil?.juzzNumber  ? String(p.manzil.juzzNumber)  : '');
     setManzilSurah(p.manzil?.surahNumber ? String(p.manzil.surahNumber) : '');
+    setManzilDetails(p.manzil?.details || '');
+    setManzilRating(p.manzil?.rating || null);
     setStars(p.stars ? Number(p.stars) : 0);
     setAchievement(p.achievement || '');
     setAkhlaq(p.akhlaq || null);
@@ -81,6 +87,7 @@ export default function ProgressLogPanel({ student, dateStr, initialProgress, on
       }
 
       data.sabqi = sabqi;
+      data.sabqiRating = sabqiRating;
 
       if (manzilRecited !== null) {
         data.manzil = {
@@ -88,6 +95,8 @@ export default function ProgressLogPanel({ student, dateStr, initialProgress, on
           juzzNumber:  manzilRecited && manzilJuzz  ? Number(manzilJuzz)  : null,
           surahNumber: manzilRecited && manzilSurah ? Number(manzilSurah) : null,
           surahName:   manzilRecited && manzilSurah ? (getSurah(Number(manzilSurah))?.name || null) : null,
+          details:     manzilRecited ? (manzilDetails.trim() || null) : null,
+          rating:      manzilRecited ? manzilRating : null,
         };
       } else {
         data.manzil = null;
@@ -172,6 +181,27 @@ export default function ProgressLogPanel({ student, dateStr, initialProgress, on
               <button type="button" className={`prog-yn-btn prog-yn-yes${sabqi === true ? ' prog-yn-active' : ''}`} onClick={() => setSabqi(sabqi === true ? null : true)}>Yes</button>
               <button type="button" className={`prog-yn-btn prog-yn-no${sabqi === false ? ' prog-yn-active' : ''}`} onClick={() => setSabqi(sabqi === false ? null : false)}>No</button>
             </div>
+            {sabqi === true && (
+              <div className="prog-sub-rating">
+                <div className="prog-sub-rating-label">Rating</div>
+                <div className="prog-yn-row">
+                  <button
+                    type="button"
+                    className={`prog-yn-btn prog-yn-yes${sabqiRating === 'good' ? ' prog-yn-active' : ''}`}
+                    onClick={() => setSabqiRating(sabqiRating === 'good' ? null : 'good')}
+                  >
+                    Good
+                  </button>
+                  <button
+                    type="button"
+                    className={`prog-yn-btn prog-yn-no${sabqiRating === 'needs_improvement' ? ' prog-yn-active' : ''}`}
+                    onClick={() => setSabqiRating(sabqiRating === 'needs_improvement' ? null : 'needs_improvement')}
+                  >
+                    Needs Improvement
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* ── MANZIL ─────────────────────────────────── */}
@@ -201,6 +231,36 @@ export default function ProgressLogPanel({ student, dateStr, initialProgress, on
                         <option key={s.number} value={s.number}>{surahShortLabel(s)}</option>
                       ))}
                     </select>
+                  </div>
+                )}
+                <div className="prog-field">
+                  <label>Details</label>
+                  <input
+                    type="text"
+                    placeholder="e.g. Juzz 3 from Al-Baqarah..."
+                    value={manzilDetails}
+                    onChange={(e) => setManzilDetails(e.target.value)}
+                  />
+                </div>
+                {manzilDetails.length >= 5 && (
+                  <div className="prog-sub-rating">
+                    <div className="prog-sub-rating-label">Rating</div>
+                    <div className="prog-yn-row">
+                      <button
+                        type="button"
+                        className={`prog-yn-btn prog-yn-yes${manzilRating === 'good' ? ' prog-yn-active' : ''}`}
+                        onClick={() => setManzilRating(manzilRating === 'good' ? null : 'good')}
+                      >
+                        Good
+                      </button>
+                      <button
+                        type="button"
+                        className={`prog-yn-btn prog-yn-no${manzilRating === 'needs_improvement' ? ' prog-yn-active' : ''}`}
+                        onClick={() => setManzilRating(manzilRating === 'needs_improvement' ? null : 'needs_improvement')}
+                      >
+                        Needs Improvement
+                      </button>
+                    </div>
                   </div>
                 )}
               </div>

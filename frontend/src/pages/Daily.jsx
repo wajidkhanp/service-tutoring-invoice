@@ -3,9 +3,9 @@ import { Link } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, CalendarCheck, CalendarOff } from 'lucide-react';
 import {
   getStudents, getMonthAttendance, saveAttendance, confirmAllPresent, clearAttendanceEntry,
-  getDailyProgress, saveDailyProgress, getMonthHolidays, toggleHoliday,
+  getDailyProgress, getMonthHolidays, toggleHoliday,
 } from '../services/api';
-import ProgressLogPanel from '../components/ProgressLogPanel';
+import WeeklyProgressPanel from '../components/WeeklyProgressPanel';
 import GenderBadge from '../components/GenderBadge';
 
 const MONTH_NAMES = ['January','February','March','April','May','June','July','August','September','October','November','December'];
@@ -108,7 +108,7 @@ export default function Daily() {
 
   // progress logged keyed by dateStr → { studentId: bool }
   const [progressMap, setProgressMap]   = useState({});
-  const [progressPanel, setProgressPanel] = useState(null);
+  const [weeklyPanel, setWeeklyPanel] = useState(null); // { student }
 
   const loadedMonthsRef    = useRef(new Set());
   const loadedProgressRef  = useRef(new Set());
@@ -223,26 +223,9 @@ export default function Daily() {
     }
   }, [getStatus, dateStr, recordedSet]);
 
-  const openProgressPanel = useCallback(async (student) => {
-    let initialProgress = null;
-    try {
-      const res = await getDailyProgress(dateStr, student.id);
-      initialProgress = res.data.progress;
-    } catch {}
-    setProgressPanel({ student, dateStr, initialProgress });
-  }, [dateStr]);
-
-  const handleSaveProgress = useCallback(async (data) => {
-    if (!progressPanel) return;
-    await saveDailyProgress(progressPanel.dateStr, progressPanel.student.id, data);
-    setProgressMap((prev) => ({
-      ...prev,
-      [progressPanel.dateStr]: {
-        ...(prev[progressPanel.dateStr] || {}),
-        [progressPanel.student.id]: hasAnyProgress(data),
-      },
-    }));
-  }, [progressPanel]);
+  const openWeeklyPanel = useCallback((student) => {
+    setWeeklyPanel({ student });
+  }, []);
 
   const groups = useMemo(() => [
     { label: 'Boys',  list: students.filter((s) => s.gender === 'male').sort((a, b) => a.name.localeCompare(b.name)) },
@@ -373,7 +356,7 @@ export default function Daily() {
                   isFuture={isFuture}
                   isOffDay={isStudentOffDay(student, currentDate)}
                   onStatusChange={handleStatusChange}
-                  onLogProgress={openProgressPanel}
+                  onLogProgress={openWeeklyPanel}
                 />
               ))}
             </div>
@@ -381,13 +364,11 @@ export default function Daily() {
         ))
       )}
 
-      {progressPanel && (
-        <ProgressLogPanel
-          student={progressPanel.student}
-          dateStr={progressPanel.dateStr}
-          initialProgress={progressPanel.initialProgress}
-          onSave={handleSaveProgress}
-          onClose={() => setProgressPanel(null)}
+      {weeklyPanel && (
+        <WeeklyProgressPanel
+          student={weeklyPanel.student}
+          initialDate={currentDate}
+          onClose={() => setWeeklyPanel(null)}
         />
       )}
     </div>

@@ -55,7 +55,9 @@ function getMonthProgress(year, month, studentId, attendanceDays = []) {
   const nlSurahs = [];
   let sabqiDays = 0;
   let sabqiMissed = 0;
+  let sabqiGood = 0, sabqiNI = 0;
   const manzilDays = [];
+  let manzilGood = 0, manzilNI = 0;
   let totalStars = 0;
   const achievements = [];
   let akhlaqGood = 0;
@@ -73,11 +75,16 @@ function getMonthProgress(year, month, studentId, attendanceDays = []) {
       }
     }
 
-    if (progress.sabqi === true) sabqiDays++;
-    else if (progress.sabqi === false && isPresent) sabqiMissed++;
+    if (progress.sabqi === true) {
+      sabqiDays++;
+      if (progress.sabqiRating === 'good') sabqiGood++;
+      else if (progress.sabqiRating === 'needs_improvement') sabqiNI++;
+    } else if (progress.sabqi === false && isPresent) sabqiMissed++;
 
     if (progress.manzil?.recited) {
       manzilDays.push({ date, juzzNumber: progress.manzil.juzzNumber, surahNumber: progress.manzil.surahNumber, surahName: progress.manzil.surahName });
+      if (progress.manzil?.rating === 'good') manzilGood++;
+      else if (progress.manzil?.rating === 'needs_improvement') manzilNI++;
     }
 
     if (progress.stars) totalStars += Number(progress.stars) || 0;
@@ -117,6 +124,7 @@ function getMonthProgress(year, month, studentId, attendanceDays = []) {
       sabqi: {
         recitedDays: sabqiDays,
         notRecitedDays: sabqiMissed,
+        ratingMajority: sabqiNI > sabqiGood ? 'needs_improvement' : sabqiGood > 0 ? 'good' : null,
       },
       manzil: {
         week1: manzilByWeek.week1.join(', '),
@@ -124,6 +132,7 @@ function getMonthProgress(year, month, studentId, attendanceDays = []) {
         week3: manzilByWeek.week3.join(', '),
         week4: manzilByWeek.week4.join(', '),
         daysRecited: manzilDays.length,
+        ratingMajority: manzilNI > manzilGood ? 'needs_improvement' : manzilGood > 0 ? 'good' : null,
       },
       stars: totalStars,
       achievements,

@@ -63,9 +63,9 @@ function buildProgressFromDailyData(studentId, month, year) {
     const presentDays = getPresentDaysForMonth(studentId, month, year);
     const { summary } = getMonthProgress(String(year), monthNum, studentId, presentDays);
 
-    // Map majority akhlaq to report card rating labels
-    const akhlaqRatingMap = { good: 'Good', needs_improvement: 'Needs Improvement' };
-    const akhlaqRating = akhlaqRatingMap[summary.akhlaq?.majority] || '';
+    // Map majority ratings to report card rating labels
+    const ratingLabel = { good: 'Good', needs_improvement: 'Needs Improvement' };
+    const akhlaqRating = ratingLabel[summary.akhlaq?.majority] || '';
 
     return {
       newLesson: {
@@ -77,7 +77,9 @@ function buildProgressFromDailyData(studentId, month, year) {
       sabqi: {
         recitedDays:    summary.sabqi.recitedDays > 0    ? String(summary.sabqi.recitedDays)    : '',
         notRecitedDays: summary.sabqi.notRecitedDays > 0 ? String(summary.sabqi.notRecitedDays) : '',
-        targetMet: null, rating: '', notes: '',
+        targetMet: null,
+        rating: ratingLabel[summary.sabqi.ratingMajority] || '',
+        notes: '',
       },
       manzil: {
         targetAjza: '',
@@ -85,7 +87,9 @@ function buildProgressFromDailyData(studentId, month, year) {
         week2: summary.manzil.week2 || '',
         week3: summary.manzil.week3 || '',
         week4: summary.manzil.week4 || '',
-        targetMet: null, rating: '', notes: '',
+        targetMet: null,
+        rating: ratingLabel[summary.manzil.ratingMajority] || '',
+        notes: '',
       },
       akhlaq: { rating: akhlaqRating, notes: '' },
     };

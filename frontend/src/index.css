@@ -2599,3 +2599,86 @@ a.icon-btn { text-decoration: none; }
 }
 .sp-contact-link:hover { text-decoration: underline; }
 
+/* ── Weekly Progress Panel ──────────────────────────────── */
+.wpb-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  z-index: 1000; display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+}
+.wpb-panel {
+  background: #fff; border-radius: 14px;
+  width: 100%; max-width: 860px; max-height: 90vh;
+  display: flex; flex-direction: column;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  overflow: hidden;
+}
+.wpb-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  padding: 1.1rem 1.25rem 0.75rem;
+  border-bottom: 1px solid var(--gray-100);
+  flex-shrink: 0;
+}
+.wpb-student-name { font-size: 1.05rem; font-weight: 700; color: var(--gray-900, #111827); }
+.wpb-student-sub { font-size: 0.8rem; color: var(--gray-500); }
+.wpb-nav {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0.65rem 1.25rem; border-bottom: 1px solid var(--gray-100);
+  flex-shrink: 0;
+}
+.wpb-nav-btn {
+  background: none; border: 1px solid var(--gray-200); border-radius: 6px;
+  padding: 0.3rem 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--gray-600);
+}
+.wpb-nav-btn:hover:not(:disabled) { background: var(--gray-100); }
+.wpb-nav-btn:disabled { opacity: 0.35; cursor: default; }
+.wpb-nav-label { font-size: 0.88rem; font-weight: 600; color: var(--gray-700); }
+.wpb-table-wrap { overflow: auto; flex: 1; }
+.wpb-table {
+  width: 100%; border-collapse: collapse; font-size: 0.8rem;
+}
+.wpb-table th {
+  background: var(--gray-50); padding: 0.5rem 0.6rem;
+  text-align: left; font-size: 0.72rem; font-weight: 600;
+  text-transform: uppercase; color: var(--gray-500);
+  border-bottom: 1px solid var(--gray-200); white-space: nowrap;
+  position: sticky; top: 0; z-index: 1;
+}
+.wpb-table td {
+  padding: 0.55rem 0.6rem; border-bottom: 1px solid var(--gray-100);
+  vertical-align: middle;
+}
+.wpb-row-clickable { cursor: pointer; }
+.wpb-row-clickable:hover td { background: var(--teal-light); }
+.wpb-row-noclass td { background: var(--gray-50); color: var(--gray-300); font-style: italic; }
+.wpb-row-holiday td { background: #fffbeb; }
+.wpb-row-future td { color: var(--gray-300); }
+.wpb-row-has-data { background: #fafffe; }
+.wpb-day-cell { white-space: nowrap; font-weight: 600; color: var(--gray-700); min-width: 56px; }
+.wpb-day-today { color: var(--teal-dark) !important; }
+.wpb-cell-text { color: var(--gray-800); }
+.wpb-badge {
+  display: inline-block; border-radius: 4px; padding: 1px 6px;
+  font-size: 0.72rem; font-weight: 600; white-space: nowrap;
+}
+.wpb-good  { background: #dcfce7; color: #15803d; }
+.wpb-ni    { background: #fee2e2; color: #dc2626; }
+.wpb-yes   { background: #d1fae5; color: #065f46; }
+.wpb-no    { background: var(--gray-100); color: var(--gray-500); }
+.wpb-missed  { background: #fef3c7; color: #92400e; }
+.wpb-special { background: #dbeafe; color: #1d4ed8; }
+.wpb-rating-badge {
+  display: inline-block; margin-left: 4px; border-radius: 3px;
+  padding: 0px 4px; font-size: 0.65rem; font-weight: 700;
+}
+.wpb-stars { color: #f59e0b; font-size: 0.8rem; letter-spacing: 1px; }
+.wpb-holiday-cell { color: #d97706; font-weight: 600; font-size: 0.75rem; }
+.wpb-noclass-cell { color: var(--gray-300); font-size: 0.75rem; }
+@media (max-width: 600px) {
+  .wpb-panel { max-height: 95vh; border-radius: 10px; }
+  .wpb-table th, .wpb-table td { padding: 0.45rem 0.4rem; font-size: 0.72rem; }
+}
+
+/* ── Progress Log Panel – Sabqi/Manzil sub-rating ───────── */
+.prog-sub-rating { margin-top: 0.6rem; }
+.prog-sub-rating-label { font-size: 0.75rem; color: var(--gray-500); margin-bottom: 0.35rem; }
+
