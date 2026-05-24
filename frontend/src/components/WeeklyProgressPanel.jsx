@@ -146,17 +146,17 @@ function renderCard(date, student, holidays, progressByDate, setEditingDay) {
 
   if (noClass) {
     return (
-      <div key={dateStr} className="wpb-card wpb-card-noclass wpb-card-simple">
-        <span className="wpb-card-simple-day">{dayLabel}</span>
-        <span className="wpb-card-noclass-text">No class</span>
+      <div key={dateStr} style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'0.7rem 1rem', background:'#f9fafb', border:'1px solid #e5e7eb', borderRadius:'12px'}}>
+        <span style={{fontWeight:700, fontSize:'1rem', color:'#1f2937'}}>{dayLabel}</span>
+        <span style={{fontSize:'0.82rem', color:'#9ca3af', fontStyle:'italic'}}>No class</span>
       </div>
     );
   }
   if (holiday) {
     return (
-      <div key={dateStr} className="wpb-card wpb-card-holiday wpb-card-simple">
-        <span className="wpb-card-simple-day">{dayLabel}</span>
-        <span className="wpb-card-holiday-text">Holiday</span>
+      <div key={dateStr} style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'0.7rem 1rem', background:'#fffbeb', border:'1px solid #e5e7eb', borderRadius:'12px'}}>
+        <span style={{fontWeight:700, fontSize:'1rem', color:'#1f2937'}}>{dayLabel}</span>
+        <span style={{fontSize:'0.82rem', color:'#d97706', fontWeight:600}}>Holiday</span>
       </div>
     );
   }
@@ -164,43 +164,54 @@ function renderCard(date, student, holidays, progressByDate, setEditingDay) {
   return (
     <div
       key={dateStr}
-      className={`wpb-card${isClickable ? ' wpb-card-clickable' : ''}`}
       onClick={isClickable ? () => setEditingDay(dateStr) : undefined}
+      style={{
+        border: '1px solid #e5e7eb', borderRadius: '12px',
+        overflow: 'hidden', background: '#fff',
+        cursor: isClickable ? 'pointer' : 'default',
+      }}
     >
-      <div className="wpb-card-head">
-        <span className={`wpb-card-head-day${today ? ' wpb-card-head-today' : ''}`}>{dayLabel}</span>
-        {isClickable && <span className="wpb-card-edit-hint">Tap to edit →</span>}
+      <div style={{
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        padding: '0.7rem 1rem', background: '#f9fafb',
+        borderBottom: '1px solid #e5e7eb',
+      }}>
+        <span style={{fontWeight: 700, fontSize: '1rem', color: today ? '#0d9488' : '#1f2937'}}>
+          {dayLabel}
+        </span>
+        {isClickable && <span style={{fontSize: '0.72rem', color: '#9ca3af'}}>Tap to edit →</span>}
       </div>
-      <div className="wpb-card-body">
+      <div style={{display:'grid', gridTemplateColumns:'1fr 1fr'}}>
         {future ? (
-          <div className="wpb-card-future-label">Future — not yet recorded</div>
+          <div style={{gridColumn:'1/-1', padding:'0.7rem 0.9rem', fontSize:'0.82rem', color:'#d1d5db', fontStyle:'italic'}}>
+            Future — not yet recorded
+          </div>
         ) : (
-          <>
-            <div className="wpb-card-field">
-              <span className="wpb-card-label">New Lesson</span>
-              <span className="wpb-card-value">{newLessonCell(p)}</span>
+          [
+            ['New Lesson', newLessonCell(p)],
+            ['Sabqi',      sabqiCell(p)],
+            ['Manzil',     manzilCell(p)],
+            ['Akhlaq',     akhlaqCell(p)],
+            ['Stars',      starsCell(p)],
+            ['Remarks',    remarksCell(p)],
+          ].map(([label, val], i) => (
+            <div
+              key={label}
+              style={{
+                display: 'flex', flexDirection: 'column', gap: '5px',
+                padding: '0.6rem 0.85rem',
+                borderBottom: i < 4 ? '1px solid #f3f4f6' : 'none',
+                borderRight: i % 2 === 0 ? '1px solid #f3f4f6' : 'none',
+              }}
+            >
+              <span style={{fontSize:'0.63rem', fontWeight:700, textTransform:'uppercase', letterSpacing:'0.05em', color:'#9ca3af'}}>
+                {label}
+              </span>
+              <span style={{fontSize:'0.88rem', minHeight:'20px', display:'flex', alignItems:'center'}}>
+                {val}
+              </span>
             </div>
-            <div className="wpb-card-field">
-              <span className="wpb-card-label">Sabqi</span>
-              <span className="wpb-card-value">{sabqiCell(p)}</span>
-            </div>
-            <div className="wpb-card-field">
-              <span className="wpb-card-label">Manzil</span>
-              <span className="wpb-card-value">{manzilCell(p)}</span>
-            </div>
-            <div className="wpb-card-field">
-              <span className="wpb-card-label">Akhlaq</span>
-              <span className="wpb-card-value">{akhlaqCell(p)}</span>
-            </div>
-            <div className="wpb-card-field">
-              <span className="wpb-card-label">Stars</span>
-              <span className="wpb-card-value">{starsCell(p)}</span>
-            </div>
-            <div className="wpb-card-field">
-              <span className="wpb-card-label">Remarks</span>
-              <span className="wpb-card-value">{remarksCell(p)}</span>
-            </div>
-          </>
+          ))
         )}
       </div>
     </div>
