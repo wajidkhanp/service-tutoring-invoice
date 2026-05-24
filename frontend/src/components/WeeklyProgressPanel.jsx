@@ -146,7 +146,7 @@ function renderCard(date, student, holidays, progressByDate, setEditingDay) {
 
   if (noClass) {
     return (
-      <div key={dateStr} style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'0.7rem 1rem', background:'#f9fafb', border:'1px solid #e5e7eb', borderRadius:'12px'}}>
+      <div key={dateStr} style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'0.7rem 1rem', background:'#f9fafb', border:'1px solid #e5e7eb', borderRadius:'12px', flexShrink:0}}>
         <span style={{fontWeight:700, fontSize:'1rem', color:'#1f2937'}}>{dayLabel}</span>
         <span style={{fontSize:'0.82rem', color:'#9ca3af', fontStyle:'italic'}}>No class</span>
       </div>
@@ -154,7 +154,7 @@ function renderCard(date, student, holidays, progressByDate, setEditingDay) {
   }
   if (holiday) {
     return (
-      <div key={dateStr} style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'0.7rem 1rem', background:'#fffbeb', border:'1px solid #e5e7eb', borderRadius:'12px'}}>
+      <div key={dateStr} style={{display:'flex', alignItems:'center', justifyContent:'space-between', padding:'0.7rem 1rem', background:'#fffbeb', border:'1px solid #e5e7eb', borderRadius:'12px', flexShrink:0}}>
         <span style={{fontWeight:700, fontSize:'1rem', color:'#1f2937'}}>{dayLabel}</span>
         <span style={{fontSize:'0.82rem', color:'#d97706', fontWeight:600}}>Holiday</span>
       </div>
@@ -169,6 +169,7 @@ function renderCard(date, student, holidays, progressByDate, setEditingDay) {
         border: '1px solid #e5e7eb', borderRadius: '12px',
         overflow: 'hidden', background: '#fff',
         cursor: isClickable ? 'pointer' : 'default',
+        flexShrink: 0,
       }}
     >
       <div style={{
@@ -226,11 +227,11 @@ export default function WeeklyProgressPanel({ student, initialDate, onClose }) {
   const [loading, setLoading] = useState(true);
   const [editingDay, setEditingDay] = useState(null);
   const [holidays, setHolidays] = useState(new Set());
-  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 820);
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth < 1100);
 
   // JS-based breakpoint — bypasses iOS Safari CSS media query issues
   useEffect(() => {
-    const handler = () => setIsMobile(window.innerWidth < 820);
+    const handler = () => setIsMobile(window.innerWidth < 1100);
     window.addEventListener('resize', handler);
     return () => window.removeEventListener('resize', handler);
   }, []);
