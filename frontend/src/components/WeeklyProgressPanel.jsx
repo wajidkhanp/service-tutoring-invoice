@@ -131,6 +131,64 @@ function remarksCell(p) {
   );
 }
 
+// ── Mobile card renderer ─────────────────────────────────────
+
+function renderCard(date, student, holidays, progressByDate, setEditingDay) {
+  const dateStr = toDateStr(date);
+  const noClass = isNoClassDay(date, student);
+  const holiday = isHolidayDay(date, holidays);
+  const future = isFutureDay(date);
+  const today = isTodayDay(date);
+  const isClickable = !noClass && !holiday && !future;
+  const p = progressByDate[dateStr];
+
+  const dayLabel = `${DOW_SHORT[date.getDay()]} ${date.getDate()}`;
+
+  if (noClass) {
+    return (
+      <div key={dateStr} className="wpb-card wpb-card-noclass wpb-card-simple">
+        <span className="wpb-card-simple-day">{dayLabel}</span>
+        <span className="wpb-card-noclass-text">No class</span>
+      </div>
+    );
+  }
+  if (holiday) {
+    return (
+      <div key={dateStr} className="wpb-card wpb-card-holiday wpb-card-simple">
+        <span className="wpb-card-simple-day">{dayLabel}</span>
+        <span className="wpb-card-holiday-text">Holiday</span>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      key={dateStr}
+      className={`wpb-card${isClickable ? ' wpb-card-clickable' : ''}`}
+      onClick={isClickable ? () => setEditingDay(dateStr) : undefined}
+    >
+      <div className="wpb-card-head">
+        <span className={`wpb-card-head-day${today ? ' wpb-card-head-today' : ''}`}>{dayLabel}</span>
+        {isClickable && <span className="wpb-card-edit-hint">Tap to edit →</span>}
+      </div>
+      <div className="wpb-card-body">
+        {future ? (
+          <div className="wpb-card-future-label">Future — not yet recorded</div>
+        ) : (
+          <>
+            <div className="wpb-card-field"><span className="wpb-card-label">New Lesson</span><span>{newLessonCell(p)}</span></div>
+            <div className="wpb-card-field"><span className="wpb-card-label">Sabqi</span><span>{sabqiCell(p)}</span></div>
+            <div className="wpb-card-field"><span className="wpb-card-label">Manzil</span><span>{manzilCell(p)}</span></div>
+            <div className="wpb-card-field"><span className="wpb-card-label">Akhlaq</span><span>{akhlaqCell(p)}</span></div>
+            <div className="wpb-card-field"><span className="wpb-card-label">Stars</span><span>{starsCell(p)}</span></div>
+            <div className="wpb-card-field"><span className="wpb-card-label">Remarks</span><span>{remarksCell(p)}</span></div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // ── Component ────────────────────────────────────────────────
 
 export default function WeeklyProgressPanel({ student, initialDate, onClose }) {
@@ -280,24 +338,31 @@ export default function WeeklyProgressPanel({ student, initialDate, onClose }) {
         {loading ? (
           <div className="loading-screen"><div className="spinner" /></div>
         ) : (
-          <div className="wpb-table-wrap">
-            <table className="wpb-table">
-              <thead>
-                <tr>
-                  <th>Day</th>
-                  <th>New Lesson</th>
-                  <th>Sabqi</th>
-                  <th>Manzil</th>
-                  <th>Akhlaq</th>
-                  <th>★</th>
-                  <th>Remarks</th>
-                </tr>
-              </thead>
-              <tbody>
-                {weekDays.map((date) => renderRow(date))}
-              </tbody>
-            </table>
-          </div>
+          <>
+            {/* Desktop: table */}
+            <div className="wpb-table-wrap">
+              <table className="wpb-table">
+                <thead>
+                  <tr>
+                    <th>Day</th>
+                    <th>New Lesson</th>
+                    <th>Sabqi</th>
+                    <th>Manzil</th>
+                    <th>Akhlaq</th>
+                    <th>★</th>
+                    <th>Remarks</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {weekDays.map((date) => renderRow(date))}
+                </tbody>
+              </table>
+            </div>
+            {/* Mobile: day cards */}
+            <div className="wpb-cards">
+              {weekDays.map((date) => renderCard(date, student, holidays, progressByDate, setEditingDay))}
+            </div>
+          </>
         )}
 
         {/* Day edit overlay */}

@@ -2603,79 +2603,126 @@ a.icon-btn { text-decoration: none; }
 .wpb-backdrop {
   position: fixed; inset: 0; background: rgba(0,0,0,0.5);
   z-index: 1000; display: flex; align-items: center; justify-content: center;
-  padding: 1rem;
+  padding: 1.5rem;
 }
 .wpb-panel {
-  background: #fff; border-radius: 14px;
-  width: 100%; max-width: 860px; max-height: 90vh;
+  background: #fff; border-radius: 16px;
+  width: 100%; max-width: 1060px; max-height: 88vh;
   display: flex; flex-direction: column;
-  box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+  box-shadow: 0 24px 80px rgba(0,0,0,0.22);
   overflow: hidden;
 }
 .wpb-header {
   display: flex; justify-content: space-between; align-items: flex-start;
-  padding: 1.1rem 1.25rem 0.75rem;
+  padding: 1.3rem 1.6rem 1rem;
   border-bottom: 1px solid var(--gray-100);
   flex-shrink: 0;
 }
-.wpb-student-name { font-size: 1.05rem; font-weight: 700; color: var(--gray-900, #111827); }
-.wpb-student-sub { font-size: 0.8rem; color: var(--gray-500); }
+.wpb-student-name { font-size: 1.25rem; font-weight: 700; color: var(--gray-900, #111827); }
+.wpb-student-sub  { font-size: 0.87rem; color: var(--gray-500); margin-top: 2px; }
 .wpb-nav {
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 0.65rem 1.25rem; border-bottom: 1px solid var(--gray-100);
+  display: flex; align-items: center; justify-content: space-between; gap: 0.5rem;
+  padding: 0.8rem 1.6rem; border-bottom: 1px solid var(--gray-100);
   flex-shrink: 0;
 }
 .wpb-nav-btn {
-  background: none; border: 1px solid var(--gray-200); border-radius: 6px;
-  padding: 0.3rem 0.65rem; cursor: pointer; font-size: 0.85rem; color: var(--gray-600);
+  background: none; border: 1px solid var(--gray-200); border-radius: 8px;
+  padding: 0.5rem 1.1rem; cursor: pointer; font-size: 0.92rem; color: var(--gray-600);
+  transition: background 0.15s; flex-shrink: 0;
 }
 .wpb-nav-btn:hover:not(:disabled) { background: var(--gray-100); }
 .wpb-nav-btn:disabled { opacity: 0.35; cursor: default; }
-.wpb-nav-label { font-size: 0.88rem; font-weight: 600; color: var(--gray-700); }
+.wpb-nav-label { font-size: 0.97rem; font-weight: 600; color: var(--gray-700); text-align: center; flex: 1; }
+
+/* ── Desktop table ── */
 .wpb-table-wrap { overflow: auto; flex: 1; }
-.wpb-table {
-  width: 100%; border-collapse: collapse; font-size: 0.8rem;
-}
+.wpb-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
 .wpb-table th {
-  background: var(--gray-50); padding: 0.5rem 0.6rem;
-  text-align: left; font-size: 0.72rem; font-weight: 600;
-  text-transform: uppercase; color: var(--gray-500);
-  border-bottom: 1px solid var(--gray-200); white-space: nowrap;
+  background: var(--gray-50); padding: 0.7rem 1.1rem;
+  text-align: left; font-size: 0.73rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em; color: var(--gray-500);
+  border-bottom: 2px solid var(--gray-200); white-space: nowrap;
   position: sticky; top: 0; z-index: 1;
 }
-.wpb-table td {
-  padding: 0.55rem 0.6rem; border-bottom: 1px solid var(--gray-100);
-  vertical-align: middle;
-}
+.wpb-table td { padding: 0.9rem 1.1rem; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
 .wpb-row-clickable { cursor: pointer; }
-.wpb-row-clickable:hover td { background: var(--teal-light); }
+.wpb-row-clickable:hover td { background: var(--teal-light, #f0fdf9); }
 .wpb-row-noclass td { background: var(--gray-50); color: var(--gray-300); font-style: italic; }
 .wpb-row-holiday td { background: #fffbeb; }
 .wpb-row-future td { color: var(--gray-300); }
 .wpb-row-has-data { background: #fafffe; }
-.wpb-day-cell { white-space: nowrap; font-weight: 600; color: var(--gray-700); min-width: 56px; }
-.wpb-day-today { color: var(--teal-dark) !important; }
+.wpb-day-cell { white-space: nowrap; font-weight: 700; color: var(--gray-700); min-width: 90px; font-size: 0.9rem; }
+.wpb-day-today { color: var(--teal-dark, #0d9488) !important; }
 .wpb-cell-text { color: var(--gray-800); }
-.wpb-badge {
-  display: inline-block; border-radius: 4px; padding: 1px 6px;
-  font-size: 0.72rem; font-weight: 600; white-space: nowrap;
-}
-.wpb-good  { background: #dcfce7; color: #15803d; }
-.wpb-ni    { background: #fee2e2; color: #dc2626; }
-.wpb-yes   { background: #d1fae5; color: #065f46; }
-.wpb-no    { background: var(--gray-100); color: var(--gray-500); }
+
+/* ── Badges ── */
+.wpb-badge { display: inline-flex; align-items: center; border-radius: 5px; padding: 3px 9px; font-size: 0.78rem; font-weight: 600; white-space: nowrap; }
+.wpb-good    { background: #dcfce7; color: #15803d; }
+.wpb-ni      { background: #fee2e2; color: #dc2626; }
+.wpb-yes     { background: #d1fae5; color: #065f46; }
+.wpb-no      { background: var(--gray-100); color: var(--gray-500); }
 .wpb-missed  { background: #fef3c7; color: #92400e; }
 .wpb-special { background: #dbeafe; color: #1d4ed8; }
-.wpb-rating-badge {
-  display: inline-block; margin-left: 4px; border-radius: 3px;
-  padding: 0px 4px; font-size: 0.65rem; font-weight: 700;
+.wpb-rating-badge { display: inline-block; margin-left: 5px; border-radius: 4px; padding: 1px 5px; font-size: 0.68rem; font-weight: 700; }
+.wpb-stars       { color: #f59e0b; font-size: 0.95rem; letter-spacing: 1px; }
+.wpb-holiday-cell { color: #d97706; font-weight: 600; font-size: 0.85rem; }
+.wpb-noclass-cell { color: var(--gray-400); font-size: 0.85rem; font-style: italic; }
+
+/* ── Mobile cards (hidden on desktop) ── */
+.wpb-cards { display: none; }
+
+/* ── Tablet ── */
+@media (max-width: 1000px) {
+  .wpb-backdrop { padding: 1rem; }
+  .wpb-panel { max-width: 98vw; }
 }
-.wpb-stars { color: #f59e0b; font-size: 0.8rem; letter-spacing: 1px; }
-.wpb-holiday-cell { color: #d97706; font-weight: 600; font-size: 0.75rem; }
-.wpb-noclass-cell { color: var(--gray-300); font-size: 0.75rem; }
-@media (max-width: 600px) {
-  .wpb-panel { max-height: 95vh; border-radius: 10px; }
-  .wpb-table th, .wpb-table td { padding: 0.45rem 0.4rem; font-size: 0.72rem; }
+
+/* ── Mobile — bottom sheet + day cards ── */
+@media (max-width: 680px) {
+  .wpb-backdrop { padding: 0; align-items: flex-end; }
+  .wpb-panel { max-width: 100%; max-height: 93vh; border-radius: 18px 18px 0 0; }
+  .wpb-header { padding: 1rem 1.1rem 0.8rem; }
+  .wpb-student-name { font-size: 1.1rem; }
+  .wpb-nav { padding: 0.65rem 1rem; }
+  .wpb-nav-label { font-size: 0.88rem; }
+  .wpb-nav-btn { padding: 0.45rem 0.8rem; font-size: 0.85rem; }
+
+  /* Hide table, show cards */
+  .wpb-table-wrap { display: none; }
+  .wpb-cards { display: flex; flex-direction: column; gap: 0.55rem; overflow-y: auto; flex: 1; padding: 0.75rem; }
+
+  .wpb-card { border: 1px solid var(--gray-200); border-radius: 12px; overflow: hidden; background: #fff; }
+  .wpb-card-clickable { cursor: pointer; }
+  .wpb-card-clickable:active { background: var(--teal-light, #f0fdf9); }
+
+  .wpb-card-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.65rem 1rem; background: var(--gray-50);
+    border-bottom: 1px solid var(--gray-200);
+  }
+  .wpb-card-head-day { font-weight: 700; font-size: 0.97rem; color: var(--gray-800); }
+  .wpb-card-head-today { color: var(--teal-dark, #0d9488) !important; }
+  .wpb-card-edit-hint { font-size: 0.72rem; color: var(--gray-400); }
+
+  .wpb-card-body { padding: 0.25rem 1rem 0.4rem; }
+  .wpb-card-field {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.38rem 0; min-height: 32px;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .wpb-card-field:last-child { border-bottom: none; }
+  .wpb-card-label { font-size: 0.71rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--gray-400); min-width: 90px; }
+  .wpb-card-future-label { padding: 0.55rem 0; font-size: 0.8rem; color: var(--gray-300); font-style: italic; }
+
+  .wpb-card-simple {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0.65rem 1rem;
+  }
+  .wpb-card-simple-day { font-weight: 700; font-size: 0.97rem; color: var(--gray-800); }
+  .wpb-card-noclass { background: var(--gray-50); }
+  .wpb-card-holiday { background: #fffbeb; }
+  .wpb-card-noclass-text { font-size: 0.82rem; color: var(--gray-400); font-style: italic; }
+  .wpb-card-holiday-text { font-size: 0.82rem; color: #d97706; font-weight: 600; }
 }
 
 /* ── Progress Log Panel – Sabqi/Manzil sub-rating ───────── */
